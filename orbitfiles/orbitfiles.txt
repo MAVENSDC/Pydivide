@@ -1,0 +1,6 @@
+This directory is where the downloaded orbit files from
+ 
+http://naif.jpl.nasa.gov//pub/naif/MAVEN/kernels/spk/
+
+are stored.  These files are merged in the master file "maven_orb_rec.orb", 
+which is located in the main directory.
