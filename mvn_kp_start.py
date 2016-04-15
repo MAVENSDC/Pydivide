@@ -1,6 +1,5 @@
 from IPython import embed
 
-import divide_lib_test
 from mvn_kp_download_files import mvn_kp_download_files
 from mvn_kp_download_sci_files import mvn_kp_download_sci_files
 from mvn_kp_alt_plot import mvn_kp_alt_plot

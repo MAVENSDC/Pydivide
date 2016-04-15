@@ -6,9 +6,11 @@ Created on Mar 3, 2015
 import sys
 sys.path.append('..')
 import unittest
-import shutil
-import re
 import os
+from mvn_kp_download_files import mvn_kp_download_files
+from mvn_kp_download_files_utilities import get_root_data_dir
+from mvn_kp_download_sci_files import mvn_kp_download_sci_files
+from mvn_kp_read import mvn_kp_read
 
 
 class TestPythonDivide(unittest.TestCase):
@@ -24,8 +26,15 @@ class TestPythonDivide(unittest.TestCase):
     def tearDown(self):
         self.x = 2
 
-    def test_result_generation(self):
-        self.assertEqual(self.x, 5)
-
+    def test_download_kp_files(self):
+        mvn_kp_download_files(start_date='2015-01-05', end_date='2015-01-10')
+        x = os.listdir(get_root_data_dir())
+        self.assertEqual(len(x),5)
+        
+    def test_download_sci_files(self):
+        mvn_kp_download_sci_files()
+    
+    def test_read_in_kp_files(self):
+        insitu = mvn_kp_read(['2015-01-05, 2015-01-08T05:15:00'], instruments=['SWEA','NGIMS','MAG'])
 
 
