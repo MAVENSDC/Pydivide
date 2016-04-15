@@ -18,7 +18,8 @@ def mvn_kp_download_files(filenames=None,
                           only_update_prefs=False, 
                           exclude_orbit_file=False,
                           local_dir=None,
-                          help=False):
+                          help=False,
+                          unittest=False):
     
     import os
     
@@ -102,20 +103,21 @@ def mvn_kp_download_files(filenames=None,
             estimated_size=len(s) * 1.0
         else:
             estimated_size=len(s) * .684
-    
-    print "Your request will download a total of: "+str(len(s))+" files with an approx total size of: "+str(estimated_size)+" MBs."
-    print 'Would you like to procede with the download: '
-    valid_response=False
-    while(valid_response==False):
-        response = (raw_input('(y/n) >'))
-        if response=='y' or response=='Y':
-            valid_response=True
-        elif response=='n' or response=='N':
-            print 'Cancelled download. Returning...'
-            valid_response=True
-            return
-        else:
-            print 'Invalid input.  Please answer with y or n.'
+            
+    if not unittest:
+        print "Your request will download a total of: "+str(len(s))+" files with an approx total size of: "+str(estimated_size)+" MBs."
+        print 'Would you like to procede with the download: '
+        valid_response=False
+        while(valid_response==False):
+            response = (raw_input('(y/n) >'))
+            if response=='y' or response=='Y':
+                valid_response=True
+            elif response=='n' or response=='N':
+                print 'Cancelled download. Returning...'
+                valid_response=True
+                return
+            else:
+                print 'Invalid input.  Please answer with y or n.'
         
         
     print "Before downloading data files, checking for updated KP templates from the SDC"

@@ -27,12 +27,12 @@ class TestPythonDivide(unittest.TestCase):
         self.x = 2
 
     def test_download_kp_files(self):
-        mvn_kp_download_files(start_date='2015-01-05', end_date='2015-01-10')
+        mvn_kp_download_files(start_date='2015-01-05', end_date='2015-01-10', unittest=True)
         x = os.listdir(get_root_data_dir())
         self.assertEqual(len(x),5)
         
     def test_download_sci_files(self):
-        mvn_kp_download_sci_files()
+        mvn_kp_download_sci_files(start_date='2015-01-05', end_date='2015-01-10', instrument='euv', level='l3', unittest=True)
     
     def test_read_in_kp_files(self):
         insitu = mvn_kp_read(['2015-01-05', '2015-01-08T05:15:00'], instruments=['SWEA','NGIMS','MAG'])
