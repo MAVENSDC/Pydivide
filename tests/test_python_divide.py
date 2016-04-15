@@ -40,6 +40,7 @@ class TestPythonDivide(unittest.TestCase):
         self.assertEqual(len(x),6)
         
     def test_read_in_kp_files(self):
+        mvn_kp_download_files(start_date='2015-01-05', end_date='2015-01-10', unittest=True)
         insitu = mvn_kp_read(['2015-01-05', '2015-01-08T05:15:00'], instruments=['SWEA','NGIMS','MAG'])
 
 
