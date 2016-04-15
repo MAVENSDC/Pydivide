@@ -25,19 +25,19 @@ class TestPythonDivide(unittest.TestCase):
 
     def tearDown(self):
         for f in os.listdir(os.path.join(get_root_data_dir(),'maven','data','sci','kp','insitu','2015','01')):
-            os.remove(f)
+            os.remove(os.path.join(get_root_data_dir(),'maven','data','sci','kp','insitu','2015','01',f))
         for f in os.listdir(os.path.join(get_root_data_dir(),'maven','data','sci','euv','l3','2015','01')):
-            os.remove(f)
+            os.remove(os.path.join(get_root_data_dir(),'maven','data','sci','euv','l3','2015','01',f))
 
     def test_download_kp_files(self):
         mvn_kp_download_files(start_date='2015-01-05', end_date='2015-01-10', unittest=True)
         x = os.listdir(os.path.join(get_root_data_dir(),'maven','data','sci','kp','insitu','2015','01'))
-        self.assertEqual(len(x),5)
+        self.assertEqual(len(x),6)
         
     def test_download_sci_files(self):
         mvn_kp_download_sci_files(start_date='2015-01-05', end_date='2015-01-10', instrument='euv', level='l3', unittest=True)
         x = os.listdir(os.path.join(get_root_data_dir(),'maven','data','sci','euv','l3','2015','01'))
-        self.assertEqual(len(x),5)
+        self.assertEqual(len(x),6)
         
     def test_read_in_kp_files(self):
         insitu = mvn_kp_read(['2015-01-05', '2015-01-08T05:15:00'], instruments=['SWEA','NGIMS','MAG'])
