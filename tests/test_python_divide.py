@@ -35,6 +35,6 @@ class TestPythonDivide(unittest.TestCase):
         mvn_kp_download_sci_files()
     
     def test_read_in_kp_files(self):
-        insitu = mvn_kp_read(['2015-01-05, 2015-01-08T05:15:00'], instruments=['SWEA','NGIMS','MAG'])
+        insitu = mvn_kp_read(['2015-01-05', '2015-01-08T05:15:00'], instruments=['SWEA','NGIMS','MAG'])
 
 
