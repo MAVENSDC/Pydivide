@@ -171,25 +171,42 @@ def mvn_kp_read(input_time, instruments = None):
     #
     # Build the sub-level DataFrames for the larger dictionary/structure
     #
+    APP=temp[APPgroup]
+    SPACECRAFT=temp[SCgroup]
+    
     if instruments != None:
-        APP=temp[APPgroup]
-        SPACECRAFT=temp[SCgroup]
         if 'LPW' in instruments:
             LPW=temp[LPWgroup]
+        else:
+            LPW=None
         if 'MAG' in instruments:
             MAG=temp[MAGgroup]
+        else:
+            MAG=None
         if 'EUV' in instruments:
             EUV=temp[EUVgroup] 
+        else:
+            EUV=None
         if 'SWEA' in instruments:
             SWEA=temp[SWEgroup]
+        else:
+            SWEA=None
         if 'SWIA' in instruments:
             SWIA=temp[SWIgroup]
+        else:
+            SWIA=None
         if 'NGIMS' in instruments:
             NGIMS=temp[NGIgroup]
+        else:
+            NGIMS=None
         if 'SEP' in instruments:
             SEP=temp[SEPgroup]
+        else:
+            SEP=None
         if 'STATIC' in instruments:
             STATIC=temp[STAgroup]
+        else:
+            STATIC=None
     else:
         LPW=temp[LPWgroup]
         EUV=temp[EUVgroup]
@@ -199,19 +216,6 @@ def mvn_kp_read(input_time, instruments = None):
         SEP=temp[SEPgroup]
         MAG=temp[MAGgroup]
         NGIMS=temp[NGIgroup]
-        APP=temp[APPgroup]
-        SPACECRAFT=temp[SCgroup]
-    
-    LPW=temp[LPWgroup] if 'LPW' in instruments else None
-    EUV=temp[EUVgroup] if 'EUV' in instruments else None
-    SWEA=temp[SWEgroup] if 'SWEA' in instruments else None
-    SWIA=temp[SWIgroup] if 'SWIA' in instruments else None
-    STATIC=temp[STAgroup] if 'STATIC' in instruments else None
-    SEP=temp[SEPgroup] if 'SEP' in instruments else None
-    MAG=temp[MAGgroup] if 'MAG' in instruments else None
-    NGIMS=temp[NGIgroup] if 'NGIMS' in instruments else None
-    APP=temp[APPgroup]
-    SPACECRAFT=temp[SCgroup]
     
     #
     # Strip out the duplicated instrument part of the column names

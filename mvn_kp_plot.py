@@ -46,7 +46,6 @@ def mvn_kp_plot( kp, parameter=None, time=None, errors=None,
     import matplotlib.pyplot as plt
     import numpy as np
     from datetime import datetime
-    from divide_lib_test import range_select
 
     # Check existence of parameter
     if parameter == None: 
