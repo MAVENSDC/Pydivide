@@ -627,3 +627,33 @@ kp_pattern = (r'^mvn_(?P<{0}>kp)_'
                                         'gz')
 
 kp_regex = re.compile(kp_pattern)
+
+def initialize_list(the_list):
+    index = 0
+    for i in the_list:
+        if  hasattr(i, "__len__"):
+            the_list[index] = initialize_list(i)
+        else:
+            the_list[index] = []
+        index = index + 1
+    return the_list
+
+def place_values_in_list(the_list, location, to_append):
+    testing = the_list
+    if hasattr(location, "__len__"):
+        for i in range(len(location)):
+            testing = testing[location[i]]
+        testing.append(to_append)
+    else:
+        testing=testing[location]
+        testing.append(to_append)
+
+def get_values_from_list(the_list, location):
+    testing = the_list
+    if hasattr(location, "__len__"):
+        for i in range(len(location)):
+            testing = testing[location[i]]
+        return testing
+    else:
+        testing=testing[location]
+        return testing
