@@ -48,7 +48,7 @@ class TestPythonDivide(unittest.TestCase):
         
     def test_bin_kp_data(self):
         #Basically just here to make sure bin is runing properly, really hard to actually check answers
-        mvn_kp_download_files(start_date='2015-01-15', end_date='2015-01-15', unittest=True)   
+        mvn_kp_download_files(start_date='2015-01-15', end_date='2015-01-16', unittest=True)   
         insitu = mvn_kp_read('2015-01-15')
         x,y,z,q = mvn_kp_bin(insitu, parameter='SEP.Ion Flux FOV 1 F', bin_by=['SWEA.Solar Wind Electron Density', 'SWEA.Solar Wind Electron Temperature', 'SPACECRAFT.Altitude Aeroid'], binsizes=[1,1,1000], median=True, avg=True, std=True, density=True)
         self.assertEqual(int(math.floor(numpy.nansum(z))), 108921)
