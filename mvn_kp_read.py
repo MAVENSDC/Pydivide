@@ -165,6 +165,7 @@ def mvn_kp_read(input_time, instruments = None):
     temp = temp[start_index:end_index]       
     Time = temp.index
     TimeUnix = pd.Series(TimeUnix) # convert into Series for consistency
+    TimeUnix.index = temp.index
     Orbit = temp['SPICE.Orbit Number']
     IOflag = temp['SPICE.Inbound Outbound Flag']
 
