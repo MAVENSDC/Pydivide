@@ -504,7 +504,7 @@ def get_latest_files_from_date_range(date1, date2):
                 if r > revision:
                     revision = r
                     
-        seq = ('mvn','kp','insitu',year+month+day,'v'+version,'r'+revision+'.tab')
+        seq = ('mvn','kp','insitu',year+month+day,'v'+str(version),'r'+str(revision)+'.tab')
         filenames.append(os.path.join(full_path, '_'.join(seq)))
         
     return filenames
