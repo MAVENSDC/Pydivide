@@ -1,4 +1,5 @@
 import os
+import calendar
 from mvn_kp_utilities import param_list_sav
 from mvn_kp_utilities import param_list
 from mvn_kp_utilities import param_range
@@ -39,7 +40,6 @@ def mvn_kp_read(input_time, instruments = None):
     '''
     import pandas as pd
     import re
-    import time
     from datetime import datetime, timedelta
     from dateutil.parser import parse
     
@@ -59,8 +59,8 @@ def mvn_kp_read(input_time, instruments = None):
         date1 = parse(input_time)
         date2 = date1 + timedelta(days=1)
         
-    date1_unix = time.mktime(date1.timetuple())
-    date2_unix = time.mktime(date2.timetuple())
+    date1_unix = calendar.timegm(date1.timetuple())
+    date2_unix = calendar.timegm(date2.timetuple())
     
     filenames = get_latest_files_from_date_range(date1, date2)
     
@@ -68,15 +68,15 @@ def mvn_kp_read(input_time, instruments = None):
     names, inst = get_header_info(filenames[0])
     #Strip off the first name for now (Time), and use that as the dataframe index.  
     #Seems to make sense for now, but will it always?
-    names = names[1:len(names)-1]
-    inst = inst[1:len(inst)-1]
+    names = names[1:len(names)]
+    inst = inst[1:len(inst)]
     
     #
     # Break up dictionary into instrument groups
     #
     LPWgroup, EUVgroup, SWEgroup, SWIgroup, STAgroup, SEPgroup, MAGgroup, \
     NGIgroup, APPgroup, SCgroup = [],[],[],[],[],[],[],[],[],[]
-    First = True
+
     for i,j in zip(inst,names):
         if re.match('^LPW$',i.strip()):
             LPWgroup.append(j)
@@ -144,7 +144,7 @@ def mvn_kp_read(input_time, instruments = None):
     #
     # Cut out the times not included in the date range
     #
-    TimeUnix = [time.mktime(datetime.strptime(i,'%Y-%m-%dT%H:%M:%S')
+    TimeUnix = [calendar.timegm(datetime.strptime(i,'%Y-%m-%dT%H:%M:%S')
                                              .timetuple()) 
                 for i in temp.index]
     start_index = 0
