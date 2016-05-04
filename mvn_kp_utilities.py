@@ -374,10 +374,10 @@ def make_time_labels(kp):
     import numpy as np
 
     indices = kp['Time'].index.values
-    t1 = kp['Time'][np.nanmin(kp['Time'].index.values)]
-    t5 = kp['Time'][np.nanmax(kp['Time'].index.values)]
+    t1 = kp['Time'].min()
+    t5 = kp['Time'].max()
     tn = (t5-t1)/4*np.arange(5)
-    tickval = [datetime.fromtimestamp(i+t1) for i in tn]
+    tickval = [datetime.utcfromtimestamp(i+t1) for i in tn]
     ticklab = [i.strftime('%Y-%m-%d\n%H:%M:%S') for i in tickval]
     return tickval,ticklab
 

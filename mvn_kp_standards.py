@@ -516,6 +516,5 @@ def mvn_kp_standards(kp,
     #Adjust the legends to appear on the right side
     for i in range(max_num_plots):
         plot_array[i].legend(loc='center left', bbox_to_anchor=(1, 0.5), prop=fontP)
-        x = plot_array[i].title(loc='right')
     #Show the plot
     plt.show()
