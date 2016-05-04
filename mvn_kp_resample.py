@@ -89,7 +89,7 @@ def mvn_kp_resample(kp, time, sc_only=False):
     #
     new_time_strings =[]
     for i in range(len(time)):
-        new_time_strings.append(datetime.datetime.fromtimestamp(time[i]).strftime('%Y-%m-%dT%H:%M:%S'))
+        new_time_strings.append(datetime.datetime.utcfromtimestamp(time[i], ).strftime('%Y-%m-%dT%H:%M:%S'))
     new_time_series = pd.Series(new_time_strings)
     
     #Orbit Series
