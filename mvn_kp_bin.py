@@ -2,6 +2,8 @@ from mvn_kp_utilities import get_inst_obs_labels
 from mvn_kp_utilities import initialize_list
 from mvn_kp_utilities import place_values_in_list
 from mvn_kp_utilities import get_values_from_list
+import scipy 
+from scipy import stats
 import math
 import numpy
 
@@ -14,7 +16,8 @@ def mvn_kp_bin(kp,
                std=False,
                avg=False,
                density=False,
-               median=False):
+               median=False,
+               unittest=False):
     #
     #ERROR CHECKING
     #
@@ -195,7 +198,11 @@ def mvn_kp_bin(kp,
         #
         data_value_indexes = tuple(data_value_indexes)
         if median:
-            median_array[data_value_indexes] = numpy.nanmedian(get_values_from_list(binned_list, data_value_indexes))
+            #Jenkins server uses eold versions of numpy and scipy
+            if unittest:
+                median_array[data_value_indexes] = stats.nanmedian(get_values_from_list(binned_list, data_value_indexes))
+            else:
+                median_array[data_value_indexes] = numpy.nanmedian(get_values_from_list(binned_list, data_value_indexes))
         if avg or std:
             average_array[data_value_indexes] = numpy.nansum(get_values_from_list(binned_list, data_value_indexes))/density_array[data_value_indexes]
         if std:

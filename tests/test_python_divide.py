@@ -33,36 +33,29 @@ class TestPythonDivide(unittest.TestCase):
             os.remove(os.path.join(get_root_data_dir(),'maven','data','sci','euv','l3','2015','01',f))
 
     def test_download_kp_files(self):
-        self.x=2
         mvn_kp_download_files(start_date='2015-01-05', end_date='2015-01-10', unittest=True)
         x = os.listdir(os.path.join(get_root_data_dir(),'maven','data','sci','kp','insitu','2015','01'))
         self.assertEqual(len(x),6)
          
     def test_download_sci_files(self):
-        self.x=2
         mvn_kp_download_sci_files(start_date='2015-01-05', end_date='2015-01-10', instrument='euv', level='l3', unittest=True)
         x = os.listdir(os.path.join(get_root_data_dir(),'maven','data','sci','euv','l3','2015','01'))
         self.assertEqual(len(x),6)
          
     def test_read_in_kp_files(self):
-        self.x=2
         mvn_kp_download_files(start_date='2015-01-05', end_date='2015-01-10', unittest=True)
         insitu = mvn_kp_read(['2015-01-05', '2015-01-08T05:15:00'], instruments=['SWEA','NGIMS','MAG'])
         self.assertEqual(len(insitu['MAG']['Magnetic Field MSO X']),37715)
          
     def test_bin_kp_data(self):
-        self.x=2
         #Basically just here to make sure bin is runing properly, really hard to actually check answers
          
-        #PROBLEM: Whatever builds jenkins does not have the latest version of numpy.  How to fix?
         mvn_kp_download_files(start_date='2015-01-15', end_date='2015-01-16', unittest=True)   
         insitu = mvn_kp_read('2015-01-15')
-        #x,y,z,q = mvn_kp_bin(insitu, parameter='SEP.Ion Flux FOV 1 F', bin_by=['SWEA.Solar Wind Electron Density', 'SWEA.Solar Wind Electron Temperature', 'SPACECRAFT.Altitude Aeroid'], binsizes=[1,1,1000], median=True, avg=True, std=True, density=True)
-        #self.assertEqual(int(math.floor(numpy.nansum(z))), 108921)
+        x,y,z,q = mvn_kp_bin(insitu, parameter='SEP.Ion Flux FOV 1 F', bin_by=['SWEA.Solar Wind Electron Density', 'SWEA.Solar Wind Electron Temperature', 'SPACECRAFT.Altitude Aeroid'], binsizes=[1,1,1000], median=True, avg=True, std=True, density=True, unittest=True)
+        self.assertEqual(int(math.floor(numpy.nansum(z))), 108921)
         
     def test_resample_Data(self):
-
-        print numpy.version.version
         mvn_kp_download_files(start_date='2015-01-15', end_date='2015-01-16', unittest=True)   
         insitu = mvn_kp_read('2015-01-15')
         new_time = [insitu['Time'][0], insitu['Time'][0]+10003, insitu['Time'][0]+20005, insitu['Time'][0]+30007, insitu['Time'][0]+40007, insitu['Time'][0]+50007, insitu['Time'][0]+60000]
