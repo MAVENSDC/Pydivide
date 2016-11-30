@@ -56,10 +56,10 @@ def param_list( kp ):
             ParamList.append("#%3d %s" % (index, base_tag) )
             index = index + 1
         else:
-            print '*****WARNING*****'
-            print 'Returning INCOMPLETE Parameter List'
-            print 'Base tag neither DataFrame nor Series'
-            print 'Plese check read_insitu_file definition'
+            print('*****WARNING*****')
+            print('Returning INCOMPLETE Parameter List')
+            print('Base tag neither DataFrame nor Series')
+            print('Plese check read_insitu_file definition')
 
     return ParamList
 
@@ -87,11 +87,11 @@ def param_range( kp, iuvs=None ):
 # First, the case where insitu data are provided
 #
 #    if kp.dtype.names[0] == 'TIME_STRING':
-    print "The loaded insitu KP data set contains data between"
-    print( "   %s and %s" % ( np.array(kp['TimeString'])[0], 
-                              np.array(kp['TimeString'])[-1]) )
-    print "Equivalently, this corresponds to orbits"
-    print ( "   %6d and %6d." % ( np.array(kp['Orbit'])[0], 
+    print("The loaded insitu KP data set contains data between")
+    print("   %s and %s" % ( np.array(kp['TimeString'])[0], 
+                              np.array(kp['TimeString'])[-1]))
+    print("Equivalently, this corresponds to orbits")
+    print( "   %6d and %6d." % ( np.array(kp['Orbit'])[0], 
                                   np.array(kp['Orbit'])[-1]) )
 #
 #  Next, the case where IUVS data are provided
@@ -101,14 +101,14 @@ def param_range( kp, iuvs=None ):
                  'CORONA_E_HIGH','CORONA_E_LIMB','CORONA_E_DISK',
                  'APOAPSE','PERIAPSE','STELLAR_OCC']
     if kp.keys() in iuvs_tags:
-        print "The loaded IUVS KP data set contains data between orbits"
+        print("The loaded IUVS KP data set contains data between orbits")
         print ( "   %6d and %6d." % ( np.array(kp['Orbit'])[0], 
                                       np.array(kp['Orbit'])[-1] ) )
 #
 #  Finally, the case where both insitu and IUVS are provided
 #
     if iuvs is not None: 
-        print "The loaded IUVS KP data set contains data between orbits"
+        print("The loaded IUVS KP data set contains data between orbits")
         print ( "   %6d and %6d." 
                 % ( np.array(iuvs['Orbit'])[0], 
                     np.array(iuvs['Orbit'])[-1] ) )
@@ -116,11 +116,11 @@ def param_range( kp, iuvs=None ):
                                    np.nanmax([kp['Orbit']]) )
         if ( np.nanmax([iuvs['Orbit']]) < insitu_min or 
              np.nanmin([iuvs['Orbit']]) > insitu_max ): 
-            print "*** WARNING ***"
-            print "There is NO overlap between the supplied insitu and IUVS"
-            print "  data structures.  We cannot guarantee your safety "
-            print "  should you attempt to display these IUVS data against"
-            print "  these insitu-supplied emphemeris data."
+            print("*** WARNING ***")
+            print("There is NO overlap between the supplied insitu and IUVS")
+            print("  data structures.  We cannot guarantee your safety ")
+            print("  should you attempt to display these IUVS data against")
+            print("  these insitu-supplied emphemeris data.")
     return # No information to return
 
 #--------------------------------------------------------------------------
@@ -158,10 +158,6 @@ def range_select( kp, Time=None, Parameter=None,
 
     ToDo: compartmentalize the filtering and/or argument checks.
     '''
-
-    from divide_lib_test import insufficient_input_range_select
-    from divide_lib_test import find_param_from_index
-    from divide_lib_test import get_inst_obs_labels
     from datetime import datetime
     import numpy as np
 
@@ -171,7 +167,7 @@ def range_select( kp, Time=None, Parameter=None,
     # First, check the arguments
     if Time is None and Parameter is None:
         insufficient_input_range_select()
-        print 'Neither Time nor Parameter provided'
+        print('Neither Time nor Parameter provided')
         return kp
     elif Time is None:
         # Then only subset based on parameters
@@ -182,7 +178,7 @@ def range_select( kp, Time=None, Parameter=None,
         # First, verify that at least one bound exists
             if minimum is None and maximum is None:
                 insufficient_input_range_select()
-                print 'No bounds set for parameter: %s' % Parameter
+                print('No bounds set for parameter: %s' % Parameter)
                 return kp
             elif minimum is None:
             # Range only bounded above
@@ -204,11 +200,11 @@ def range_select( kp, Time=None, Parameter=None,
                 inst.append(a)
                 obs.append(b)
         else:
-            print '*****ERROR*****'
-            print 'Cannot identify given parameter: %s' % Parameter
-            print 'Suggest using param_list(kp) to identify Parameter'
-            print 'by index or by name'
-            print 'Returning complete original data dictionary'
+            print('*****ERROR*****')
+            print('Cannot identify given parameter: %s' % Parameter)
+            print('Suggest using param_list(kp) to identify Parameter')
+            print('by index or by name')
+            print('Returning complete original data dictionary')
             return kp
 #
 # Should I move this below the Time conditional and move 
@@ -219,33 +215,33 @@ def range_select( kp, Time=None, Parameter=None,
     # Determine whether Time is provided as strings or orbits
         if (len(Time) != 2):
             if Parameter is not None:
-                print '*****WARNING*****'
-                print 'Time must be provided as a two-element list'
-                print 'of either strings (yyyy-mm-ddThh:mm:ss) '
-                print 'or orbits.  Since a Parameter *was* provided,'
-                print 'I will filter on that, but ignore the time input.'
+                print('*****WARNING*****')
+                print('Time must be provided as a two-element list')
+                print('of either strings (yyyy-mm-ddThh:mm:ss) ')
+                print('or orbits.  Since a Parameter *was* provided,')
+                print('I will filter on that, but ignore the time input.')
             else:
             # Cannot proceed with filtering
                 insufficient_input_range_select()
-                print 'Time malformed (must be either a string of format'
-                print 'yyyy-mm-ddThh:mm:ss or integer orbit)'
-                print 'and no Parameter criterion given'
+                print('Time malformed must be either a string of format')
+                print('yyyy-mm-ddThh:mm:ss or integer orbit)')
+                print('and no Parameter criterion given')
         else:
         # We have a two-element Time list: parse it
             if type(Time[0]) is not type(Time[1]):
                 if Parameter is not None:
-                    print '*****WARNING*****'
-                    print 'Both elements of time must be same type'
-                    print 'Only strings of format yyyy-mm-ddThh:mm:ss'
-                    print 'or integers (orbit numbers) are allowed.'
-                    print 'Ignoring time inputs; will filter ONLY'
-                    print 'on Parameter inputs.'
+                    print('*****WARNING*****')
+                    print('Both elements of time must be same type')
+                    print('Only strings of format yyyy-mm-ddThh:mm:ss')
+                    print('or integers (orbit numbers) are allowed.')
+                    print('Ignoring time inputs; will filter ONLY')
+                    print('on Parameter inputs.')
                 else:
-                    print '*****ERROR*****'
-                    print 'Both elements of Time must be same type'
-                    print 'Only Strings of format yyyy-mm-ddThh:mm:ss'
-                    print 'or integers (orbit numbers) are allowed.'
-                    print 'Returning original unchanged data dictionary'
+                    print('*****ERROR*****')
+                    print('Both elements of Time must be same type')
+                    print('Only Strings of format yyyy-mm-ddThh:mm:ss')
+                    print('or integers (orbit numbers) are allowed.')
+                    print('Returning original unchanged data dictionary')
                     return kp
             elif type(Time[0]) is int:
             # Filter based on orbit number
@@ -270,18 +266,18 @@ def range_select( kp, Time=None, Parameter=None,
             else:
             # Time provided as other than string or Integer
                 if Parameter is not None:
-                    print '*****WARNING*****'
-                    print 'Both elements of time must be same type'
-                    print 'Only strings of format yyyy-mm-ddThh:mm:ss'
-                    print 'or integers (orbit numbers) are allowed.'
-                    print 'Ignoring time inputs; will filter ONLY'
-                    print 'on Parameter inputs.'
+                    print('*****WARNING*****')
+                    print('Both elements of time must be same type')
+                    print('Only strings of format yyyy-mm-ddThh:mm:ss')
+                    print('or integers (orbit numbers) are allowed.')
+                    print('Ignoring time inputs; will filter ONLY')
+                    print('on Parameter inputs.')
                 else:
-                    print '*****ERROR*****'
-                    print 'Both elements of Time must be same type'
-                    print 'Only Strings of format yyyy-mm-ddThh:mm:ss'
-                    print 'or integers (orbit numbers) are allowed.'
-                    print 'Returning original unchanged data dictionary'
+                    print('*****ERROR*****')
+                    print('Both elements of Time must be same type')
+                    print('Only Strings of format yyyy-mm-ddThh:mm:ss')
+                    print('or integers (orbit numbers) are allowed.')
+                    print('Returning original unchanged data dictionary')
                     return kp
             # Now, we apply the Parameter selection
             inst = []
@@ -291,8 +287,8 @@ def range_select( kp, Time=None, Parameter=None,
             # Verify that bounds info exists
                 if minimum is None and maximum is None:
                     insufficient_input_range_select()
-                    print 'No bounds set for parameter %s' % Parameter
-                    print 'Applying only Time filtering'
+                    print('No bounds set for parameter %s' % Parameter)
+                    print('Applying only Time filtering')
                     Parameter = None
                 elif minimum is None:
                     minimum = -np.Infinity # Unbounded below
@@ -307,14 +303,14 @@ def range_select( kp, Time=None, Parameter=None,
             elif type(Parameter) is list:
                 if ( len(Parameter) != len(minimum) or
                      len(Parameter) != len(maximum) ):
-                    print '*****ERROR*****'
-                    print '---range_select---'
-                    print 'Number of minima and maxima provided'
-                    print 'MUST match number of Parameters provided'
-                    print 'You provided %4d Parameters' % len(Parameter)
-                    print '             %4d minima' % len(minimum)
-                    print '         and %4d maxima' % len(maximum)
-                    print 'Filtering only on Time'
+                    print('*****ERROR*****')
+                    print('---range_select---')
+                    print('Number of minima and maxima provided')
+                    print('MUST match number of Parameters provided')
+                    print('You provided %4d Parameters' % len(Parameter))
+                    print('             %4d minima' % len(minimum))
+                    print('         and %4d maxima' % len(maximum))
+                    print('Filtering only on Time')
                     Parameter = None
                 else:
                     nparam = len(Parameter)
@@ -350,11 +346,11 @@ def insufficient_input_range_select():
 
     ToDo: Is there a way to hide this from the help feature?
     '''
-    print '*****ERROR*****'
-    print 'Either a time criterion with two values.'
-    print '  or a parameter name with maximum and/or'
-    print '  minimum values must be provided.'
-    print 'Returning the complete original data dictionary'
+    print('*****ERROR*****')
+    print('Either a time criterion with two values.')
+    print('  or a parameter name with maximum and/or')
+    print('  minimum values must be provided.')
+    print('Returning the complete original data dictionary')
 
 #--------------------------------------------------------------------------
 
@@ -401,7 +397,6 @@ def get_inst_obs_labels( kp, name ):
         obs (2nd arg): observation type identifier
     '''
 
-    from divide_lib_test import find_param_from_index as get_param
 
     # Need to ensure name is a string at this stage
     name = ('%s' % name)
@@ -413,19 +408,18 @@ def get_inst_obs_labels( kp, name ):
     elif len(tags)==1:
         try:
             int(tags[0])
-            print "Hello"
-            return (get_param(kp, tags[0])).split('.')
+            return (find_param_from_index(kp, tags[0])).split('.')
         except:
-            print '*****ERROR*****'
-            print '%s is an invalid parameter' % name
-            print 'If only one value is provided, it must be an integer'
+            print('*****ERROR*****')
+            print('%s is an invalid parameter' % name)
+            print('If only one value is provided, it must be an integer')
             return
     else:
-        print '*****ERROR*****'
-        print '%s is not a valid parameter' % name
-        print 'because it has %1d elements' % len(tags)
-        print 'Only 1 integer or string of form "a.b" are allowed.'
-        print 'Please use .param_list attribute to find valid parameters'
+        print('*****ERROR*****')
+        print('%s is not a valid parameter' % name)
+        print('because it has %1d elements' % len(tags))
+        print('Only 1 integer or string of form "a.b" are allowed.')
+        print('Please use .param_list attribute to find valid parameters')
         return
     
 def find_param_from_index( kp, index ):
@@ -440,7 +434,6 @@ def find_param_from_index( kp, index ):
         (e.g., LPW.EWAVE_LOW_FREQ)
     '''
 
-    from divide_lib_test import param_list
     import re
 
     index = '#%3d' % int(index)
@@ -450,9 +443,9 @@ def find_param_from_index( kp, index ):
         if re.search(index, i):
             return i[5:] # clip the '#123 ' string
     if not found:
-        print '*****ERROR*****'
-        print '%s not a valid index.' % index
-        print 'Use param_list to list options'
+        print('*****ERROR*****')
+        print('%s not a valid index.' % index)
+        print('Use param_list to list options')
         return
 
 def remove_inst_tag(df):
@@ -496,12 +489,12 @@ def get_latest_files_from_date_range(date1, date2):
         for f in os.listdir(full_path):
             if kp_regex.match(f).group('day') == day:
                 v = kp_regex.match(f).group('version')
-                if v > version:
+                if int(v) > int(version):
                     version = v
         for f in os.listdir(full_path):
             if kp_regex.match(f).group('day') == day and kp_regex.match(f).group('version') == version:
                 r = kp_regex.match(f).group('revision')
-                if r > revision:
+                if int(r) > int(revision):
                     revision = r
                     
         seq = ('mvn','kp','insitu',year+month+day,'v'+str(version),'r'+str(revision)+'.tab')
@@ -552,8 +545,8 @@ def get_header_info(filename):
                 elif iname == 6: unit = temp
                 elif iname == 7: FormatCode = temp
                 else: 
-                    print 'More lines in data descriptor than expected.'
-                    print 'Line %d' % iline
+                    print('More lines in data descriptor than expected.')
+                    print('Line %d' % iline)
                 iname = iname + 1
             else:
                 pass

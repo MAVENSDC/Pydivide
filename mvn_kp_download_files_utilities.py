@@ -5,44 +5,42 @@ pword = ''
 
 def get_filenames(query, public):
     import urllib
-    import urllib2
     
     public_url = 'https://lasp.colorado.edu/maven/sdc/public/files/api/v1/search/science/fn_metadata/file_names'+'?'+query
     private_url = 'https://lasp.colorado.edu/maven/sdc/service/files/api/v1/search/science/fn_metadata/file_names'+'?'+query
     
     if (public==False):
-       username = uname
-       password = pword
-       p = urllib2.HTTPPasswordMgrWithDefaultRealm()
-       p.add_password(None, private_url, username, password)
-       handler = urllib2.HTTPBasicAuthHandler(p)
-       opener = urllib2.build_opener(handler)
-       urllib2.install_opener(opener)
-       page=urllib2.urlopen(private_url)
+        username = uname
+        password = pword
+        p = urllib.request.HTTPPasswordMgrWithDefaultRealm()
+        p.add_password(None, private_url, username, password)
+        handler = urllib.request.HTTPBasicAuthHandler(p)
+        opener = urllib.request.build_opener(handler)
+        urllib.request.install_opener(opener)
+        page=urllib.request.urlopen(private_url)
     else:
-       page=urllib2.urlopen(public_url)
+        page=urllib.request.urlopen(public_url)
     
     return page.read()
 
 def get_file_from_site(filename, public, data_dir):
     import os
     import urllib
-    import urllib2
-    
+
     public_url = 'https://lasp.colorado.edu/maven/sdc/public/files/api/v1/search/science/fn_metadata/download'+'?file='+filename
     private_url = 'https://lasp.colorado.edu/maven/sdc/service/files/api/v1/search/science/fn_metadata/download'+'?file='+filename
     
     if (public==False):
         username = uname
         password = pword
-        p = urllib2.HTTPPasswordMgrWithDefaultRealm()
+        p = urllib.request.HTTPPasswordMgrWithDefaultRealm()
         p.add_password(None, private_url, username, password)
-        handler = urllib2.HTTPBasicAuthHandler(p)
-        opener = urllib2.build_opener(handler)
-        urllib2.install_opener(opener)
-        page = urllib2.urlopen(private_url)
+        handler = urllib.request.HTTPBasicAuthHandler(p)
+        opener = urllib.request.build_opener(handler)
+        urllib.request.install_opener(opener)
+        page = urllib.request.urlopen(private_url)
     else:
-        page = urllib2.urlopen(public_url)
+        page = urllib.request.urlopen(public_url)
         
     with open(os.path.join(data_dir,filename), "wb") as code:
             code.write(page.read())
@@ -52,19 +50,18 @@ def get_file_from_site(filename, public, data_dir):
 def get_orbit_files():
     import os
     import urllib
-    import urllib2
     import re 
     
     orbit_files_url = "http://naif.jpl.nasa.gov/pub/naif/MAVEN/kernels/spk/"
     pattern = 'maven_orb_rec(\.orb|.{17}\.orb)'
-    page = urllib2.urlopen(orbit_files_url)
+    page = urllib.request.urlopen(orbit_files_url)
     full_path=os.path.realpath(__file__)
     path, filename = os.path.split(full_path)
     orbit_files_path = os.path.join(path, "orbitfiles")
 
     for matching_pattern in re.findall(pattern, page.read()):
         filename = "maven_orb_rec"+matching_pattern
-        o_file = urllib2.urlopen(orbit_files_url+filename)
+        o_file = urllib.request.urlopen(orbit_files_url+filename)
         with open(os.path.join(orbit_files_path,filename), "wb") as code:
             code.write(o_file.read())
             
@@ -75,7 +72,6 @@ def get_orbit_files():
 def merge_orbit_files():
     import os
     import urllib
-    import urllib2
     import re 
     
     full_path=os.path.realpath(__file__)
@@ -130,12 +126,11 @@ def get_root_data_dir():
 
         
 def set_root_data_dir():
-    import tkFileDialog
-    import Tkinter
+    import tkinter
     import os 
     
-    root = Tkinter.Tk()
-    download_path = tkFileDialog.askdirectory()
+    root = tkinter.Tk()
+    download_path = tkinter.filedialog.askdirectory()
     root.destroy()
     
     #Put path into preferences file
@@ -199,7 +194,7 @@ def get_year_month_day_from_sci_file(f):
 
 def display_progress(x,y):
     num_stars=int(round(float(x)/y * 70))
-    print "||"+"*"*num_stars+"-"*(70-num_stars)+"||" + " ( "+ str(round(100*float(x)/y)) +"% )"
+    print("||"+"*"*num_stars+"-"*(70-num_stars)+"||" + " ( "+ str(round(100*float(x)/y)) +"% )")
     return
 
 def get_uname_and_password():
@@ -207,6 +202,6 @@ def get_uname_and_password():
     global pword
     import getpass
     
-    uname=raw_input("Enter user name to access the team website: ")
+    uname=input("Enter user name to access the team website: ")
     pword=getpass.getpass("Enter your password: ")
     return

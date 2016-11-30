@@ -22,15 +22,15 @@ def mvn_kp_bin(kp,
     #ERROR CHECKING
     #
     if parameter == None: 
-        print "Must provide an index (or name) for param to be plotted."
+        print("Must provide an index (or name) for param to be plotted.")
         return
     
     if bin_by == None: 
-        print "Must provide parameters to be binned by."
+        print("Must provide parameters to be binned by.")
         return
     
     if avg==False and std==False and median==False and density==False:
-        print "Must select array(s) to return (avg, std, median, density)."
+        print("Must select array(s) to return (avg, std, median, density).")
         return
     
     if not hasattr(binsizes, "__len__"):
@@ -90,7 +90,7 @@ def mvn_kp_bin(kp,
         for inst, obs in bin_by_inst_obs:
             min_temp = kp[inst][obs].min(skipna=True)
             if math.isnan(min_temp):
-                print "All " + obs + " data is NaN.  Cannot bin by this parameter."
+                print("All " + obs + " data is NaN.  Cannot bin by this parameter.")
                 return 
             mins.append(min_temp)
     if maxs == None:
@@ -100,8 +100,8 @@ def mvn_kp_bin(kp,
         
     for i in range(total_fields):
         if maxs[i]-mins[i] < 0:
-            print "ERROR: Minimum value of " + str(mins[i]) + " is greater than the maximum value of " + str(maxs[i])       
-            print "for bin-by parameter " + bin_by_inst_obs[i][1] + ".  Returning..."
+            print("ERROR: Minimum value of " + str(mins[i]) + " is greater than the maximum value of " + str(maxs[i])   )    
+            print("for bin-by parameter " + bin_by_inst_obs[i][1] + ".  Returning...")
             return
         ranges.append(maxs[i]-mins[i])
         total_bins.append(int(math.ceil(ranges[i]/binsizes[i])))
@@ -215,24 +215,24 @@ def mvn_kp_bin(kp,
     return_list = []
     if median:
         return_list.append(median_array)
-        print 'Returning binned Medians'
+        print('Returning binned Medians')
     if avg:
         return_list.append(average_array)
-        print 'Returning binned Averages'
+        print('Returning binned Averages')
     if std:
         return_list.append(std_array)
-        print 'Returning binned standard deviations'
+        print('Returning binned standard deviations')
     if density:
         return_list.append(density_array)
-        print 'Returning binned densities'
+        print('Returning binned densities')
     #
     #Print out a little cheat sheet so people know what is in the array they're getting
     #
-    print 'Now returning binned data'
+    print('Now returning binned data')
     dimension = 0
     for bin_by_inst, bin_by_obs in bin_by_inst_obs:
-        print 'Dimension ' + str(dimension) + ' is ' + bin_by_obs
-        print '    Range: ['+str(mins[dimension])+', '+str(mins[dimension] + binsizes[dimension])+', ... '+str(mins[dimension] + (binsizes[dimension]*(total_bins[dimension]-2)))+', '+str(mins[dimension] + (binsizes[dimension]*(total_bins[dimension]-1)))+']' 
+        print('Dimension ' + str(dimension) + ' is ' + bin_by_obs)
+        print('    Range: ['+str(mins[dimension])+', '+str(mins[dimension] + binsizes[dimension])+', ... '+str(mins[dimension] + (binsizes[dimension]*(total_bins[dimension]-2)))+', '+str(mins[dimension] + (binsizes[dimension]*(total_bins[dimension]-1)))+']') 
         dimension = dimension+1
     
     

@@ -10,13 +10,13 @@ def mvn_kp_resample(kp, time, sc_only=False):
     end_time = time[new_total-1]
     
     if start_time < kp['Time'][0]:
-        print 'The requested start time is before the earliest data point in the input data structure.'
-        print 'This routine DOES NOT extrapolate. Please read in more KP data that covers the requested time span.'
+        print('The requested start time is before the earliest data point in the input data structure.')
+        print('This routine DOES NOT extrapolate. Please read in more KP data that covers the requested time span.')
         return
     
     if end_time > kp['Time'][len(kp['Time'])-1]:
-        print 'The requested end time is after the latest data point in the input data structure.'
-        print 'This routine DOES NOT extrapolate. Please read in more KP data that covers the requested time span.'
+        print('The requested end time is after the latest data point in the input data structure.')
+        print('This routine DOES NOT extrapolate. Please read in more KP data that covers the requested time span.')
         return
     
     #

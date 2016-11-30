@@ -42,10 +42,10 @@ def mvn_kp_download_files(filenames=None,
 
     if (filenames != None):
         if (insitu == True) and (iuvs == True):
-            print "Can't request both INSITU and IUVS in one query."
+            print("Can't request both INSITU and IUVS in one query.")
             return
         if not ((insitu == True) or (iuvs == True)):
-            print "If not specifying filename(s) to download, Must specify either insitu=True or iuvs=True."
+            print("If not specifying filename(s) to download, Must specify either insitu=True or iuvs=True.")
             return
     
     instrument='kp'
@@ -76,21 +76,21 @@ def mvn_kp_download_files(filenames=None,
     s = utils.get_filenames(query, public)
     
     if (len(s)==0):
-        print "No files found."
+        print("No files found.")
         return
     
     s = s.split(',')
     
     if (list_files==True):
         for f in s:
-            print f
+           print(f)
         return
     
     if (new_files==True):
         s = utils.get_new_files(s, data_dir, instrument, level)
         
     if (len(s)==0):
-        print "No files found."
+        print("No files found.")
         return
     
     if (insitu==True):
@@ -105,27 +105,27 @@ def mvn_kp_download_files(filenames=None,
             estimated_size=len(s) * .684
             
     if not unittest:
-        print "Your request will download a total of: "+str(len(s))+" files with an approx total size of: "+str(estimated_size)+" MBs."
-        print 'Would you like to procede with the download: '
+        print("Your request will download a total of: "+str(len(s))+" files with an approx total size of: "+str(estimated_size)+" MBs.")
+        print('Would you like to procede with the download: ')
         valid_response=False
         while(valid_response==False):
-            response = (raw_input('(y/n) >'))
+            response = (input('(y/n) >'))
             if response=='y' or response=='Y':
                 valid_response=True
             elif response=='n' or response=='N':
-                print 'Cancelled download. Returning...'
+                print('Cancelled download. Returning...')
                 valid_response=True
                 return
             else:
-                print 'Invalid input.  Please answer with y or n.'
+                print('Invalid input.  Please answer with y or n.')
         
         
-    print "Before downloading data files, checking for updated KP templates from the SDC"
-    print "Not yet implemented, do we even need templates?"
+    print("Before downloading data files, checking for updated KP templates from the SDC")
+    print("Not yet implemented, do we even need templates?")
     
     if exclude_orbit_file == False:
-        print "Before downloading data files, checking for updated orbit # file from naif.jpl.nasa.gov"
-        print ""
+        print("Before downloading data files, checking for updated orbit # file from naif.jpl.nasa.gov")
+        print("")
         utils.get_orbit_files()
     
     i=0

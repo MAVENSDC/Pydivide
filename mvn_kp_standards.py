@@ -62,32 +62,32 @@ def mvn_kp_standards(kp,
     
     
     if (list == True):
-        print "all: Generate all 25 plots"
-        print "euv: EUV irradiance in each of three bands"
-        print "mag_mso: Magnetic field, MSO coordinates"
-        print "mag_geo: Magnetic field, Geographic coordinates"
-        print "mag_cone: Magnetic clock and cone angles, MSO coordinates"
-        print "mag_dir: Magnetic field: radial, horizontal, northward, and eastward components"
-        print "ngims_neutral: Neutral atmospheric component densities"
-        print "ngims_ions: Ionized atmospheric component densities"
-        print "eph_angle: Spacecraft ephemeris information"
-        print "eph_geo: Spacecraft position in geographic coordinates"
-        print "eph_mso: Spacecraft position in MSO coordinates"
-        print "swea: electron parallel/anti-parallel fluxes"
-        print "sep_ion: Ion Energy fluxes"
-        print "sep_electron: Electron Energy fluxes"
-        print "wave: Electric field wave power"
-        print "plasma_den: Plasma densities"
-        print "plasma_temp: Plasma Temperatures"
-        print "swia_h_vel: H+ Flow velocity in MSO coordinates from SWIA"
-        print "static_h_vel: H+ flow velocity in MSO coordinates from STATIC"
-        print "static_o2_vel: O2+ flow velocity in MSO coords from STATIC"
-        print "static_flux: H+/He++ and Pick-up Ion omni-directional fluxes"
-        print "static_energy: H+/He++ and Pick-up Ion characteristic energies"
-        print "sun_bar: Indication of whether MAVEn is in sunlight"
-        print "solar_wind: solar wind dynamic pressure"
-        print "ionosphere: Electron Spectrum shape parameter"
-        print "sc_pot: Spacecraft potential"
+        print("all: Generate all 25 plots")
+        print("euv: EUV irradiance in each of three bands")
+        print("mag_mso: Magnetic field, MSO coordinates")
+        print("mag_geo: Magnetic field, Geographic coordinates")
+        print("mag_cone: Magnetic clock and cone angles, MSO coordinates")
+        print("mag_dir: Magnetic field: radial, horizontal, northward, and eastward components")
+        print("ngims_neutral: Neutral atmospheric component densities")
+        print("ngims_ions: Ionized atmospheric component densities")
+        print("eph_angle: Spacecraft ephemeris information")
+        print("eph_geo: Spacecraft position in geographic coordinates")
+        print("eph_mso: Spacecraft position in MSO coordinates")
+        print("swea: electron parallel/anti-parallel fluxes")
+        print("sep_ion: Ion Energy fluxes")
+        print("sep_electron: Electron Energy fluxes")
+        print("wave: Electric field wave power")
+        print("plasma_den: Plasma densities")
+        print("plasma_temp: Plasma Temperatures")
+        print("swia_h_vel: H+ Flow velocity in MSO coordinates from SWIA")
+        print("static_h_vel: H+ flow velocity in MSO coordinates from STATIC")
+        print("static_o2_vel: O2+ flow velocity in MSO coords from STATIC")
+        print("static_flux: H+/He++ and Pick-up Ion omni-directional fluxes")
+        print("static_energy: H+/He++ and Pick-up Ion characteristic energies")
+        print("sun_bar: Indication of whether MAVEn is in sunlight")
+        print("solar_wind: solar wind dynamic pressure")
+        print("ionosphere: Electron Spectrum shape parameter")
+        print("sc_pot: Spacecraft potential")
         return 
     
     # Set up the plots to be underneath each other
@@ -99,7 +99,7 @@ def mvn_kp_standards(kp,
                         solar_wind, ionosphere, sc_pot])
     
     if (max_num_plots == 0):
-        print "Please specify a plot to generate."
+        print("Please specify a plot to generate.")
         return
 
     fig = plt.figure()
@@ -127,7 +127,7 @@ def mvn_kp_standards(kp,
             
         except Exception as x:
             if str(x) == "NoDataException":
-                print "EUV is not in the Key Parameter Data Structure, " + title + " will not be plotted"
+                print("EUV is not in the Key Parameter Data Structure, " + title + " will not be plotted")
         
     if mag_mso:
         title = "MAG MSO"
@@ -141,7 +141,7 @@ def mvn_kp_standards(kp,
             current_plot_number = current_plot_number + 1
         except Exception as x:
             if str(x) == "NoDataException":
-                print "MAG is not in the Key Parameter Data Structure, " + title + " will not be plotted"
+                print("MAG is not in the Key Parameter Data Structure, " + title + " will not be plotted")
 
     if mag_geo:
         title = "MAG GEO"
@@ -154,7 +154,7 @@ def mvn_kp_standards(kp,
             current_plot_number = current_plot_number + 1
         except Exception as x:
             if str(x) == "NoDataException":
-                print "MAG is not in the Key Parameter Data Structure, " + title + " will not be plotted"
+                print("MAG is not in the Key Parameter Data Structure, " + title + " will not be plotted")
         
     if mag_cone:
         title = "MAG Cone"
@@ -169,7 +169,7 @@ def mvn_kp_standards(kp,
             current_plot_number = current_plot_number + 1
         except Exception as x:
             if str(x) == "NoDataException":
-                print "MAG is not in the Key Parameter Data Structure, " + title + " will not be plotted"
+                print("MAG is not in the Key Parameter Data Structure, " + title + " will not be plotted")
         
     if mag_dir:
         title = "MAG Direction"
@@ -189,7 +189,7 @@ def mvn_kp_standards(kp,
             current_plot_number = current_plot_number + 1
         except Exception as x:
             if str(x) == "NoDataException":
-                print "MAG is not in the Key Parameter Data Structure, " + title + " will not be plotted"
+                print("MAG is not in the Key Parameter Data Structure, " + title + " will not be plotted")
     
     if ngims_neutral:
         title = "NGIMS Neutrals"
@@ -200,7 +200,7 @@ def mvn_kp_standards(kp,
             current_plot_number = current_plot_number + 1
         except Exception as x:
             if str(x) == "NoDataException":
-                print "NGIMS is not in the Key Parameter Data Structure, " + title + " will not be plotted"
+                print("NGIMS is not in the Key Parameter Data Structure, " + title + " will not be plotted")
         
     if ngims_ions:
         title = "NGIMS IONS"
@@ -211,7 +211,7 @@ def mvn_kp_standards(kp,
             current_plot_number = current_plot_number + 1
         except Exception as x:
             if str(x) == "NoDataException":
-                print "NGIMS is not in the Key Parameter Data Structure, " + title + " will not be plotted"
+                print("NGIMS is not in the Key Parameter Data Structure, " + title + " will not be plotted")
         
     if eph_angle:
         title = "Spacecraft Ephemeris Information"
@@ -223,7 +223,7 @@ def mvn_kp_standards(kp,
             current_plot_number = current_plot_number + 1
         except Exception as x:
             if str(x) == "NoDataException":
-                print "SPACECRAFT is not in the Key Parameter Data Structure, " + title + " will not be plotted"
+                print("SPACECRAFT is not in the Key Parameter Data Structure, " + title + " will not be plotted")
         
     if eph_geo:
         title = "Spacecraft positon in GEO Coordinates"
@@ -234,7 +234,7 @@ def mvn_kp_standards(kp,
             current_plot_number = current_plot_number + 1
         except Exception as x:
             if str(x) == "NoDataException":
-                print "SPACECRAFT is not in the Key Parameter Data Structure, " + title + " will not be plotted"
+                print("SPACECRAFT is not in the Key Parameter Data Structure, " + title + " will not be plotted")
         
     if eph_mso:
         title = "Spacecraft positon in MSO Coordinates"
@@ -245,7 +245,7 @@ def mvn_kp_standards(kp,
             current_plot_number = current_plot_number + 1
         except Exception as x:
             if str(x) == "NoDataException":
-                print "LPW is not in the Key Parameter Data Structure, " + title + " will not be plotted"
+                print("LPW is not in the Key Parameter Data Structure, " + title + " will not be plotted")
         
     if swea:
         title = "SWEA"
@@ -256,7 +256,7 @@ def mvn_kp_standards(kp,
             current_plot_number = current_plot_number + 1
         except Exception as x:
             if str(x) == "NoDataException":
-                print "SWEA is not in the Key Parameter Data Structure, " + title + " will not be plotted"
+                print("SWEA is not in the Key Parameter Data Structure, " + title + " will not be plotted")
         
     if sep_ion:
         title = "SEP Ions"
@@ -270,7 +270,7 @@ def mvn_kp_standards(kp,
             current_plot_number = current_plot_number + 1
         except Exception as x:
             if str(x) == "NoDataException":
-                print "SEP is not in the Key Parameter Data Structure, " + title + " will not be plotted"
+                print("SEP is not in the Key Parameter Data Structure, " + title + " will not be plotted")
         
     if sep_electron:
         title = "SEP Electrons"
@@ -283,7 +283,7 @@ def mvn_kp_standards(kp,
             current_plot_number = current_plot_number + 1
         except Exception as x:
             if str(x) == "NoDataException":
-                print "SEP is not in the Key Parameter Data Structure, " + title + " will not be plotted"
+                print("SEP is not in the Key Parameter Data Structure, " + title + " will not be plotted")
         
     if wave:
         title = "E-Field"
@@ -299,7 +299,7 @@ def mvn_kp_standards(kp,
             
             for KP in wave_dataframe.columns.values:
                 if (len(wave_dataframe[KP][wave_dataframe[KP].apply(math.isnan)]) == len(wave_dataframe[KP])):
-                    print KP + " has no finite values and will not be plotted."
+                    print(KP + " has no finite values and will not be plotted.")
                     wave_dataframe = wave_dataframe.drop(KP, 1)
             
             
@@ -308,7 +308,7 @@ def mvn_kp_standards(kp,
         
         except Exception as x:
             if str(x) == "NoDataException":
-                print "LPW is not in the Key Parameter Data Structure, " + title + " will not be plotted"
+                print("LPW is not in the Key Parameter Data Structure, " + title + " will not be plotted")
         
     if plasma_den:
         title = "Plasma Density"
@@ -325,14 +325,14 @@ def mvn_kp_standards(kp,
             
             for KP in plasma_den_dataframe.columns.values:
                 if (len(plasma_den_dataframe[KP][plasma_den_dataframe[KP].apply(math.isnan)]) == len(plasma_den_dataframe[KP])):
-                    print KP + " has no finite values and will not be plotted."
+                    print(KP + " has no finite values and will not be plotted.")
                     plasma_den_dataframe = plasma_den_dataframe.drop(KP, 1)
             
             plasma_den_dataframe.plot(kind='line', use_index=True, logy=True, ax = plot_array[current_plot_number], title=title)
             current_plot_number = current_plot_number + 1
         except Exception as x:
             if str(x) == "NoDataException":
-                print "One or all of SWIA/STATIC/LPW/SWEA are not in the Key Parameter Data Structure, " + title + " will not be plotted"
+                print("One or all of SWIA/STATIC/LPW/SWEA are not in the Key Parameter Data Structure, " + title + " will not be plotted")
          
     if plasma_temp:
         title = "Plasma Temperature"
@@ -349,14 +349,14 @@ def mvn_kp_standards(kp,
             
             for KP in plasma_temp_dataframe.columns.values:
                 if (len(plasma_temp_dataframe[KP][plasma_temp_dataframe[KP].apply(math.isnan)]) == len(plasma_temp_dataframe[KP])):
-                    print KP + " has no finite values and will not be plotted."
+                    print(KP + " has no finite values and will not be plotted.")
                     plasma_temp_dataframe = plasma_temp_dataframe.drop(KP, 1)
             
             plasma_temp_dataframe.plot(kind='line', use_index=True, logy=True, ax = plot_array[current_plot_number], title=title)
             current_plot_number = current_plot_number + 1
         except Exception as x:
             if str(x) == "NoDataException":
-                print "One or all of SWIA/STATIC/LPW/SWEA are not in the Key Parameter Data Structure, " + title + " will not be plotted"
+                print("One or all of SWIA/STATIC/LPW/SWEA are not in the Key Parameter Data Structure, " + title + " will not be plotted")
         
     if swia_h_vel:
         title = "SWIA H+ Velocity"
@@ -369,7 +369,7 @@ def mvn_kp_standards(kp,
             current_plot_number = current_plot_number + 1
         except Exception as x:
             if str(x) == "NoDataException":
-                print "SWIA is not in the Key Parameter Data Structure, " + title + " will not be plotted"
+                print("SWIA is not in the Key Parameter Data Structure, " + title + " will not be plotted")
         
     if static_h_vel:
         title = "STATIC H+ Velocity"
@@ -384,7 +384,7 @@ def mvn_kp_standards(kp,
             current_plot_number = current_plot_number + 1
         except Exception as x:
             if str(x) == "NoDataException":
-                print "STATIC is not in the Key Parameter Data Structure, " + title + " will not be plotted"
+                print("STATIC is not in the Key Parameter Data Structure, " + title + " will not be plotted")
         
     if static_o2_vel:  
         title = "STATIC O2+ Velocity"
@@ -397,7 +397,7 @@ def mvn_kp_standards(kp,
             current_plot_number = current_plot_number + 1
         except Exception as x:
             if str(x) == "NoDataException":
-                print "STATIC is not in the Key Parameter Data Structure, " + title + " will not be plotted"
+                print("STATIC is not in the Key Parameter Data Structure, " + title + " will not be plotted")
         
     if static_flux:
         title = "STATIC Flux"
@@ -416,7 +416,7 @@ def mvn_kp_standards(kp,
             current_plot_number = current_plot_number + 1
         except Exception as x:
             if str(x) == "NoDataException":
-                print "STATIC is not in the Key Parameter Data Structure, " + title + " will not be plotted"
+                print("STATIC is not in the Key Parameter Data Structure, " + title + " will not be plotted")
         
     if static_energy:
         title = "STATIC Characteristic Energies"
@@ -427,7 +427,7 @@ def mvn_kp_standards(kp,
             current_plot_number = current_plot_number + 1
         except Exception as x:
             if str(x) == "NoDataException":
-                print "STATIC is not in the Key Parameter Data Structure, " + title + " will not be plotted"
+                print("STATIC is not in the Key Parameter Data Structure, " + title + " will not be plotted")
         
     if sun_bar:
         title = "Sunbar"
@@ -457,7 +457,7 @@ def mvn_kp_standards(kp,
             current_plot_number = current_plot_number + 1
         except Exception as x:
             if str(x) == "NoDataException":
-                print "SPACECRAFT is not in the Key Parameter Data Structure, " + title + " will not be plotted"
+                print("SPACECRAFT is not in the Key Parameter Data Structure, " + title + " will not be plotted")
         
     if solar_wind:
         title = "Solar Wind"
@@ -469,7 +469,7 @@ def mvn_kp_standards(kp,
             solar_wind_dataframe = kp['SWIA'].loc[:,['Solar Wind Dynamic Pressure']]
             for KP in solar_wind_dataframe.columns.values:
                 if (len(solar_wind_dataframe[KP][solar_wind_dataframe[KP].apply(math.isnan)]) == len(solar_wind_dataframe[KP])):
-                    print KP + " has no finite values and will not be plotted."
+                    print(KP + " has no finite values and will not be plotted.")
                     solar_wind_dataframe = solar_wind_dataframe.drop(KP, 1)
             
             
@@ -477,7 +477,7 @@ def mvn_kp_standards(kp,
             current_plot_number = current_plot_number + 1
         except Exception as x:
             if str(x) == "NoDataException":
-                print "SWIA is not in the Key Parameter Data Structure, " + title + " will not be plotted"
+                print("SWIA is not in the Key Parameter Data Structure, " + title + " will not be plotted")
         
     if ionosphere:
         title = "Ionosphere"
@@ -492,7 +492,7 @@ def mvn_kp_standards(kp,
             
             
             if (len(ionosphere_dataframe['Electron Spectrum Shape'][ionosphere_dataframe['Electron Spectrum Shape'].apply(float).apply(math.isnan)]) == len(ionosphere_dataframe['Electron Spectrum Shape'])):
-                print "Electron Spectrum Shape" + " has no finite values and will not be plotted."
+                print("Electron Spectrum Shape" + " has no finite values and will not be plotted.")
                 ionosphere_dataframe = ionosphere_dataframe.drop(KP, 1)
             
             
@@ -500,7 +500,7 @@ def mvn_kp_standards(kp,
             current_plot_number = current_plot_number + 1
         except Exception as x:
             if str(x) == "NoDataException":
-                print "SWEA is not in the Key Parameter Data Structure, " + title + " will not be plotted"
+                print("SWEA is not in the Key Parameter Data Structure, " + title + " will not be plotted")
         
     if sc_pot:
         title = "Spacecraft Potential"
@@ -511,7 +511,7 @@ def mvn_kp_standards(kp,
             current_plot_number = current_plot_number + 1
         except Exception as x:
             if str(x) == "NoDataException":
-                print "LPW is not in the Key Parameter Data Structure, " + title + " will not be plotted"
+                print("LPW is not in the Key Parameter Data Structure, " + title + " will not be plotted")
     
     #Adjust the legends to appear on the right side
     for i in range(max_num_plots):

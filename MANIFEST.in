@@ -1,0 +1,5 @@
+include README.rst
+include docs/*.html
+include docs/*.txt
+include orbitfiles/*.txt
+include basemaps/*.jpg

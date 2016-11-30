@@ -49,7 +49,7 @@ def mvn_kp_alt_plot( kp, parameter=None, time=None, errors=None,
 
     # Check existence of parameter
     if parameter == None: 
-        print "Must provide an index (or name) for param to be plotted."
+        print("Must provide an index (or name) for param to be plotted.")
         return
     # Store instrument and observation of parameter(s) in lists
     inst = []
