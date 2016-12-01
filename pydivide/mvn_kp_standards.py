@@ -1,6 +1,7 @@
 import math
 from matplotlib import pyplot as plt
 from matplotlib.font_manager import FontProperties
+import pytplot
 
 def mvn_kp_standards(kp, 
                      list_plots=False,
@@ -116,13 +117,18 @@ def mvn_kp_standards(kp,
     
     #The number plot we're plotting in the figure
     current_plot_number = 0
-
+    names_to_plot=[]
     if euv:
         title = "EUV"
         try:
             if 'EUV' not in kp.keys():
                 raise Exception("NoDataException")
-            kp['EUV'].loc[:,['EUV Irradiance Lyman-alpha','EUV Irradiance 17-22 nm', 'EUV Irradiance 0.1-7.0 nm']].plot(kind='line', use_index=True, ax = plot_array[current_plot_number], title=title)
+            euv_dataframe = kp['EUV'].loc[:,['EUV Irradiance Lyman-alpha','EUV Irradiance 17-22 nm', 'EUV Irradiance 0.1-7.0 nm']]
+            euv_dataframe.plot(kind='line', use_index=True, ax = plot_array[current_plot_number], title=title)
+            pytplot.store_data('EUV', data={'x':kp['Time'], 'y':euv_dataframe})
+            pytplot.options('EUV','legend_names',['EUV Irradiance Lyman-alpha','EUV Irradiance 17-22 nm', 'EUV Irradiance 0.1-7.0 nm'])
+            names_to_plot.append('EUV')
+            current_plot_number = current_plot_number + 1
             current_plot_number = current_plot_number + 1
             
         except Exception as x:
@@ -138,6 +144,9 @@ def mvn_kp_standards(kp,
             mag_mso_dataframe = kp['MAG'].loc[:,['Magnetic Field MSO X','Magnetic Field MSO Y', 'Magnetic Field MSO Z']]
             mag_mso_dataframe['Magnetic Field Magnitude MSO'] = ((kp['MAG']['Magnetic Field MSO X']*kp['MAG']['Magnetic Field MSO X']) + (kp['MAG']['Magnetic Field MSO Y']*kp['MAG']['Magnetic Field MSO Y']) + (kp['MAG']['Magnetic Field MSO Z']*kp['MAG']['Magnetic Field MSO Z'])).apply(math.sqrt)
             mag_mso_dataframe.plot(kind='line', use_index=True, ax = plot_array[current_plot_number], title=title)
+            pytplot.store_data('MAG MSO', data={'x':kp['Time'], 'y':mag_mso_dataframe})
+            pytplot.options('MAG MSO','legend_names',['Magnetic Field MSO X','Magnetic Field MSO Y', 'Magnetic Field MSO Z', 'Magnetic Field Magnitude MSO'])
+            names_to_plot.append('MAG MSO')
             current_plot_number = current_plot_number + 1
         except Exception as x:
             if str(x) == "NoDataException":
@@ -151,6 +160,9 @@ def mvn_kp_standards(kp,
             mag_geo_dataframe = kp['MAG'].loc[:,['Magnetic Field GEO X','Magnetic Field GEO Y', 'Magnetic Field GEO Z']]
             mag_geo_dataframe['Magnetic Field Magnitude GEO'] = ((kp['MAG']['Magnetic Field GEO X']*kp['MAG']['Magnetic Field GEO X']) + (kp['MAG']['Magnetic Field GEO Y']*kp['MAG']['Magnetic Field GEO Y']) + (kp['MAG']['Magnetic Field GEO Z']*kp['MAG']['Magnetic Field GEO Z'])).apply(math.sqrt)
             mag_geo_dataframe.plot(kind='line', use_index=True, ax = plot_array[current_plot_number], title=title)
+            pytplot.store_data('MAG GEO', data={'x':kp['Time'], 'y':mag_geo_dataframe})
+            pytplot.options('MAG GEO','legend_names',['Magnetic Field GEO X','Magnetic Field GEO Y', 'Magnetic Field GEO Z', 'Magnetic Field Magnitude GEO'])
+            names_to_plot.append('MAG GEO')
             current_plot_number = current_plot_number + 1
         except Exception as x:
             if str(x) == "NoDataException":
@@ -162,10 +174,14 @@ def mvn_kp_standards(kp,
             if 'MAG' not in kp.keys():
                 raise Exception("NoDataException")
             #Note, this plot ends up different from the IDL version, because of the way IDL calculates arctans.  Important, or not?
-            mag_cone_dataframe = kp['MAG'].loc[:,['Magnetic Field MSO X','Magnetic Field MSO Y', 'Magnetic Field MSO Z']]
-            mag_cone_dataframe['Clock Angle'] = (mag_cone_dataframe['Magnetic Field MSO X'] / mag_cone_dataframe['Magnetic Field MSO Y']).apply(math.atan) * 57.295776
-            mag_cone_dataframe['Cone Angle'] = ((mag_cone_dataframe['Magnetic Field MSO X'].apply(abs)) / (((kp['MAG']['Magnetic Field MSO X']*kp['MAG']['Magnetic Field MSO X']) + (kp['MAG']['Magnetic Field MSO Y']*kp['MAG']['Magnetic Field MSO Y']) + (kp['MAG']['Magnetic Field MSO Z']*kp['MAG']['Magnetic Field MSO Z'])).apply(math.sqrt))).apply(math.acos) * 57.295776
-            mag_cone_dataframe.loc[:,['Clock Angle','Cone Angle']].plot(kind='line', use_index=True, ax = plot_array[current_plot_number], title=title)
+            mag_cone_dataframe_temp = kp['MAG'].loc[:,['Magnetic Field MSO X','Magnetic Field MSO Y', 'Magnetic Field MSO Z']]
+            mag_cone_dataframe_temp['Clock Angle'] = (mag_cone_dataframe_temp['Magnetic Field MSO X'] / mag_cone_dataframe_temp['Magnetic Field MSO Y']).apply(math.atan) * 57.295776
+            mag_cone_dataframe_temp['Cone Angle'] = ((mag_cone_dataframe_temp['Magnetic Field MSO X'].apply(abs)) / (((kp['MAG']['Magnetic Field MSO X']*kp['MAG']['Magnetic Field MSO X']) + (kp['MAG']['Magnetic Field MSO Y']*kp['MAG']['Magnetic Field MSO Y']) + (kp['MAG']['Magnetic Field MSO Z']*kp['MAG']['Magnetic Field MSO Z'])).apply(math.sqrt))).apply(math.acos) * 57.295776
+            mag_cone_dataframe = mag_cone_dataframe_temp.loc[:,['Clock Angle','Cone Angle']]
+            mag_cone_dataframe.plot(kind='line', use_index=True, ax = plot_array[current_plot_number], title=title)
+            pytplot.store_data('MAG Cone', data={'x':kp['Time'], 'y':mag_cone_dataframe})
+            pytplot.options('MAG Cone','legend_names',['Magnetic Clock Angle','Magnetic Cone Angle'])
+            names_to_plot.append('MAG Cone')
             current_plot_number = current_plot_number + 1
         except Exception as x:
             if str(x) == "NoDataException":
@@ -186,6 +202,9 @@ def mvn_kp_standards(kp,
             mag_dir_dataframe['Eastward'] = (kp['MAG']['Magnetic Field GEO X'] * slon * -1) + (kp['MAG']['Magnetic Field GEO Y'] * clon)
             mag_dir_dataframe['Northward'] = (kp['MAG']['Magnetic Field GEO X'] * clon * slat * -1) + (kp['MAG']['Magnetic Field GEO Y'] * slon * slat * -1) + (kp['MAG']['Magnetic Field GEO Z'] * clat)
             mag_dir_dataframe.plot(kind='line', use_index=True, ax = plot_array[current_plot_number], title=title)
+            pytplot.store_data('MAG Direction', data={'x':kp['Time'], 'y':mag_dir_dataframe})
+            pytplot.options('MAG Direction','legend_names',['Radial','Eastward','Northward'])
+            names_to_plot.append('MAG Direction')
             current_plot_number = current_plot_number + 1
         except Exception as x:
             if str(x) == "NoDataException":
@@ -517,4 +536,6 @@ def mvn_kp_standards(kp,
     for i in range(max_num_plots):
         plot_array[i].legend(loc='center left', bbox_to_anchor=(1, 0.5), prop=fontP)
     #Show the plot
+    pytplot.tplot_options('wsize', [1000,200*(current_plot_number)])
+    pytplot.tplot(names_to_plot)
     plt.show()
