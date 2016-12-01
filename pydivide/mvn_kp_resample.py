@@ -142,7 +142,7 @@ def mvn_kp_resample(kp, time, sc_only=False):
                     #Note: Looking through all of these is REALLY SLOW
                     #Without hard coding the observation names that are strings, 
                     #is there a way to make t his faster?
-                    if isinstance(kp[inst_names[i]][obs][j], basestring):
+                    if isinstance(kp[inst_names[i]][obs][j], str):
                         column_is_string = True
                         break
                     if isinstance(kp[inst_names[i]][obs][j], float) and np.isfinite(kp[inst_names[i]][obs][j]):

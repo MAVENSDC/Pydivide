@@ -4,7 +4,7 @@
 #
 ###############################################################################
 
-import mvn_kp_download_files_utilities as utils
+from . import mvn_kp_download_files_utilities as utils
 
 def mvn_kp_download_files(filenames=None, 
                           list_files=False, 

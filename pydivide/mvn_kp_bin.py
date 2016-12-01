@@ -1,8 +1,7 @@
-from mvn_kp_utilities import get_inst_obs_labels
-from mvn_kp_utilities import initialize_list
-from mvn_kp_utilities import place_values_in_list
-from mvn_kp_utilities import get_values_from_list
-import scipy 
+from .mvn_kp_utilities import get_inst_obs_labels
+from .mvn_kp_utilities import initialize_list
+from .mvn_kp_utilities import place_values_in_list
+from .mvn_kp_utilities import get_values_from_list
 from scipy import stats
 import math
 import numpy

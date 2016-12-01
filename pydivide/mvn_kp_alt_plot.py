@@ -1,12 +1,12 @@
-from mvn_kp_utilities import param_list_sav
-from mvn_kp_utilities import param_list
-from mvn_kp_utilities import param_range
-from mvn_kp_utilities import range_select
-from mvn_kp_utilities import insufficient_input_range_select
-from mvn_kp_utilities import make_time_labels
-from mvn_kp_utilities import get_inst_obs_labels
-from mvn_kp_utilities import find_param_from_index
-from mvn_kp_utilities import remove_inst_tag
+from .mvn_kp_utilities import param_list_sav
+from .mvn_kp_utilities import param_list
+from .mvn_kp_utilities import param_range
+from .mvn_kp_utilities import range_select
+from .mvn_kp_utilities import insufficient_input_range_select
+from .mvn_kp_utilities import make_time_labels
+from .mvn_kp_utilities import get_inst_obs_labels
+from .mvn_kp_utilities import find_param_from_index
+from .mvn_kp_utilities import remove_inst_tag
 
 def mvn_kp_alt_plot( kp, parameter=None, time=None, errors=None, 
               SamePlot=True, SubPlot=False, **kwargs ):
@@ -45,7 +45,7 @@ def mvn_kp_alt_plot( kp, parameter=None, time=None, errors=None,
     import matplotlib.pyplot as plt
     import numpy as np
     from datetime import datetime
-    from divide_lib_test import range_select
+    from .mvn_kp_utilities import range_select
 
     # Check existence of parameter
     if parameter == None: 

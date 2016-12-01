@@ -1,6 +1,6 @@
 import re
 import os
-import mvn_kp_download_files_utilities as utils
+from . import mvn_kp_download_files_utilities as utils
 
 def param_list_sav( kp ):
     '''
