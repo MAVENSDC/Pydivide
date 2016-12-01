@@ -1,10 +1,10 @@
 ##########
-pytplot
+pydivide
 ##########
 
-Pytplot is a python package which aims to mimic the functionality of the IDL "tplot" libraries.  The primary routine (tplot) generates HTML files for the specified plots, and automatically opens the files in a browser tab.   These files have several user interaction tools built in, such as zooming and panning.   
+Pydivide is a python package which allows the user to quickly plot MAVEN key parameter data.  This toolkit uses the "pytplot" library.     
 
-Pytplot can be used in python scripts, or interactively through IPython and the Jupyter notebook.  
+Pydivide can be used in python scripts, or interactively through IPython and the Jupyter notebook.  
 
 Install Python
 =============
@@ -15,7 +15,7 @@ It is recommended that you install `Anaconda <https://www.continuum.io/downloads
 
 You could also install python directly from `python.org <https://www.python.org/download/>`_.
 
-Install pytplot
+Install pydivide
 =============
 
 Open up a terminal, and type::
