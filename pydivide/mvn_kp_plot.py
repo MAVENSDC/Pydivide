@@ -85,8 +85,10 @@ def mvn_kp_plot( kp, parameter=None, time=None, errors=None,
         pytplot.options(pytplot_name, 'legend_names', legend_names)
         pytplot.tplot_options('wsize', [1000,300])
         pytplot.tplot(pytplot_name)
+        pytplot.del_data(pytplot_name)
     else:
         pytplot.tplot_options('wsize', [1000,300*(iplot-1)])
         pytplot.tplot(obs)
+        pytplot.del_data(obs)
 
 #--------------------------------------------------------------------------

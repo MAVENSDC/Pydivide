@@ -126,11 +126,11 @@ def get_root_data_dir():
 
         
 def set_root_data_dir():
-    import tkinter
+    from tkinter import filedialog
     import os 
     
     root = tkinter.Tk()
-    download_path = tkinter.filedialog.askdirectory()
+    download_path = filedialog.askdirectory()
     root.destroy()
     
     #Put path into preferences file

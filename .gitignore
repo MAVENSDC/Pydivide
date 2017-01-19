@@ -4,6 +4,7 @@ mvn_toolkit_prefs.txt
 *.docx
 *.pyc
 *.ipynb
+*.html
 .project
 testing_lib/*/*.sav
 models/sample_models/*.dat
