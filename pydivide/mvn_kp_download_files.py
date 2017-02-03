@@ -12,8 +12,8 @@ def mvn_kp_download_files(filenames=None,
                           text_files=True, 
                           cdf_files=False, 
                           new_files=False, 
-                          start_date='2014-09-01', 
-                          end_date='2016-08-15', 
+                          start_date='2016-07-01', 
+                          end_date='2016-07-05', 
                           update_prefs=False,
                           only_update_prefs=False, 
                           exclude_orbit_file=False,
@@ -79,11 +79,12 @@ def mvn_kp_download_files(filenames=None,
         print("No files found.")
         return
     
+    s = str(s)
     s = s.split(',')
     
     if (list_files==True):
         for f in s:
-           print(f)
+            print(f)
         return
     
     if (new_files==True):

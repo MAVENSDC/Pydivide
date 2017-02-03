@@ -21,7 +21,7 @@ def get_filenames(query, public):
     else:
         page=urllib.request.urlopen(public_url)
     
-    return page.read()
+    return page.read().decode("utf-8")
 
 def get_file_from_site(filename, public, data_dir):
     import os
@@ -55,11 +55,13 @@ def get_orbit_files():
     orbit_files_url = "http://naif.jpl.nasa.gov/pub/naif/MAVEN/kernels/spk/"
     pattern = 'maven_orb_rec(\.orb|.{17}\.orb)'
     page = urllib.request.urlopen(orbit_files_url)
+    page_string = str(page.read())
     full_path=os.path.realpath(__file__)
-    path, filename = os.path.split(full_path)
-    orbit_files_path = os.path.join(path, "orbitfiles")
+    file_path, _ = os.path.split(full_path)
+    toolkit_path = os.path.dirname(file_path)
+    orbit_files_path = os.path.join(toolkit_path, "orbitfiles")
 
-    for matching_pattern in re.findall(pattern, page.read()):
+    for matching_pattern in re.findall(pattern, page_string):
         filename = "maven_orb_rec"+matching_pattern
         o_file = urllib.request.urlopen(orbit_files_url+filename)
         with open(os.path.join(orbit_files_path,filename), "wb") as code:
@@ -75,8 +77,9 @@ def merge_orbit_files():
     import re 
     
     full_path=os.path.realpath(__file__)
-    path, _ = os.path.split(full_path)
-    orbit_files_path = os.path.join(path, "orbitfiles")
+    file_path, _ = os.path.split(full_path)
+    toolkit_path = os.path.dirname(file_path)
+    orbit_files_path = os.path.join(toolkit_path, "orbitfiles")
     pattern = 'maven_orb_rec(_|)(|.{6})(|_.{9}).orb'
     orb_dates = []
     orb_files = []
@@ -91,7 +94,7 @@ def merge_orbit_files():
                 
     sorted_files = [x for (y,x) in sorted(zip(orb_dates,orb_files))]
     
-    with open(os.path.join(path,'maven_orb_rec.orb'), "wb") as code:
+    with open(os.path.join(toolkit_path,'maven_orb_rec.orb'), "w") as code:
         for o_file in sorted_files:
             code.write(open(o_file).read())
     
@@ -100,8 +103,9 @@ def merge_orbit_files():
 def get_access():
     import os
     full_path=os.path.realpath(__file__)
-    path, filename = os.path.split(full_path)
-    f = open(os.path.join(path, 'access.txt'), 'r')
+    current_file_path, _ = os.path.split(full_path)
+    toolkit_path = os.path.dirname(current_file_path)
+    f = open(os.path.join(toolkit_path, 'access.txt'), 'r')
     f.readline()
     s = f.readline().rstrip()
     s = s.split(' ')
@@ -113,10 +117,11 @@ def get_access():
 def get_root_data_dir():
     import os
     full_path=os.path.realpath(__file__)
-    path, filename = os.path.split(full_path)
-    if (not os.path.exists(os.path.join(path, 'mvn_toolkit_prefs.txt'))):
+    file_path, _ = os.path.split(full_path)
+    toolkit_path = os.path.dirname(file_path)
+    if (not os.path.exists(os.path.join(toolkit_path, 'mvn_toolkit_prefs.txt'))):
         set_root_data_dir()
-    f = open(os.path.join(path, 'mvn_toolkit_prefs.txt'), 'r')
+    f = open(os.path.join(toolkit_path, 'mvn_toolkit_prefs.txt'), 'r')
     f.readline()
     s = f.readline().rstrip()
     #Get rid of first space
