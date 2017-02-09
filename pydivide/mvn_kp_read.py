@@ -1,4 +1,6 @@
 import calendar
+import numpy as np
+import matplotlib.pyplot as plt
 from .mvn_kp_utilities import remove_inst_tag
 from .mvn_kp_utilities import get_latest_files_from_date_range
 from .mvn_kp_utilities import get_header_info
@@ -128,8 +130,14 @@ def mvn_kp_read(input_time, instruments = None):
         for i in DELETEgroups:
             del temp_data[-1][i] 
             
-    temp = pd.concat(temp_data)
+    temp_unconverted = pd.concat(temp_data)
     
+    #
+    #Need to convert columns 
+    #This is kind of a hack, but I can't figure out a better way for now
+    #
+    temp = temp_unconverted.astype(dtype = {'SWEA.Electron Spectrum Shape':np.float64})
+   
     #
     # Cut out the times not included in the date range
     #
@@ -147,6 +155,7 @@ def mvn_kp_read(input_time, instruments = None):
             break
         end_index = end_index + 1 
 
+
     #
     # Assign the first-level only tags
     #
@@ -163,7 +172,6 @@ def mvn_kp_read(input_time, instruments = None):
     #
     APP=temp[APPgroup]
     SPACECRAFT=temp[SCgroup]
-    
     if instruments != None:
         if 'LPW' in instruments:
             LPW=temp[LPWgroup]

@@ -474,8 +474,15 @@ def get_latest_files_from_date_range(date1, date2):
     mvn_root_data_dir = utils.get_root_data_dir()
     maven_data_dir = os.path.join(mvn_root_data_dir,'maven','data','sci','kp', 'insitu') 
     
+    
+    #Each file starts at midnight, so lets cut off the hours and just pay attention to the days
+    date1 = date1.replace(hour=0, minute=0, second=0)
+    date2 = date2.replace(day=date2.day+1, hour=0, minute=0, second=0)
+    
     time_spanned = date2 - date1
-    num_days = time_spanned.days + 1
+    num_days = time_spanned.days
+    
+    
     filenames = []
     
     for i in range(num_days):
