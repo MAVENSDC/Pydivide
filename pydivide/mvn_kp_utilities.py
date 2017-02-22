@@ -322,7 +322,7 @@ def range_select( kp, Time=None, Parameter=None,
     # Now, apply the filters
     #
     if Parameter is not None:
-        inst_obs_minmax = zip( inst, obs, minimum, maximum )
+        inst_obs_minmax = list(zip( inst, obs, minimum, maximum ))
         for inst,obs,Min,Max in inst_obs_minmax:
             filter_list.append( kp[inst][obs] >= Min )
             filter_list.append( kp[inst][obs] <= Max )

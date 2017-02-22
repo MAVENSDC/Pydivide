@@ -54,7 +54,7 @@ def mvn_kp_plot( kp, parameter=None, time=None, errors=None,
             a,b = get_inst_obs_labels(kp,param)
             inst.append(a)
             obs.append(b)
-    inst_obs = zip( inst, obs )
+    inst_obs = list(zip( inst, obs ))
 
 
     # Cycle through the parameters, plotting each according to

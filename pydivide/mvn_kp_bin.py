@@ -58,7 +58,7 @@ def mvn_kp_bin(kp,
             a,b = get_inst_obs_labels(kp,param)
             inst.append(a)
             obs.append(b)
-    parameter_inst_obs = zip( inst, obs )
+    parameter_inst_obs = list(zip( inst, obs ))
     
     #
     # Store instrument and observation of "bin by" values in lists
@@ -74,7 +74,7 @@ def mvn_kp_bin(kp,
             a,b = get_inst_obs_labels(kp,param)
             inst.append(a)
             obs.append(b)       
-    bin_by_inst_obs = zip( inst, obs )
+    bin_by_inst_obs = list(zip( inst, obs ))
     
     
     #

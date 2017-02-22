@@ -136,7 +136,8 @@ def mvn_kp_read(input_time, instruments = None):
     #Need to convert columns 
     #This is kind of a hack, but I can't figure out a better way for now
     #
-    temp = temp_unconverted.astype(dtype = {'SWEA.Electron Spectrum Shape':np.float64})
+    temp = temp_unconverted.astype(dtype = {'SWEA.Electron Spectrum Shape':np.float64,
+                                            'NGIMS.Density NO':np.float64})
    
     #
     # Cut out the times not included in the date range
