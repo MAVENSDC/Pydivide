@@ -199,7 +199,7 @@ def mvn_kp_bin(kp,
         if median:
             #Jenkins server uses eold versions of numpy and scipy
             if unittest:
-                median_array[data_value_indexes] = stats.nanmedian(get_values_from_list(binned_list, data_value_indexes))
+                median_array[data_value_indexes] = numpy.nanmedian(get_values_from_list(binned_list, data_value_indexes))
             else:
                 median_array[data_value_indexes] = numpy.nanmedian(get_values_from_list(binned_list, data_value_indexes))
         if avg or std:

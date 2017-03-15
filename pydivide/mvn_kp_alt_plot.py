@@ -1,12 +1,7 @@
-from .mvn_kp_utilities import param_list_sav
-from .mvn_kp_utilities import param_list
-from .mvn_kp_utilities import param_range
-from .mvn_kp_utilities import range_select
-from .mvn_kp_utilities import insufficient_input_range_select
-from .mvn_kp_utilities import make_time_labels
 from .mvn_kp_utilities import get_inst_obs_labels
-from .mvn_kp_utilities import find_param_from_index
-from .mvn_kp_utilities import remove_inst_tag
+import pytplot
+import pandas as pd
+
 
 def mvn_kp_alt_plot( kp, parameter=None, time=None, errors=None, 
               SamePlot=True, SubPlot=False, **kwargs ):
@@ -83,7 +78,9 @@ def mvn_kp_alt_plot( kp, parameter=None, time=None, errors=None,
     # Cycle through the parameters, plotting each according to
     #  the given keywords
     #
-    iplot = 1 # subplot indexes on 1
+    names_to_plot=[]
+    legend_names = []
+    iplot = 0 # subplot indexes on 1
     for inst,obs in inst_obs:
         #
         # First, generate the dependent array from data
@@ -93,29 +90,26 @@ def mvn_kp_alt_plot( kp, parameter=None, time=None, errors=None,
             y.append(kp[inst][obs][index])
             index = index + 1
 
-    # Generate the plot
-        if iplot == 1 or not SamePlot: a = plt.figure()
-
-    # If subplots, need to add a subplot
-        if SubPlot: ax = a.add_subplot(1,nparam,iplot)
-
-    # Now, generate the plot
-#orig        plt.plot(y,z,label=('%s.%s'%(inst,obs)))
-        plt.plot(y,z,label=('%s.%s'%(inst,obs)),**kwargs)
-
-    # If subplots, and not last one, suppress x-axis labels
-        if SubPlot and iplot > 1 : 
-            ax.axes.yaxis.set_ticklabels([])
-        else:
-            plt.ylabel('altitude[km]')
- 
-    # Add descriptive plot title
-        if SubPlot or nparam == 1 or not SamePlot: 
-            plt.title('%s.%s' % (inst,obs))
-        else:
-            plt.legend()
-
-    # Increment plot number 
-        iplot = iplot + 1
+        names_to_plot.append('%s.%s'%(inst,obs))
+        legend_names.append(obs)
         
-        plt.show()
+        pytplot.store_data(names_to_plot[iplot], data={'x':z, 'y':y})
+        pytplot.options(names_to_plot[iplot], 'alt', 1)
+
+        
+
+        iplot = iplot + 1
+    
+
+    if SamePlot:
+        pytplot_name=','.join(legend_names)
+        pytplot.store_data(pytplot_name, data = names_to_plot)
+        pytplot.options(pytplot_name, 'alt', 1)
+        pytplot.options(pytplot_name, 'legend_names', legend_names)
+        pytplot.tplot_options('wsize', [1000,300])
+        pytplot.tplot(pytplot_name)
+        
+    else:
+        pytplot.tplot_options('wsize', [1000,300*(iplot-1)])
+        pytplot.tplot(names_to_plot)
+        
