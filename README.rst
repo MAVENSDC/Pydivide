@@ -39,6 +39,8 @@ then, just import the package by typing the command::
 
 	import pydivide
 
+A demo/tutorial can be found here: `docs/pytplot_tutorial.html <http://htmlpreview.github.com/?https://github.com/MAVENSDC/Pydivide/blob/master/docs/pydivide_tutorial.html>`_.
+	
 	
 Contact
 =============
