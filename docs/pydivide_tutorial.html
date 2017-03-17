@@ -1,0 +1,80 @@
+<html>
+
+    <head>
+        <title>pydivide tutorial</title>
+    </head>
+
+    <b>pydivide Tutorial</b>
+
+    <br><br>
+
+    <a href="#startup">Downloading Key Parameter Data</a><br>
+	<a href="#step0">Storing Data</a><br>
+    <a href="#step1">Standard Plots</a><br>
+    <a href="#step2">Time-series plotting routine</a><br>
+    <a href="#step3">Altitude Plots</a><br>
+    <a href="#step4">Plotting of In-situ data on a Lat/Lon Map</a><br>
+
+    <br><br>
+
+    <ul>
+
+        <b><a name="startup">Downloading Data</a></b>
+        <ul>
+            <li>This command will download the MAVEN KP data into a directory structure on your machine that the Toolkit will remember (in the mvn_toolkit_prefs.txt file):</li><br>
+            <li>pydivide.mvn_kp_download_files(start_date='2015-01-15', end_date='2015-02-15')</li><br><br>
+            <li>A similar command can be used to download all other science data:</li>
+            <li>pydivide.mvn_kp_download_sci_files(start_date='2015-01-15', end_date='2015-02-15', instrument='ngi', level='l2')</li><br>
+            <li>instrument can be any of "lpw, ngi, euv, sta, swi, swe, mag, iuv, sep" and level can be any of "l1a, l1b, l1c, l2, or l3"</li><br>
+        </ul>
+
+        <br><br>
+
+        <b><a name="step0">Storing Data</a></b>
+        <ul>
+            <li>This procedure will read in KP files and store them in a variable.</li><br>
+            <li>insitu = pydivide.mvn_kp_read(['2015-04-10', '2015-05-10'])</li><br>
+            <li>The result of this command is all KP data between April 10th and May 10th is stored in the "insitu" variable.</li><br>
+        </ul>
+		
+        <br><br>
+
+        <b><a name="step1">Standard Plots</a></b>
+        <ul>
+            <li>For a quick look at the dataset, you can use the following command to look at common plots:</li><br>
+            <li>pydivide.mvn_kp_standards(insitu, all_plots=True)</li><br>
+            <li>If you would like a subset of the 25 plots, add "list_plots=True" to the command, and it will list all of the plots that you can set to true for a subset of the plot.  For example, pydivide.mvn_kp_standards(x, ngims_neutral=True, euv=True, ionosphere=True, sep_ion=True, sun_bar=True)</li><br>
+        </ul>
+
+        <br><br>
+
+        <b><a name="step2">MAVEN time-series plotting routine</a></b>
+        <ul>
+            <li>Plot any parameter contained within the KP data may be plotted as a time series.</li><br>
+            <li>pydivide.mvn_kp_plot(insitu, parameter='SWEA.Solar Wind Electron Density')</li><br>
+        </ul>
+
+        <br><br>
+
+        <b><a name="step3">Altitude Plots</a></b>
+        <ul>
+            <li>Plot any Key Parameter against altitude.  Syntax is the same as mvn_kp_plot.</li><br>
+            <li>pydivide.mvn_kp_alt_plot(insitu, parameter='SWEA.Solar Wind Electron Density')</li><br>
+        </ul>
+
+        <br><br>
+
+        <b><a name="step4">Plotting of In-situ data on a Lat/Lon Map</a></b>
+        <ul>
+            <li>Plot the H+ density from SWIA atop a map of Mars displaying the MOLA altimetry.</li><br>
+            <li>pydivide.mvn_kp_map2d(insitu, parameter='SWEA.Solar Wind Electron Density')</li><br>
+        </ul>
+
+        <br><br>
+
+
+    </ul>
+</html>
+
+
+
