@@ -12,7 +12,7 @@ def mvn_kp_map2d( kp,
                   list=False, 
                   basemap=None,
                   color_table=None,
-                  subsolar=True,
+                  subsolar=False,
                   mso=False,
                   map_limit=None,
                   **kwargs ):
