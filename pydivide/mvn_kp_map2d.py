@@ -48,12 +48,12 @@ def mvn_kp_map2d( kp,
 
     # Generate the altitude array
     if mso:
-        x = kp['SPACECRAFT']['MSO X'][istart:iend]
-        y = kp['SPACECRAFT']['MSO Y'][istart:iend]
-        z = kp['SPACECRAFT']['MSO Z'][istart:iend]
-        r = math.sqrt((x**2) + (y**2) + (z**2))
-        lat = 90 - np.arccos(z/r)*(180/math.pi)
-        lon = np.arctan(y/x)*(180/math.pi)
+        x = kp['SPACECRAFT']['MSO X'][istart:iend].as_matrix()
+        y = kp['SPACECRAFT']['MSO Y'][istart:iend].as_matrix()
+        z = kp['SPACECRAFT']['MSO Z'][istart:iend].as_matrix()
+        r = np.sqrt((x**2) + (y**2) + (z**2))
+        lat = (90 - np.arccos(z/r)*(180/math.pi))
+        lon = (np.arctan2(y,x)*(180/math.pi)) + 180
     else:
         lon = kp['SPACECRAFT']['GEO Longitude'][istart:iend]
         lat = kp['SPACECRAFT']['GEO Latitude'][istart:iend]
