@@ -53,24 +53,22 @@ def mvn_kp_map2d( kp,
 
 
     # Check the time variable
-    if time == None:
-        istart, iend = 0,np.count_nonzero(kp['Orbit'])-1
-    else:
-        istart,iend = range_select(kp,time)
+    if time != None:
+        kp = range_select(kp,time)
 
     # Generate the altitude array
     if mso:
-        x = kp['SPACECRAFT']['MSO X'][istart:iend].as_matrix()
-        y = kp['SPACECRAFT']['MSO Y'][istart:iend].as_matrix()
-        z = kp['SPACECRAFT']['MSO Z'][istart:iend].as_matrix()
+        x = kp['SPACECRAFT']['MSO X'].as_matrix()
+        y = kp['SPACECRAFT']['MSO Y'].as_matrix()
+        z = kp['SPACECRAFT']['MSO Z'].as_matrix()
         r = np.sqrt((x**2) + (y**2) + (z**2))
         lat = (90 - np.arccos(z/r)*(180/math.pi))
         lon = (np.arctan2(y,x)*(180/math.pi)) + 180
     else:
-        lon = kp['SPACECRAFT']['GEO Longitude'][istart:iend]
-        lat = kp['SPACECRAFT']['GEO Latitude'][istart:iend]
+        lon = kp['SPACECRAFT']['GEO Longitude']
+        lat = kp['SPACECRAFT']['GEO Latitude']
     
-    alt = kp['SPACECRAFT']['Altitude Aeroid'][istart:iend]
+    alt = kp['SPACECRAFT']['Altitude Aeroid']
     # Cycle through the parameters, plotting each according to
     #  the given keywords
     #
@@ -79,7 +77,7 @@ def mvn_kp_map2d( kp,
     for inst,obs in inst_obs:
         #
         # First, generate the dependent array from data
-        y = kp[inst][obs][istart:iend]
+        y = kp[inst][obs]
         
         if subsolar and mso==False:
             pytplot.store_data('%s.%s'%(inst,obs), 
@@ -88,8 +86,8 @@ def mvn_kp_map2d( kp,
                                      'y':y})
             pytplot.options('%s.%s'%(inst,obs), 'map', 1)
             pytplot.store_data('subsolar', 
-                               data={'x':[kp['SPACECRAFT']['Subsolar Point GEO Longitude'][istart:iend],
-                                          kp['SPACECRAFT']['Subsolar Point GEO Latitude'][istart:iend]], 
+                               data={'x':[kp['SPACECRAFT']['Subsolar Point GEO Longitude'],
+                                          kp['SPACECRAFT']['Subsolar Point GEO Latitude']], 
                                     'y':alt})
             pytplot.options('subsolar', 'map', 1)
             names_to_plot.append('%s.%s.%s'%(inst,obs,'subsolar'))

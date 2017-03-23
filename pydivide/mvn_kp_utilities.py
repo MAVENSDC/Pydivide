@@ -629,13 +629,13 @@ def orbit_time(begin_orbit, end_orbit=None):
         
         if orbit_num.index(begin_orbit) > len(time) or orbit_num.index(end_orbit)+1 > len(time):
             print("Orbit numbers not found.  Please choose a number between 1 and %s.", orbit_num[-1])
-            return None, None
+            return [None, None]
         else:
             begin_time = time[orbit_num.index(begin_orbit)]
             end_time = time[orbit_num.index(end_orbit)+1]
     except ValueError:
-        return None, None
-    return begin_time, end_time
+        return [None, None]
+    return [begin_time, end_time]
 
 def month_to_num(month_string):
     if month_string=='JAN':

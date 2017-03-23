@@ -70,15 +70,13 @@ def mvn_kp_alt_plot( kp, parameter=None, time=None, errors=None,
     inst_obs = builtins.list(zip( inst, obs ))
 
     # Check the time variable
-    if time == None:
-        istart, iend = 0,np.count_nonzero(kp['Orbit'])-1
-    else:
-        istart,iend = range_select(kp,time)
+    if time != None:
+        kp = range_select(kp,time)
 
     # Generate the altitude array
     z = []
     index = 0
-    for i in kp['TimeString'][istart:iend]:
+    for i in kp['TimeString']:
         z.append(kp['SPACECRAFT']['Altitude Aeroid'][index])
         index = index + 1
 
@@ -93,7 +91,7 @@ def mvn_kp_alt_plot( kp, parameter=None, time=None, errors=None,
         # First, generate the dependent array from data
         y = []
         index = 0
-        for i in kp['TimeString'][istart:iend]:
+        for i in kp['TimeString']:
             y.append(kp[inst][obs][index])
             index = index + 1
 
