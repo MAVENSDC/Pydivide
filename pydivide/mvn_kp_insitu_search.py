@@ -20,21 +20,30 @@
 #        the max value is used for all parameters. Cannot enter more max values than parameters.'
 
 from .mvn_kp_utilities import get_inst_obs_labels
+from .mvn_kp_utilities import param_list
+import builtins 
 
 def mvn_kp_insitu_search(kp,
                          parameter,
                          min=None,
-                         max=None):
+                         max=None,
+                         list=False):
+    
+    if list:
+        x = param_list(kp)
+        for param in x:
+            print(param)
+        return
     
     if max is None:
         max = [float("inf")]*len(parameter)
     if min is None:
         min = [float("-inf")]*len(parameter)
-    if not isinstance(min, list):
+    if not isinstance(min, builtins.list):
         min = [min]
-    if not isinstance(max, list):
+    if not isinstance(max, builtins.list):
         max = [max]
-    if not isinstance(parameter, list):
+    if not isinstance(parameter, builtins.list):
         parameter = [parameter]
     
     if len(parameter) == len(min) == len(max):
@@ -44,7 +53,7 @@ def mvn_kp_insitu_search(kp,
             a,b = get_inst_obs_labels(kp,param)
             inst.append(a)
             obs.append(b)
-        parameter_inst_obs = list(zip( inst, obs ))
+        parameter_inst_obs = builtins.list(zip( inst, obs ))
         
         
         i=0

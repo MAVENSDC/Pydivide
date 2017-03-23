@@ -2,36 +2,6 @@ import re
 import os
 from . import mvn_kp_download_files_utilities as utils
 
-def param_list_sav( kp ):
-    '''
-    Return a listing of all parameters present in the given 
-    insitu data dictionary/structure.
-
-    Caveats:
-        Rendered obsolete by param_list.
-           (only works with data from IDL sav file)
-
-    Input:
-        kp: insitu kp data structure/dictionary imported from
-            and IDL sav file
-    Output:
-        ParamList: a list of all contained items and their indices.
-    '''
-    index = 1
-    ParamList = []
-    for base_tag in kp.dtype.names:
-        try:
-            first_level_tags = kp[base_tag][0].dtype.names
-            for first_level_tag in first_level_tags:
-                ParamList.append("#%3d %s.%s" % 
-                                 (index,base_tag,first_level_tag) )
-                index = index + 1
-        except:
-            pass
-    return ParamList
-
-#---------------------------------------------------------------------
-
 def param_list( kp ):
     '''
     Return a listing of all parameters present in the given 
@@ -43,7 +13,6 @@ def param_list( kp ):
         ParamList: a list of all contained items and their indices.
     '''
     import pandas as pd
-
     index = 1
     ParamList = []
     for base_tag in kp.keys():
@@ -53,6 +22,9 @@ def param_list( kp ):
                                  (index, base_tag, obs_tag ) )
                 index = index + 1
         elif isinstance(kp[base_tag], pd.Series):
+            ParamList.append("#%3d %s" % (index, base_tag) )
+            index = index + 1
+        elif isinstance(kp[base_tag], pd.Index):
             ParamList.append("#%3d %s" % (index, base_tag) )
             index = index + 1
         else:
@@ -130,7 +102,7 @@ def range_select( kp, Time=None, Parameter=None,
     '''
     Returns a subset of the input data based on the provided time
     and/or parameter criteria.  If neither Time nor Parameter filter
-    information is provided, then no subselection of dta will occur.
+    information is provided, then no subselection of data will occur.
     Any parameter used as a filtering criterion must be paired with 
     either a maximum and/or a minimum value.  Open ended bounds must 
     be indicated with either a value of 'None' or an empty string ('').
@@ -354,28 +326,6 @@ def insufficient_input_range_select():
 
 #--------------------------------------------------------------------------
 
-def make_time_labels(kp):
-    '''
-    Convert the time strings to 2-line versions so that
-    the date and time do not cause significant ovlerlap 
-    or vertical length on the time(x) axis
-
-    Input: 
-        kp: insitu kp data structure/dictionary read from file(s)
-    Output:
-        a set of five strings to be used as x-axis time labels
-    '''
-
-    from datetime import datetime
-    import numpy as np
-
-    indices = kp['Time'].index.values
-    t1 = kp['Time'].min()
-    t5 = kp['Time'].max()
-    tn = (t5-t1)/4*np.arange(5)
-    tickval = [datetime.utcfromtimestamp(i+t1) for i in tn]
-    ticklab = [i.strftime('%Y-%m-%d\n%H:%M:%S') for i in tickval]
-    return tickval,ticklab
 
 #--------------------------------------------------------------------------
 
@@ -657,3 +607,58 @@ def get_values_from_list(the_list, location):
     else:
         testing=testing[location]
         return testing
+    
+def orbit_time(begin_orbit, end_orbit=None):
+    orb_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), 
+                            'maven_orb_rec.orb')
+    
+    f = open(orb_file, "r")
+    if end_orbit==None:
+        end_orbit=begin_orbit
+    orbit_num = []
+    time = []
+    f.readline()
+    f.readline()
+    for line in f:
+        line = line[0:28]
+        line = line.split(' ')
+        line = [x for x in line if x != '']
+        orbit_num.append(int(line[0]))
+        time.append(line[1]+"-"+month_to_num(line[2])+"-"+line[3]+"T"+line[4])
+    try:
+        
+        if orbit_num.index(begin_orbit) > len(time) or orbit_num.index(end_orbit)+1 > len(time):
+            print("Orbit numbers not found.  Please choose a number between 1 and %s.", orbit_num[-1])
+            return None, None
+        else:
+            begin_time = time[orbit_num.index(begin_orbit)]
+            end_time = time[orbit_num.index(end_orbit)+1]
+    except ValueError:
+        return None, None
+    return begin_time, end_time
+
+def month_to_num(month_string):
+    if month_string=='JAN':
+        return '01'
+    if month_string=='FEB':
+        return '02'
+    if month_string=='MAR':
+        return '03'
+    if month_string=='APR':
+        return '04'
+    if month_string=='MAY':
+        return '05'
+    if month_string=='JUN':
+        return '06'
+    if month_string=='JUL':
+        return '07'
+    if month_string=='AUG':
+        return '08'
+    if month_string=='SEP':
+        return '09'
+    if month_string=='OCT':
+        return '10'
+    if month_string=='NOV':
+        return '11'
+    if month_string=='DEC':
+        return '12'

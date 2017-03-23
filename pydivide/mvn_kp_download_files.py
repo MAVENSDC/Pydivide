@@ -5,6 +5,8 @@
 ###############################################################################
 
 from . import mvn_kp_download_files_utilities as utils
+from .mvn_kp_utilities import orbit_time
+from dateutil.parser import parse
 
 def mvn_kp_download_files(filenames=None, 
                           list_files=False, 
@@ -12,8 +14,8 @@ def mvn_kp_download_files(filenames=None,
                           text_files=True, 
                           cdf_files=False, 
                           new_files=False, 
-                          start_date='2016-07-01', 
-                          end_date='2016-07-05', 
+                          start='2016-07-01', 
+                          end='2016-07-05', 
                           update_prefs=False,
                           only_update_prefs=False, 
                           exclude_orbit_file=False,
@@ -23,6 +25,16 @@ def mvn_kp_download_files(filenames=None,
     
     import os
     
+    #Check for orbit num rather than time string
+    if isinstance(start, int) and isinstance(end, int):
+        start, end = orbit_time(start, end)
+        start = parse(start)
+        end = parse(end)
+        start = start.replace(hour=0, minute=0, second=0)
+        end = end.replace(day=end.day+1, hour=0, minute=0, second=0)
+        start = start.strftime('%Y-%m-%d')
+        end = end.strftime('%Y-%m-%d')
+        
     if (update_prefs==True or only_update_prefs==True):
         utils.set_root_data_dir()
         if (only_update_prefs==True):
@@ -60,8 +72,8 @@ def mvn_kp_download_files(filenames=None,
     query_args.append("level="+level)
     if (filenames!=None):
         query_args.append("file="+filenames)
-    query_args.append("start_date="+start_date)
-    query_args.append("end_date="+end_date)
+    query_args.append("start_date="+start)
+    query_args.append("end_date="+end)
     query_args.append("file_extension="+extension)
     
     if local_dir == None:

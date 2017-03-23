@@ -4,7 +4,9 @@ import matplotlib.pyplot as plt
 from .mvn_kp_utilities import remove_inst_tag
 from .mvn_kp_utilities import get_latest_files_from_date_range
 from .mvn_kp_utilities import get_header_info
-
+from .mvn_kp_utilities import orbit_time
+from _collections import OrderedDict
+import builtins
 
 def mvn_kp_read(input_time, instruments = None):
     '''
@@ -34,7 +36,12 @@ def mvn_kp_read(input_time, instruments = None):
     from datetime import datetime, timedelta
     from dateutil.parser import parse
     
-    # Get the file names from the date
+    #Check for orbit num rather than time string
+    if isinstance(input_time, builtins.list):
+        if isinstance(input_time[0], int):
+            input_time = orbit_time(input_time[0], input_time[1])
+    elif isinstance(input_time, int):
+        input_time = orbit_time(input_time)
     
     #Turn string input into datetime objects
     if type(input_time) is list:
@@ -251,5 +258,5 @@ def mvn_kp_read(input_time, instruments = None):
                  LPW, EUV, SWEA, SWIA, STATIC, 
                  SEP, MAG, NGIMS, APP, SPACECRAFT]
     # return a dictionary made from tag_names and data_tags
-    return ( dict( zip( tag_names, data_tags ) ) )#, 
+    return ( OrderedDict( zip( tag_names, data_tags ) ) )#, 
              #dict( zip( tag_names, unit ) ) )

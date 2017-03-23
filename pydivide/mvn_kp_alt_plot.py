@@ -1,10 +1,11 @@
-from .mvn_kp_utilities import get_inst_obs_labels
+from .mvn_kp_utilities import get_inst_obs_labels, param_list, orbit_time, range_select
 import pytplot
-import pandas as pd
-
+import numpy as np
+import builtins
 
 def mvn_kp_alt_plot( kp, parameter=None, time=None, errors=None, 
-              SamePlot=True, SubPlot=False, **kwargs ):
+              SamePlot=True, SubPlot=False, list=False,
+              **kwargs ):
     '''
     Plot the provided data plotted against spacecraft altitude.
     For now, do not accept any error bar information.
@@ -36,12 +37,20 @@ def mvn_kp_alt_plot( kp, parameter=None, time=None, errors=None,
     ToDo: Provide mechanism for calculating and plotting error bars
           Return plot object(s) for subsequent editing?
     '''
-
-    import matplotlib.pyplot as plt
-    import numpy as np
-    from datetime import datetime
-    from .mvn_kp_utilities import range_select
-
+    
+    if list:
+        x = param_list(kp)
+        for param in x:
+            print(param)
+        return
+    
+    #Check for orbit num rather than time string
+    if isinstance(time, builtins.list):
+        if isinstance(time[0], int):
+            time = orbit_time(time[0], time[1])
+    elif isinstance(time, int):
+        time = orbit_time(time)
+        
     # Check existence of parameter
     if parameter == None: 
         print("Must provide an index (or name) for param to be plotted.")
@@ -53,14 +62,12 @@ def mvn_kp_alt_plot( kp, parameter=None, time=None, errors=None,
         a,b = get_inst_obs_labels( kp, parameter )
         inst.append(a)
         obs.append(b)
-        nparam = 1
     else:
-        nparam = len(parameter)
         for param in parameter:
             a,b = get_inst_obs_labels(kp,param)
             inst.append(a)
             obs.append(b)
-    inst_obs = list(zip( inst, obs ))
+    inst_obs = builtins.list(zip( inst, obs ))
 
     # Check the time variable
     if time == None:
@@ -71,7 +78,7 @@ def mvn_kp_alt_plot( kp, parameter=None, time=None, errors=None,
     # Generate the altitude array
     z = []
     index = 0
-    for i in kp['TimeString']:
+    for i in kp['TimeString'][istart:iend]:
         z.append(kp['SPACECRAFT']['Altitude Aeroid'][index])
         index = index + 1
 
@@ -86,7 +93,7 @@ def mvn_kp_alt_plot( kp, parameter=None, time=None, errors=None,
         # First, generate the dependent array from data
         y = []
         index = 0
-        for i in kp['TimeString']:
+        for i in kp['TimeString'][istart:iend]:
             y.append(kp[inst][obs][index])
             index = index + 1
 

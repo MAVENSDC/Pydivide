@@ -73,7 +73,6 @@ def get_orbit_files():
 
 def merge_orbit_files():
     import os
-    import urllib
     import re 
     
     full_path=os.path.realpath(__file__)
@@ -95,8 +94,14 @@ def merge_orbit_files():
     sorted_files = [x for (y,x) in sorted(zip(orb_dates,orb_files))]
     
     with open(os.path.join(toolkit_path,'maven_orb_rec.orb'), "w") as code:
+        skip_2_lines = False
         for o_file in sorted_files:
-            code.write(open(o_file).read())
+            f = open(o_file)
+            if skip_2_lines:
+                f.readline()
+                f.readline()
+            skip_2_lines=True
+            code.write(f.read())
     
     return
 

@@ -1,24 +1,36 @@
-from .mvn_kp_utilities import get_inst_obs_labels
+from .mvn_kp_utilities import get_inst_obs_labels, param_list, range_select, orbit_time
 import pytplot
 import numpy as np
 from datetime import datetime
 import builtins
 import math
-from .mvn_kp_utilities import range_select
+import os
 
 def mvn_kp_map2d( kp, 
                   parameter=None, 
                   time=None, 
                   list=False, 
-                  basemap=None,
                   color_table=None,
                   subsolar=False,
                   mso=False,
                   map_limit=None,
+                  basemap=None,
+                  alpha=None,
                   **kwargs ):
-
-
-
+    if list:
+        x = param_list(kp)
+        for param in x:
+            print(param)
+        return
+    
+    #Check for orbit num rather than time string
+    if isinstance(time, builtins.list):
+        if isinstance(time[0], int):
+            time = orbit_time(time[0], time[1])
+    elif isinstance(time, int):
+        time = orbit_time(time)
+        
+        
     # Check existence of parameter
     if parameter == None: 
         print("Must provide an index (or name) for param to be plotted.")
@@ -88,6 +100,27 @@ def mvn_kp_map2d( kp,
             names_to_plot.append('%s.%s'%(inst,obs))
             pytplot.store_data(names_to_plot[iplot], data={'x':[lon, lat], 'y':y})
             pytplot.options(names_to_plot[iplot], 'map', 1)
+        
+        if basemap and mso==False:
+            if basemap=='mola':
+                map_file='MOLA_color_2500x1250.jpg'
+            elif basemap=='mola_bw':
+                map_file='MOLA_BW_2500x1250.jpg'
+            elif basemap=='mdim':
+                map_file='MDIM_2500x1250.jpg'
+            elif basemap=='elevation':
+                map_file='MarsElevation_2500x1250.jpg'
+            elif basemap=='mag':
+                map_file='MAG_Connerny_2005.jpg'
+            else:
+                break    
+            pytplot.options(names_to_plot[iplot], 
+                            'basemap', 
+                            os.path.join(os.path.dirname(os.path.dirname(__file__)), 
+                                         'basemaps', 
+                                         map_file))
+            if alpha:
+                pytplot.options(names_to_plot[iplot], 'alpha', alpha)
             
         iplot = iplot + 1
     

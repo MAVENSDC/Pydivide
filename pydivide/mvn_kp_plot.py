@@ -1,9 +1,10 @@
-from .mvn_kp_utilities import get_inst_obs_labels
+from .mvn_kp_utilities import get_inst_obs_labels, param_list, orbit_time
 import pytplot
 import pandas as pd
+import builtins
 
 def mvn_kp_plot( kp, parameter=None, time=None, errors=None, 
-              SamePlot=True, SubPlot=False, **kwargs ):
+              SamePlot=True, SubPlot=False, list=False, **kwargs ):
     '''
     Plot the provided data as a time series.
     For now, do not accept any error bar information.
@@ -35,7 +36,18 @@ def mvn_kp_plot( kp, parameter=None, time=None, errors=None,
     ToDo: Provide mechanism for calculating and plotting error bars
           
     '''
-
+    if list:
+        x = param_list(kp)
+        for param in x:
+            print(param)
+        return
+    #Check for orbit num rather than time string
+    if isinstance(time, builtins.list):
+        if isinstance(time[0], int):
+            time = orbit_time(time[0], time[1])
+    elif isinstance(time, int):
+        time = orbit_time(time)
+    
     # Check existence of parameter
     if parameter == None: 
         print("Must provide an index (or name) for param to be plotted.")
@@ -54,7 +66,7 @@ def mvn_kp_plot( kp, parameter=None, time=None, errors=None,
             a,b = get_inst_obs_labels(kp,param)
             inst.append(a)
             obs.append(b)
-    inst_obs = list(zip( inst, obs ))
+    inst_obs = builtins.list(zip( inst, obs ))
 
 
     # Cycle through the parameters, plotting each according to
