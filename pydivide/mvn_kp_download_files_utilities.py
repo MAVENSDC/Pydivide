@@ -139,13 +139,12 @@ def set_root_data_dir():
     from tkinter import filedialog
     import os 
     
-    root = tkinter.Tk()
     download_path = filedialog.askdirectory()
-    root.destroy()
     
     #Put path into preferences file
     full_path=os.path.realpath(__file__)
     path, filename = os.path.split(full_path)
+    path, _ = os.path.split(path)
     f = open(os.path.join(path, 'mvn_toolkit_prefs.txt'), 'w')
     f.write("'; IDL Toolkit Data Preferences File'\n")
     f.write('mvn_root_data_dir: ' + download_path)

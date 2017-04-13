@@ -8,4 +8,5 @@ from .mvn_kp_read import mvn_kp_read
 from .mvn_kp_resample import mvn_kp_resample
 from .mvn_kp_standards import mvn_kp_standards
 from .mvn_kp_map2d import mvn_kp_map2d
+from .mvn_kp_read_model_results import mvn_kp_read_model_results
 from .mvn_kp_insitu_search import mvn_kp_insitu_search
