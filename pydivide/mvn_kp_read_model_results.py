@@ -1,6 +1,26 @@
 import netCDF4
 import math 
 
+#Takes in a .nc file from the MAVEN website and reads it into python dictionary
+#results
+#    \_ meta ()
+#        \_ longsubsol
+#        \_ ls
+#        \_ etc
+#    \_ dim
+#        \_ lat/x
+#        \_ lon/y
+#        \_ alt/z
+#    \_ variable1
+#        \_ dim_order (x,y,z or z,y,x for example)
+#        \_ data
+#    \_ variable2
+#        \_ dim_order
+#        \_ data
+#    ...
+#    \_ variableN
+
+
 def mvn_kp_read_model_results(file):
     
     
