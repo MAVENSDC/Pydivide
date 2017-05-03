@@ -1,5 +1,6 @@
 import netCDF4
 import math 
+import numpy as np
 
 #Takes in a .nc file from the MAVEN website and reads it into python dictionary
 #results
@@ -80,7 +81,10 @@ def mvn_kp_read_model_results(file):
         elif var.lower() == 'z':
             dim['z'] = model.variables[var][0:z_size]
         elif var.lower() == 'coordinate_system':
-            meta['coord_sys'] = model.variables[var][0]
+            if (model.variables[var]).dtype == np.dtype('S1'):
+                meta['coord_sys'] = ''.join([n.decode("utf-8") for n in model.variables[var]])
+            else:
+                meta['coord_sys'] = model.variables[var][0].strip()
         elif var.lower() == 'ls':
             if abs(model.variables[var][0]) >= 2*math.pi:
                 meta['ls'] = model.variables[var][0]
@@ -93,16 +97,19 @@ def mvn_kp_read_model_results(file):
                 else:
                     meta['ls'] = model.variables[var][0]
         elif var.lower() == 'longsubsol':
-            if abs(model.variables[var][0]) >= 2*math.pi:
-                meta['longsubsol'] = model.variables[var][0]
+            import re
+            string = str(model.variables[var][0])
+            num = float((re.findall("[-+]?\d+[\.]?\d*[eE]?[-+]?\d*", string))[0])
+            if abs(num) >= 2*math.pi:
+                meta['longsubsol'] = num
             else:
                 if 'units' in model.variables[var].__dict__:
                     if model.variables[var].__dict__['units'].lower == 'rad':
-                        meta['longsubsol'] = math.degrees(model.variables[var][0])
+                        meta['longsubsol'] = math.degrees(num)
                     else:
-                        meta['longsubsol'] = model.variables[var][0]
+                        meta['longsubsol'] = num
                 else:
-                    meta['longsubsol'] = model.variables[var][0]
+                    meta['longsubsol'] = num
         elif var.lower() == 'dec':
             if abs(model.variables[var][0]) >= 2*math.pi:
                 meta['dec'] = model.variables[var][0]
@@ -126,6 +133,9 @@ def mvn_kp_read_model_results(file):
                 else:
                     value = model.variables[var][:]
                 dim_order = model.variables[var].dimensions
+                dim_order = [dim.replace('size_x', 'x') for dim in dim_order]
+                dim_order = [dim.replace('size_y', 'y') for dim in dim_order]
+                dim_order = [dim.replace('size_z', 'z') for dim in dim_order]
                 data['data'] = value
                 data['dim_order'] = dim_order
                 results[var] = data
