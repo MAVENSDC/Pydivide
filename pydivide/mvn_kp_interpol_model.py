@@ -12,9 +12,8 @@
 
 import numpy as np
 from pydivide.mvn_kp_utilities import mvn_kp_sc_traj_xyz
-from scipy import interpolate
+from scipy import interpolate, spatial
 from pydivide.mvn_kp_read_model_results import mvn_kp_read_model_results
-
 def mvn_kp_interpol_model(kp,
                           model = None,
                           model_file = None,
@@ -62,6 +61,7 @@ def mvn_kp_interpol_model(kp,
                 sc_path[index] = np.array([lon_mso, lat_mso, alt_mso])
                 index+=1
             
+            latlon_triangulation = spatial.Delaunay(data_points)
             for var in model:
                 if var.lower() == "geo_x":
                     continue
@@ -118,8 +118,10 @@ def mvn_kp_interpol_model(kp,
                             alti2 = alti1
                             alti1 = temp
                         #Interpolate through space
-                        first_val = interpolate.griddata(data_points, values[:,alti1], [sc_pos[0], sc_pos[1]])
-                        second_val = interpolate.griddata(data_points, values[:,alti2], [sc_pos[0], sc_pos[1]])
+                        first_val_calc = interpolate.LinearNDInterpolator(latlon_triangulation, values[:,alti1])
+                        second_val_calc = interpolate.LinearNDInterpolator(latlon_triangulation, values[:,alti2])
+                        first_val = first_val_calc([sc_pos[0], sc_pos[1]])
+                        second_val = second_val_calc([sc_pos[0], sc_pos[1]])
                         delta_1 = sc_pos[2] - alt_mso_model[alti1]
                         delta_2 = alt_mso_model[alti2] - sc_pos[2]
                         delta_tot = alt_mso_model[alti2] - alt_mso_model[alti1]
@@ -188,7 +190,7 @@ def mvn_kp_interpol_model(kp,
                 sc_path[index] = np.array([lon_mso, lat_mso, alt_mso])
                 index+=1
                 
-                
+            latlon_triangulation = spatial.Delaunay(latlon_points)
             #Loop through the variables in the model
             for var in model:
                 if var.lower() == "geo_x":
@@ -223,7 +225,6 @@ def mvn_kp_interpol_model(kp,
                     index = 0
                     
                     
-                #Interpolate through space
                 x = np.empty(len(sc_path))
                 index = 0
                 for sc_pos in sc_path:
@@ -247,8 +248,10 @@ def mvn_kp_interpol_model(kp,
                             alti2 = alti1
                             alti1 = temp
                         #Interpolate through space
-                        first_val = interpolate.griddata(latlon_points, values[:,alti1], [sc_pos[0], sc_pos[1]])
-                        second_val = interpolate.griddata(latlon_points, values[:,alti2], [sc_pos[0], sc_pos[1]])
+                        first_val_calc = interpolate.LinearNDInterpolator(latlon_triangulation, values[:,alti1])
+                        second_val_calc = interpolate.LinearNDInterpolator(latlon_triangulation, values[:,alti2])
+                        first_val = first_val_calc([sc_pos[0], sc_pos[1]])
+                        second_val = second_val_calc([sc_pos[0], sc_pos[1]])
                         delta_1 = sc_pos[2] - alt_geo_model[alti1]
                         delta_2 = alt_geo_model[alti2] - sc_pos[2]
                         delta_tot = alt_geo_model[alti2] - alt_geo_model[alti1]
