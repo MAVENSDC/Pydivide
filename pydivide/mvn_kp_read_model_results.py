@@ -68,10 +68,13 @@ def mvn_kp_read_model_results(file):
         return
     
     for var in model.variables:
-        if var.lower() == 'latitude':
+        if var.lower() == 'latitude':               
             dim['lat'] = model.variables[var][0:lat_size]
         elif var.lower() == 'longitude':
-            dim['lon'] = model.variables[var][0:lon_size]    
+            lon_temp = model.variables[var][0:lon_size] 
+            if np.max(lon_temp) > 180 and np.min(lon_temp) > 0:
+                lon_temp = [(a - 360) if a>180 else a for a in lon_temp]
+            dim['lon'] = lon_temp  
         elif var.lower() == 'altitude':
             dim['alt'] = model.variables[var][0:alt_size]
         elif var.lower() == 'x':

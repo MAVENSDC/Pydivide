@@ -40,6 +40,7 @@ def mvn_kp_interpol_model(kp,
     sc_mso_z = kp['SPACECRAFT']['MSO Z'].as_matrix()
     sc_path = np.array([sc_mso_x, sc_mso_y, sc_mso_z]).T
 
+
     
     if 'lon' in model['dim']:
         if 'mso' == model['meta']['coord_sys'].lower():     
@@ -49,20 +50,18 @@ def mvn_kp_interpol_model(kp,
             lon_mso_model = model['dim']['lon']
             alt_mso_model = model['dim']['alt']
             
-            lon_array = np.repeat(lon_mso_model, len(alt_mso_model)*len(lat_mso_model))
-            lat_array = np.tile(np.repeat(lat_mso_model, len(alt_mso_model)), len(lon_mso_model))
-            alt_array = np.tile(alt_mso_model, len(lat_mso_model)*len(lon_mso_model))
-            data_points = np.transpose(np.array([lon_array,lat_array,alt_array]))
-            
+            lat_array = np.repeat(lat_mso_model, len(lon_mso_model))
+            lon_array = np.tile(lon_mso_model, len(lat_mso_model))
+            data_points = np.transpose(np.array([lon_array,lat_array]))
             index = 0
             for point in sc_path:
                 r_mso = np.sqrt(point[0]**2 + point[1]**2 + point[2]**2)
-                alt_mso = r_mso - mars_radius
+                alt_mso = kp['SPACECRAFT']['Altitude Aeroid'][index]
                 lat_mso = 90 - (np.arccos(point[2]/r_mso) / (np.pi / 180))
-                lon_mso = np.arctan2(point[0], point[1]) / (np.pi / 180)
+                lon_mso = np.arctan2(point[1], point[0]) / (np.pi / 180)
                 sc_path[index] = np.array([lon_mso, lat_mso, alt_mso])
                 index+=1
-                
+            
             for var in model:
                 if var.lower() == "geo_x":
                     continue
@@ -70,6 +69,7 @@ def mvn_kp_interpol_model(kp,
                     continue
                 if var.lower() == "geo_z":
                     continue
+                print("Interpolating variable " + var)
                 
                 if var=='dim' or var=='meta':
                     continue
@@ -86,17 +86,47 @@ def mvn_kp_interpol_model(kp,
                 data_new = np.transpose(data, dim_order_array)
                 
                 #Build an array of values that correspond to the points in data point
-                values = np.empty(len(data_points))
+                values = np.empty([len(lat_mso_model)*len(lon_mso_model), len(alt_mso_model)])
                 index = 0 
-                for i in range(0,len(lon_mso_model)):
-                    for j in range(0,len(lat_mso_model)):
-                        for k in range(0,len(alt_mso_model)):
-                            values[index] = data_new[i][j][k]              
+                for alt in range(0,len(alt_mso_model)):
+                    for lat in range(0,len(lat_mso_model)):
+                        for lon in range(0,len(lon_mso_model)):
+                            values[index, alt] = data_new[lon][lat][alt]           
                             index+=1
+                    index = 0
+                    
+                x = np.empty(len(sc_path))
+                index = 0
+                for sc_pos in sc_path:
+                    if sc_pos[2] > np.max(alt_mso_model):
+                        x[index] = np.NaN
+                        index+=1
+                        continue
+                    if sc_pos[2] < np.min(alt_mso_model):
+                        x[index] = np.NaN
+                        index+=1
+                        continue
+                    sorted_x_distance = np.argsort(np.abs(alt_mso_model-sc_pos[2]))
+                    alti1=sorted_x_distance[0]
+                    if nearest:
+                        x[index] = interpolate.griddata(data_points, values[:,alti1], [sc_pos[0], sc_pos[1]], method='nearest')
+                    else:
+                        if alt_mso_model[alti1] < sc_pos[2]:
+                            alti2=alti1+1
+                        else:
+                            temp = alti1 -1
+                            alti2 = alti1
+                            alti1 = temp
+                        #Interpolate through space
+                        first_val = interpolate.griddata(data_points, values[:,alti1], [sc_pos[0], sc_pos[1]])
+                        second_val = interpolate.griddata(data_points, values[:,alti2], [sc_pos[0], sc_pos[1]])
+                        delta_1 = sc_pos[2] - alt_mso_model[alti1]
+                        delta_2 = alt_mso_model[alti2] - sc_pos[2]
+                        delta_tot = alt_mso_model[alti2] - alt_mso_model[alti1]
+                        x[index] = ((first_val*delta_2) + (second_val*delta_1)) / (delta_tot)
+                    index+=1
+                model_interp[var] = np.array(x)
                 
-                #Interpolate through space
-                model_interp[var] = interpolate.griddata(data_points, values, sc_path, method=interp_method)
-        
         if 'geo' == model['meta']['coord_sys'].lower():            
             #Build the Matrix that transforms GEO to MSO coordinates 
             ls_rad = model['meta']['ls'] * np.pi / 180
@@ -121,9 +151,9 @@ def mvn_kp_interpol_model(kp,
             lon_geo_model = model['dim']['lon']
             alt_geo_model = model['dim']['alt']
             
-            lon_array = np.repeat(lon_geo_model, len(alt_geo_model)*len(lat_geo_model))
-            lat_array = np.tile(np.repeat(lat_geo_model, len(alt_geo_model)), len(lon_geo_model))
-            alt_array = np.tile(alt_geo_model, len(lat_geo_model)*len(lon_geo_model))
+            alt_array = np.repeat(alt_geo_model, len(lon_geo_model)*len(lat_geo_model))
+            lat_array = np.tile(np.repeat(lat_geo_model, len(lon_geo_model)), len(alt_geo_model))
+            lon_array = np.tile(lon_geo_model, len(lat_geo_model)*len(alt_geo_model))
             data_points = np.transpose(np.array([lon_array,lat_array,alt_array]))
             
             #Convert to GEO coordinates, then to MSO
@@ -137,21 +167,24 @@ def mvn_kp_interpol_model(kp,
                 index+=1
             
             #Convert to MSO Lon/Lat/Alt in order to weight the interpolation better
+            lat_mso = np.empty(len(lon_geo_model)*len(lat_geo_model))
+            lon_mso = np.empty(len(lon_geo_model)*len(lat_geo_model))
             index = 0
             for point in data_points:
                 r_mso = np.sqrt(point[0]**2 + point[1]**2 + point[2]**2)
-                alt_mso = r_mso - mars_radius
-                lat_mso = 90 - (np.arccos(point[2]/r_mso) / (np.pi / 180))
-                lon_mso = np.arctan2(point[0], point[1]) / (np.pi / 180)
-                data_points[index] = np.array([lon_mso, lat_mso, alt_mso])
+                lat_mso[index] = 90 - (np.arccos(point[2]/r_mso) / (np.pi / 180))
+                lon_mso[index] = np.arctan2(point[1], point[0]) / (np.pi / 180)
                 index+=1
-                 
+                if index >= len(lon_geo_model)*len(lat_geo_model):
+                    break
+            latlon_points = np.transpose(np.array([lon_mso,lat_mso]))
+             
             index = 0
             for point in sc_path:
                 r_mso = np.sqrt(point[0]**2 + point[1]**2 + point[2]**2)
-                alt_mso = r_mso - mars_radius
+                alt_mso = kp['SPACECRAFT']['Altitude Aeroid'][index]
                 lat_mso = 90 - (np.arccos(point[2]/r_mso) / (np.pi / 180))
-                lon_mso = np.arctan2(point[0], point[1]) / (np.pi / 180)
+                lon_mso = np.arctan2(point[1], point[0]) / (np.pi / 180)
                 sc_path[index] = np.array([lon_mso, lat_mso, alt_mso])
                 index+=1
                 
@@ -166,6 +199,7 @@ def mvn_kp_interpol_model(kp,
                     continue
                 if var=='dim' or var=='meta':
                     continue
+                print("Interpolating variable " + var)
                 #Rearrange the data to lon/lat/alt
                 data = model[var]['data']
                 dim_order_array = [0,1,2]
@@ -179,15 +213,48 @@ def mvn_kp_interpol_model(kp,
                 data_new = np.transpose(data, dim_order_array)
                 
                 #Build an array of values that correspond to the points in data point
-                values = np.empty(len(data_points))
+                values = np.empty([len(lat_geo_model)*len(lon_geo_model), len(alt_geo_model)])
                 index = 0 
-                for i in range(0,len(lon_geo_model)):
-                    for j in range(0,len(lat_geo_model)):
-                        for k in range(0,len(alt_geo_model)):
-                            values[index] = data_new[i][j][k]              
+                for alt in range(0,len(alt_geo_model)):
+                    for lat in range(0,len(lat_geo_model)):
+                        for lon in range(0,len(lon_geo_model)):
+                            values[index, alt] = data_new[lon][lat][alt]              
                             index+=1
+                    index = 0
+                    
+                    
                 #Interpolate through space
-                model_interp[var] = interpolate.griddata(data_points, values, sc_path, method=interp_method)
+                x = np.empty(len(sc_path))
+                index = 0
+                for sc_pos in sc_path:
+                    if sc_pos[2] > np.max(alt_geo_model):
+                        x[index] = np.NaN
+                        index+=1
+                        continue
+                    if sc_pos[2] < np.min(alt_geo_model):
+                        x[index] = np.NaN
+                        index+=1
+                        continue
+                    sorted_x_distance = np.argsort(np.abs(alt_geo_model-sc_pos[2]))
+                    alti1=sorted_x_distance[0]
+                    if nearest:
+                        x[index] = interpolate.griddata(latlon_points, values[:,alti1], [sc_pos[0], sc_pos[1]], method='nearest')
+                    else:
+                        if alt_geo_model[alti1] < sc_pos[2]:
+                            alti2=alti1+1
+                        else:
+                            temp = alti1 -1
+                            alti2 = alti1
+                            alti1 = temp
+                        #Interpolate through space
+                        first_val = interpolate.griddata(latlon_points, values[:,alti1], [sc_pos[0], sc_pos[1]])
+                        second_val = interpolate.griddata(latlon_points, values[:,alti2], [sc_pos[0], sc_pos[1]])
+                        delta_1 = sc_pos[2] - alt_geo_model[alti1]
+                        delta_2 = alt_geo_model[alti2] - sc_pos[2]
+                        delta_tot = alt_geo_model[alti2] - alt_geo_model[alti1]
+                        x[index] = ((first_val*delta_2) + (second_val*delta_1)) / (delta_tot)
+                    index+=1
+                model_interp[var] = np.array(x)
                 
     else:
         if 'mso' == model['meta']['coord_sys'].lower():   

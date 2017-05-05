@@ -668,9 +668,9 @@ def mvn_kp_sc_traj_xyz(dims_x, dims_y, dims_z, values, x_array, y_array, z_array
     data = []
     if nn=='nearest':
         for x,y,z in np.array([a for a in zip(x_array, y_array, z_array)]):
-            ix=dims_x[np.abs(dims_x - x).argmin()]
-            iy=dims_y[np.abs(dims_y - y).argmin()]
-            iz=dims_z[np.abs(dims_z - z).argmin()]
+            ix=np.abs(dims_x - x).argmin()
+            iy=np.abs(dims_y - y).argmin()
+            iz=np.abs(dims_z - z).argmin()
             data.append(values[ix, iy, iz])
     else:
         max_x = np.max(x_array)
