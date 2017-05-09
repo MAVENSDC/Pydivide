@@ -11,3 +11,4 @@ from .mvn_kp_map2d import mvn_kp_map2d
 from .mvn_kp_read_model_results import mvn_kp_read_model_results
 from .mvn_kp_insitu_search import mvn_kp_insitu_search
 from .mvn_kp_interpol_model import mvn_kp_interpol_model
+from .mvn_kp_create_model_maps import mvn_kp_create_model_maps

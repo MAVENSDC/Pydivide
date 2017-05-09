@@ -73,7 +73,7 @@ def mvn_kp_read_model_results(file):
         elif var.lower() == 'longitude':
             lon_temp = model.variables[var][0:lon_size] 
             if np.max(lon_temp) > 180 and np.min(lon_temp) > 0:
-                lon_temp = [(a - 360) if a>180 else a for a in lon_temp]
+                lon_temp = np.array([(a - 360) if a>180 else a for a in lon_temp])
             dim['lon'] = lon_temp  
         elif var.lower() == 'altitude':
             dim['alt'] = model.variables[var][0:alt_size]
