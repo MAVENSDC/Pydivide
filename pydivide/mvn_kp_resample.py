@@ -130,6 +130,7 @@ def mvn_kp_resample(kp, time, sc_only=False):
     
     #For each instrument:
     for i in range(len(inst_names)):
+        print(inst_names[i])
         if inst_tags[i] is not None:
             dataframe_initalized = False
             #For each observation mode:
@@ -177,7 +178,7 @@ def mvn_kp_resample(kp, time, sc_only=False):
     # Define list of first level data structures
     data_tags = [Time, TimeUnix, Orbit, IOflag, 
                  inst_tags[0], inst_tags[1], inst_tags[2], inst_tags[3], inst_tags[4], 
-                 inst_tags[5], inst_tags[6], inst_tags[7], APP, SPACECRAFT]
+                 inst_tags[5], inst_tags[6], inst_tags[7], inst_tags[8], inst_tags[9]]
     # return a dictionary made from tag_names and data_tags
     kp_new = ( dict( zip( tag_names, data_tags ) ) )
     

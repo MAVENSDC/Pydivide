@@ -4,25 +4,23 @@ import os
 from pydivide.mvn_kp_utilities import mvn_kp_sc_traj_xyz
 from scipy import interpolate, spatial
 from pydivide.mvn_kp_read_model_results import mvn_kp_read_model_results
-import matplotlib
 import matplotlib.pyplot as plt
 
 def mvn_kp_create_model_maps(altitude,
                              model=None,
-                             model_file=None,
+                             file=None,
                              numContours=25,
                              fill=False,
-                             ct='jet', # 
-                             basemap=None,
+                             ct='jet',  # https://matplotlib.org/examples/color/colormaps_reference.html
                              transparency=1,
                              nearest=False,
                              linear=True):
     
-    if model==None and model_file==None:
+    if model==None and file==None:
         print("Please input either a model or the file path/name to a model.")
         return
-    if model_file != None:
-        model = mvn_kp_read_model_results(model_file)
+    if file != None:
+        model = mvn_kp_read_model_results(file)
     
     
     print("Select a variable to plot: ")
@@ -40,8 +38,8 @@ def mvn_kp_create_model_maps(altitude,
     dataname=name_index_dict[i_choice].lower()
     
     mars_radius = model['meta']['mars_radius']
-    lats = np.arange(171)-85
-    lons = np.arange(351)-175
+    lats = np.arange(181)-90
+    lons = np.arange(361)-180
     sc_lat_mso = np.repeat(lats, len(lons))
     sc_lon_mso = np.tile(lons, len(lats))
     r = np.full(len(sc_lon_mso), altitude+mars_radius)
@@ -56,7 +54,7 @@ def mvn_kp_create_model_maps(altitude,
     else:
         interp_method = 'linear'
     
-    if model==None and model_file==None:
+    if model==None and file==None:
         print("Please input either a model dictionary from mvn_kp_read_model_results, or a model file.")
         return
     
@@ -304,12 +302,13 @@ def mvn_kp_create_model_maps(altitude,
     if fill:
         plt.contourf(xi, yi, zi, numContours, alpha=transparency, cmap=ct, extent=(-180,-90,180,90))
     else:
-        plt.contour(xi, yi, zi, numContours, alpha=transparency, cmap=ct)
+        CS = plt.contour(xi, yi, zi, numContours, alpha=transparency, cmap=ct)
+        plt.clabel(CS, inline=1, fontsize=7, fmt='%1.0f')
     extent = ax.get_window_extent().transformed(fig.dpi_scale_trans.inverted())
     plt.axis('off')
     save_name = "ModelData_"+dataname+"_"+str(altitude)+"km"
     if fill:
         save_name = save_name + "_filled"
-    plt.savefig(os.path.join(os.path.dirname(model_file),save_name+".png"), transparent=False, bbox_inches=extent, pad_inches=0, dpi=150)
+    plt.savefig(os.path.join(os.path.dirname(file),save_name+".png"), transparent=False, bbox_inches=extent, pad_inches=0, dpi=150)
     plt.show()
     

@@ -2,7 +2,6 @@ from .mvn_kp_utilities import get_inst_obs_labels
 from .mvn_kp_utilities import initialize_list
 from .mvn_kp_utilities import place_values_in_list
 from .mvn_kp_utilities import get_values_from_list
-from scipy import stats
 import math
 import numpy
 
@@ -11,15 +10,19 @@ def mvn_kp_bin(kp,
                bin_by=None,
                mins=None,
                maxs=None,
-               binsizes=None,
+               binsize=None,
                std=False,
                avg=False,
                density=False,
                median=False,
                unittest=False):
+    
     #
     #ERROR CHECKING
     #
+    if not isinstance(bin_by, list):
+        bin_by=[bin_by]
+    
     if parameter == None: 
         print("Must provide an index (or name) for param to be plotted.")
         return
@@ -32,10 +35,10 @@ def mvn_kp_bin(kp,
         print("Must select array(s) to return (avg, std, median, density).")
         return
     
-    if not hasattr(binsizes, "__len__"):
+    if not hasattr(binsize, "__len__"):
         temp = []
-        temp.append(binsizes)
-        binsizes = temp
+        temp.append(binsize)
+        binsize = temp
     if mins != None and not hasattr(mins, "__len__"):
         temp = []
         temp.append(mins)
@@ -65,15 +68,10 @@ def mvn_kp_bin(kp,
     #
     inst = []
     obs = []
-    if type(bin_by) is int or type(bin_by) is str:
-        a,b = get_inst_obs_labels( kp, bin_by )
+    for param in bin_by:
+        a,b = get_inst_obs_labels(kp,param)
         inst.append(a)
-        obs.append(b)
-    else:
-        for param in bin_by:
-            a,b = get_inst_obs_labels(kp,param)
-            inst.append(a)
-            obs.append(b)       
+        obs.append(b)       
     bin_by_inst_obs = list(zip( inst, obs ))
     
     
@@ -103,7 +101,7 @@ def mvn_kp_bin(kp,
             print("for bin-by parameter " + bin_by_inst_obs[i][1] + ".  Returning...")
             return
         ranges.append(maxs[i]-mins[i])
-        total_bins.append(int(math.ceil(ranges[i]/binsizes[i])))
+        total_bins.append(int(math.ceil(ranges[i]/binsize[i])))
     
     #
     #Initialize the binned_list (a list of every value at a certain bin)
@@ -136,7 +134,7 @@ def mvn_kp_bin(kp,
             if math.isnan(data_value) or data_value < mins[j] or data_value > maxs[j]:
                 bad_val=True
                 continue
-            dv = math.floor((data_value-mins[j])/binsizes[j])
+            dv = math.floor((data_value-mins[j])/binsize[j])
             data_value_indexes.append(int(dv))
             j = j + 1
             
@@ -186,7 +184,7 @@ def mvn_kp_bin(kp,
             if math.isnan(data_value) or data_value < mins[j] or data_value > maxs[j]:
                 bad_val=True
                 continue
-            dv = math.floor((data_value-mins[j])/binsizes[j])
+            dv = math.floor((data_value-mins[j])/binsize[j])
             data_value_indexes.append(int(dv))
             j = j + 1
             
@@ -231,7 +229,7 @@ def mvn_kp_bin(kp,
     dimension = 0
     for bin_by_inst, bin_by_obs in bin_by_inst_obs:
         print('Dimension ' + str(dimension) + ' is ' + bin_by_obs)
-        print('    Range: ['+str(mins[dimension])+', '+str(mins[dimension] + binsizes[dimension])+', ... '+str(mins[dimension] + (binsizes[dimension]*(total_bins[dimension]-2)))+', '+str(mins[dimension] + (binsizes[dimension]*(total_bins[dimension]-1)))+']') 
+        print('    Range: ['+str(mins[dimension])+', '+str(mins[dimension] + binsize[dimension])+', ... '+str(mins[dimension] + (binsize[dimension]*(total_bins[dimension]-2)))+', '+str(mins[dimension] + (binsize[dimension]*(total_bins[dimension]-1)))+']') 
         dimension = dimension+1
     
     

@@ -1,8 +1,6 @@
 import math
-from matplotlib import pyplot as plt
-from matplotlib.font_manager import FontProperties
 import pytplot
-
+from .mvn_kp_utilities import param_dict
 def mvn_kp_standards(kp, 
                      list_plots=False,
                      all_plots=False,
@@ -31,8 +29,9 @@ def mvn_kp_standards(kp,
                      solar_wind=False,
                      ionosphere=False,
                      sc_pot=False,
-                     plot_title='Standard Plots'):
-    
+                     altitude=False,
+                     title='Standard Plots'):
+
     if all_plots:
         euv = True
         mag_mso = True
@@ -106,12 +105,14 @@ def mvn_kp_standards(kp,
     current_plot_number = 0
     names_to_plot=[]
     
+    pytplot.xlim(float(kp['Time'][0]), float(kp['Time'][-1]))
+    
     if euv:
         title = "EUV"
         try:
             if 'EUV' not in kp.keys():
                 raise Exception("NoDataException")
-            euv_dataframe = kp['EUV'].loc[:,['EUV Irradiance Lyman-alpha','EUV Irradiance 17-22 nm', 'EUV Irradiance 0.1-7.0 nm']]
+            euv_dataframe = kp['EUV'].loc[:,[param_dict['EUV Irradiance Lyman-alpha'],param_dict['EUV Irradiance 17-22 nm'], param_dict['EUV Irradiance 0.1-7.0 nm']]]
             pytplot.store_data(title, data={'x':kp['Time'], 'y':euv_dataframe})
             pytplot.options(title,'legend_names',['EUV Irradiance Lyman-alpha','EUV Irradiance 17-22 nm', 'EUV Irradiance 0.1-7.0 nm'])
             names_to_plot.append(title)
@@ -126,8 +127,8 @@ def mvn_kp_standards(kp,
             if 'MAG' not in kp.keys():
                 raise Exception("NoDataException")
             
-            mag_mso_dataframe = kp['MAG'].loc[:,['Magnetic Field MSO X','Magnetic Field MSO Y', 'Magnetic Field MSO Z']]
-            mag_mso_dataframe['Magnetic Field Magnitude MSO'] = ((kp['MAG']['Magnetic Field MSO X']*kp['MAG']['Magnetic Field MSO X']) + (kp['MAG']['Magnetic Field MSO Y']*kp['MAG']['Magnetic Field MSO Y']) + (kp['MAG']['Magnetic Field MSO Z']*kp['MAG']['Magnetic Field MSO Z'])).apply(math.sqrt)
+            mag_mso_dataframe = kp['MAG'].loc[:,[param_dict['Magnetic Field MSO X'],param_dict['Magnetic Field MSO Y'], param_dict['Magnetic Field MSO Z']]]
+            mag_mso_dataframe['Magnetic Field Magnitude MSO'] = ((kp['MAG'][param_dict['Magnetic Field MSO X']]*kp['MAG'][param_dict['Magnetic Field MSO X']]) + (kp['MAG'][param_dict['Magnetic Field MSO Y']]*kp['MAG'][param_dict['Magnetic Field MSO Y']]) + (kp['MAG'][param_dict['Magnetic Field MSO Z']]*kp['MAG'][param_dict['Magnetic Field MSO Z']])).apply(math.sqrt)
             pytplot.store_data(title, data={'x':kp['Time'], 'y':mag_mso_dataframe})
             pytplot.options(title,'legend_names',['Magnetic Field MSO X','Magnetic Field MSO Y', 'Magnetic Field MSO Z', 'Magnetic Field Magnitude MSO'])
             names_to_plot.append(title)
@@ -141,8 +142,8 @@ def mvn_kp_standards(kp,
         try:
             if 'MAG' not in kp.keys():
                 raise Exception("NoDataException")
-            mag_geo_dataframe = kp['MAG'].loc[:,['Magnetic Field GEO X','Magnetic Field GEO Y', 'Magnetic Field GEO Z']]
-            mag_geo_dataframe['Magnetic Field Magnitude GEO'] = ((kp['MAG']['Magnetic Field GEO X']*kp['MAG']['Magnetic Field GEO X']) + (kp['MAG']['Magnetic Field GEO Y']*kp['MAG']['Magnetic Field GEO Y']) + (kp['MAG']['Magnetic Field GEO Z']*kp['MAG']['Magnetic Field GEO Z'])).apply(math.sqrt)
+            mag_geo_dataframe = kp['MAG'].loc[:,[param_dict['Magnetic Field GEO X'],param_dict['Magnetic Field GEO Y'], param_dict['Magnetic Field GEO Z']]]
+            mag_geo_dataframe['Magnetic Field Magnitude GEO'] = ((kp['MAG'][param_dict['Magnetic Field GEO X']]*kp['MAG'][param_dict['Magnetic Field GEO X']]) + (kp['MAG'][param_dict['Magnetic Field GEO Y']]*kp['MAG'][param_dict['Magnetic Field GEO Y']]) + (kp['MAG'][param_dict['Magnetic Field GEO Z']]*kp['MAG'][param_dict['Magnetic Field GEO Z']])).apply(math.sqrt)
             pytplot.store_data(title, data={'x':kp['Time'], 'y':mag_geo_dataframe})
             pytplot.options(title,'legend_names',['Magnetic Field GEO X','Magnetic Field GEO Y', 'Magnetic Field GEO Z', 'Magnetic Field Magnitude GEO'])
             names_to_plot.append(title)
@@ -157,9 +158,9 @@ def mvn_kp_standards(kp,
             if 'MAG' not in kp.keys():
                 raise Exception("NoDataException")
             #Note, this plot ends up different from the IDL version, because of the way IDL calculates arctans.  Important, or not?
-            mag_cone_dataframe_temp = kp['MAG'].loc[:,['Magnetic Field MSO X','Magnetic Field MSO Y', 'Magnetic Field MSO Z']]
-            mag_cone_dataframe_temp['Clock Angle'] = (mag_cone_dataframe_temp['Magnetic Field MSO X'] / mag_cone_dataframe_temp['Magnetic Field MSO Y']).apply(math.atan) * 57.295776
-            mag_cone_dataframe_temp['Cone Angle'] = ((mag_cone_dataframe_temp['Magnetic Field MSO X'].apply(abs)) / (((kp['MAG']['Magnetic Field MSO X']*kp['MAG']['Magnetic Field MSO X']) + (kp['MAG']['Magnetic Field MSO Y']*kp['MAG']['Magnetic Field MSO Y']) + (kp['MAG']['Magnetic Field MSO Z']*kp['MAG']['Magnetic Field MSO Z'])).apply(math.sqrt))).apply(math.acos) * 57.295776
+            mag_cone_dataframe_temp = kp['MAG'].loc[:,[param_dict['Magnetic Field MSO X'],param_dict['Magnetic Field MSO Y'], param_dict['Magnetic Field MSO Z']]]
+            mag_cone_dataframe_temp['Clock Angle'] = (mag_cone_dataframe_temp[param_dict['Magnetic Field MSO X']] / mag_cone_dataframe_temp[param_dict['Magnetic Field MSO Y']]).apply(math.atan) * 57.295776
+            mag_cone_dataframe_temp['Cone Angle'] = ((mag_cone_dataframe_temp[param_dict['Magnetic Field MSO X']].apply(abs)) / (((kp['MAG'][param_dict['Magnetic Field MSO X']]*kp['MAG'][param_dict['Magnetic Field MSO X']]) + (kp['MAG'][param_dict['Magnetic Field MSO Y']]*kp['MAG'][param_dict['Magnetic Field MSO Y']]) + (kp['MAG'][param_dict['Magnetic Field MSO Z']]*kp['MAG'][param_dict['Magnetic Field MSO Z']])).apply(math.sqrt))).apply(math.acos) * 57.295776
             mag_cone_dataframe = mag_cone_dataframe_temp.loc[:,['Clock Angle','Cone Angle']]
             pytplot.store_data(title, data={'x':kp['Time'], 'y':mag_cone_dataframe})
             pytplot.options(title,'legend_names',['Magnetic Clock Angle','Magnetic Cone Angle'])
@@ -174,15 +175,15 @@ def mvn_kp_standards(kp,
         try:
             if 'MAG' not in kp.keys():
                 raise Exception("NoDataException")
-            clat = (kp['SPACECRAFT']['GEO Latitude'] * 3.14159265/180).apply(math.cos)
-            slat = (kp['SPACECRAFT']['GEO Latitude'] * 3.14159265/180).apply(math.sin)
-            clon = (kp['SPACECRAFT']['GEO Longitude'] * 3.14159265/180).apply(math.cos)
-            slon = (kp['SPACECRAFT']['GEO Longitude'] * 3.14159265/180).apply(math.sin)
+            clat = (kp['SPACECRAFT']['SUB_SC_LATITUDE'] * 3.14159265/180).apply(math.cos)
+            slat = (kp['SPACECRAFT']['SUB_SC_LATITUDE'] * 3.14159265/180).apply(math.sin)
+            clon = (kp['SPACECRAFT']['SUB_SC_LONGITUDE'] * 3.14159265/180).apply(math.cos)
+            slon = (kp['SPACECRAFT']['SUB_SC_LONGITUDE'] * 3.14159265/180).apply(math.sin)
             
-            mag_rad_series = (kp['MAG']['Magnetic Field GEO X'] * clon * clat) + (kp['MAG']['Magnetic Field GEO Y'] * slon * clat) + (kp['MAG']['Magnetic Field GEO Z'] * slat)
+            mag_rad_series = (kp['MAG'][param_dict['Magnetic Field GEO X']] * clon * clat) + (kp['MAG'][param_dict['Magnetic Field GEO Y']] * slon * clat) + (kp['MAG'][param_dict['Magnetic Field GEO Z']] * slat)
             mag_dir_dataframe = mag_rad_series.to_frame(name='Radial')
-            mag_dir_dataframe['Eastward'] = (kp['MAG']['Magnetic Field GEO X'] * slon * -1) + (kp['MAG']['Magnetic Field GEO Y'] * clon)
-            mag_dir_dataframe['Northward'] = (kp['MAG']['Magnetic Field GEO X'] * clon * slat * -1) + (kp['MAG']['Magnetic Field GEO Y'] * slon * slat * -1) + (kp['MAG']['Magnetic Field GEO Z'] * clat)
+            mag_dir_dataframe['Eastward'] = (kp['MAG'][param_dict['Magnetic Field GEO X']] * slon * -1) + (kp['MAG'][param_dict['Magnetic Field GEO Y']] * clon)
+            mag_dir_dataframe['Northward'] = (kp['MAG'][param_dict['Magnetic Field GEO X']] * clon * slat * -1) + (kp['MAG'][param_dict['Magnetic Field GEO Y']] * slon * slat * -1) + (kp['MAG'][param_dict['Magnetic Field GEO Z']] * clat)
             pytplot.store_data(title, data={'x':kp['Time'], 'y':mag_dir_dataframe})
             pytplot.options(title,'legend_names',['Radial','Eastward','Northward'])
             names_to_plot.append(title)
@@ -196,9 +197,9 @@ def mvn_kp_standards(kp,
         try:
             if 'NGIMS' not in kp.keys():
                 raise Exception("NoDataException")
-            ngims_neutrals_dataframe=kp['NGIMS'].loc[:,['Density He', 'Density O', 'Density CO', 'Density N2', 'Density NO', 'Density AR', 'Density C02']]
+            ngims_neutrals_dataframe=kp['NGIMS'].loc[:,[param_dict['Density He'], param_dict['Density O'], param_dict['Density CO'], param_dict['Density N2'], param_dict['Density NO'], param_dict['Density Ar'], param_dict['Density CO2']]]
             pytplot.store_data(title, data={'x':kp['Time'], 'y':ngims_neutrals_dataframe})
-            pytplot.options(title,'legend_names',['Density He', 'Density O', 'Density CO', 'Density N2', 'Density NO', 'Density AR', 'Density C02'])
+            pytplot.options(title,'legend_names',['Density He', 'Density O', 'Density CO', 'Density N2', 'Density NO', 'Density Ar', 'Density CO2'])
             pytplot.options(title, 'ylog', 1)
             names_to_plot.append(title)
             current_plot_number = current_plot_number + 1
@@ -211,7 +212,7 @@ def mvn_kp_standards(kp,
         try:
             if 'NGIMS' not in kp.keys():
                 raise Exception("NoDataException")
-            ngims_ion_dataframe = kp['NGIMS'].loc[:,['Density 32+', 'Density 44+', 'Density 30+', 'Density 16+', 'Density 28+', 'Density 12+', 'Density 17+', 'Density 14+']]
+            ngims_ion_dataframe = kp['NGIMS'].loc[:,[param_dict['Density 32+'], param_dict['Density 44+'], param_dict['Density 30+'], param_dict['Density 16+'], param_dict['Density 28+'], param_dict['Density 12+'], param_dict['Density 17+'], param_dict['Density 14+']]]
             pytplot.store_data(title, data={'x':kp['Time'], 'y':ngims_ion_dataframe})
             pytplot.options(title,'legend_names',['Density 32+', 'Density 44+', 'Density 30+', 'Density 16+', 'Density 28+', 'Density 12+', 'Density 17+', 'Density 14+'])
             pytplot.options(title, 'ylog', 1)
@@ -227,7 +228,7 @@ def mvn_kp_standards(kp,
             if 'SPACECRAFT' not in kp.keys():
                 raise Exception("NoDataException")
             #This plot makes no sense.  Why is Local Time plotted here, when it is not a measurement in degrees?  Why is Mars season/Subsolar Latitude plotted when they are essentially straight lines? 
-            sc_eph_dataframe = kp['SPACECRAFT'].loc[:,['GEO Longitude', 'GEO Latitude', 'Solar Zenith Angle', 'Local Time', 'Mars Season (Ls)', 'Subsolar Point GEO Longitude', 'Subsolar Point GEO Latitude']]
+            sc_eph_dataframe = kp['SPACECRAFT'].loc[:,['SUB_SC_LONGITUDE', 'SUB_SC_LATITUDE', 'SZA', 'LOCAL_TIME', 'MARS_SEASON', 'SUBSOLAR_POINT_GEO_LONGITUDE', 'SUBSOLAR_POINT_GEO_LATITUDE']]
             pytplot.store_data(title, data={'x':kp['Time'], 'y':sc_eph_dataframe})
             pytplot.options(title,'legend_names',['GEO Longitude', 'GEO Latitude', 'Solar Zenith Angle', 'Local Time', 'Mars Season (Ls)', 'Subsolar Point GEO Longitude', 'Subsolar Point GEO Latitude'])
             names_to_plot.append(title)
@@ -241,7 +242,7 @@ def mvn_kp_standards(kp,
         try:
             if 'SPACECRAFT' not in kp.keys():
                 raise Exception("NoDataException")
-            sc_pos_dataframe = kp['SPACECRAFT'].loc[:,['GEO X', 'GEO Y', 'GEO Z', 'Altitude Aeroid']]
+            sc_pos_dataframe = kp['SPACECRAFT'].loc[:,['GEO_X', 'GEO_Y', 'GEO_Z', 'ALTITUDE']]
             pytplot.store_data(title, data={'x':kp['Time'], 'y':sc_pos_dataframe})
             pytplot.options(title,'legend_names',['GEO X', 'GEO Y', 'GEO Z', 'Altitude Aeroid'])
             names_to_plot.append(title)
@@ -255,7 +256,7 @@ def mvn_kp_standards(kp,
         try:
             if 'SPACECRAFT' not in kp.keys():
                 raise Exception("NoDataException")
-            sc_pos_mso_dataframe = kp['SPACECRAFT'].loc[:,['MSO X', 'MSO Y', 'MSO Z', 'Altitude Aeroid']]
+            sc_pos_mso_dataframe = kp['SPACECRAFT'].loc[:,'MSO_X', 'MSO_Y', 'MSO_Z', 'ALTITUDE']
             pytplot.store_data(title, data={'x':kp['Time'], 'y':sc_pos_mso_dataframe})
             pytplot.options(title,'legend_names',['MSO X', 'MSO Y', 'MSO Z', 'Altitude Aeroid'])
             names_to_plot.append(title)
@@ -269,7 +270,7 @@ def mvn_kp_standards(kp,
         try:
             if 'SWEA' not in kp.keys():
                 raise Exception("NoDataException")
-            swea_dataframe = kp['SWEA'].loc[:,['Flux, e- Parallel (5-100 ev)', 'Flux, e- Parallel (100-500 ev)', 'Flux, e- Parallel (500-1000 ev)', 'Flux, e- Anti-par (5-100 ev)', 'Flux, e- Anti-par (100-500 ev)', 'Flux, e- Anti-par (500-1000 ev)', 'Electron Spectrum Shape']]
+            swea_dataframe = kp['SWEA'].loc[:,[param_dict['Flux, e- Parallel (5-100 ev)'], param_dict['Flux, e- Parallel (100-500 ev)'], param_dict['Flux, e- Parallel (500-1000 ev)'], param_dict['Flux, e- Anti-par (5-100 ev)'], param_dict['Flux, e- Anti-par (100-500 ev)'], param_dict['Flux, e- Anti-par (500-1000 ev)'], param_dict['Electron Spectrum Shape']]]
             pytplot.store_data(title, data={'x':kp['Time'], 'y':swea_dataframe})
             pytplot.options(title,'legend_names',['Flux, e- Parallel (5-100 ev)', 'Flux, e- Parallel (100-500 ev)', 'Flux, e- Parallel (500-1000 ev)', 'Flux, e- Anti-par (5-100 ev)', 'Flux, e- Anti-par (100-500 ev)', 'Flux, e- Anti-par (500-1000 ev)', 'Electron Spectrum Shape'])
             names_to_plot.append(title)
@@ -284,8 +285,8 @@ def mvn_kp_standards(kp,
             if 'SEP' not in kp.keys():
                 raise Exception("NoDataException")
             #Need to fill in the NaNs as zero, otherwise the Sum will equal all Nans
-            sep_ion_dataframe = kp['SEP'].loc[:,['Ion Flux FOV 1 F','Ion Flux FOV 1 R','Ion Flux FOV 2 F','Ion Flux FOV 2 R']].fillna(0)
-            sep_ion_dataframe['Sum'] = sep_ion_dataframe['Ion Flux FOV 1 F'] + sep_ion_dataframe['Ion Flux FOV 1 R'] + sep_ion_dataframe['Ion Flux FOV 2 F'] + sep_ion_dataframe['Ion Flux FOV 2 R']
+            sep_ion_dataframe = kp['SEP'].loc[:,[param_dict['Ion Flux FOV 1 F'],param_dict['Ion Flux FOV 1 R'],param_dict['Ion Flux FOV 2 F'],param_dict['Ion Flux FOV 2 R']]].fillna(0)
+            sep_ion_dataframe['Sum'] = sep_ion_dataframe[param_dict['Ion Flux FOV 1 F']] + sep_ion_dataframe[param_dict['Ion Flux FOV 1 R']] + sep_ion_dataframe[param_dict['Ion Flux FOV 2 F']] + sep_ion_dataframe[param_dict['Ion Flux FOV 2 R']]
             pytplot.store_data(title, data={'x':kp['Time'], 'y':sep_ion_dataframe})
             pytplot.options(title,'legend_names',['Ion Flux FOV 1 F','Ion Flux FOV 1 R','Ion Flux FOV 2 F','Ion Flux FOV 2 R', 'Sum'])
             names_to_plot.append(title)
@@ -299,8 +300,8 @@ def mvn_kp_standards(kp,
         try:
             if 'SEP' not in kp.keys():
                 raise Exception("NoDataException")
-            sep_electron_dataframe = kp['SEP'].loc[:,['Electron Flux FOV 1 F','Electron Flux FOV 1 R','Electron Flux FOV 2 F','Electron Flux FOV 2 R']].fillna(0)
-            sep_electron_dataframe['Sum'] = sep_electron_dataframe['Electron Flux FOV 1 F'] + sep_electron_dataframe['Electron Flux FOV 1 R'] + sep_electron_dataframe['Electron Flux FOV 2 F'] + sep_electron_dataframe['Electron Flux FOV 2 R']
+            sep_electron_dataframe = kp['SEP'].loc[:,[param_dict['Electron Flux FOV 1 F'],param_dict['Electron Flux FOV 1 R'],param_dict['Electron Flux FOV 2 F'],param_dict['Electron Flux FOV 2 R']]].fillna(0)
+            sep_electron_dataframe['Sum'] = sep_electron_dataframe[param_dict['Electron Flux FOV 1 F']] + sep_electron_dataframe[param_dict['Electron Flux FOV 1 R']] + sep_electron_dataframe[param_dict['Electron Flux FOV 2 F']] + sep_electron_dataframe[param_dict['Electron Flux FOV 2 R']]
             pytplot.store_data(title, data={'x':kp['Time'], 'y':sep_electron_dataframe})
             pytplot.options(title,'legend_names',['Electron Flux FOV 1 F','Electron Flux FOV 1 R','Electron Flux FOV 2 F','Electron Flux FOV 2 R', 'Sum'])
             names_to_plot.append(title)
@@ -315,8 +316,8 @@ def mvn_kp_standards(kp,
             if 'LPW' not in kp.keys():
                 raise Exception("NoDataException") 
         
-            wave_dataframe = kp['LPW'].loc[:,['E-field Power 2-100 Hz','E-field Power 100-800 Hz','E-field Power 0.8-1.0 Mhz']]
-            wave_dataframe['RMS Deviation'] = kp['MAG'].loc[:,['Magnetic Field RMS Dev']]
+            wave_dataframe = kp['LPW'].loc[:,[param_dict['E-field Power 2-100 Hz'],param_dict['E-field Power 100-800 Hz'],param_dict['E-field Power 0.8-1.0 Mhz']]]
+            wave_dataframe['RMS Deviation'] = kp['MAG'].loc[:,[param_dict['Magnetic Field RMS Dev']]]
             
             #Whenever we do a log plot, the plotting routine stops if a column is full of NaNs.  So we need to check for 
             #this prior to plotting them.  For the record, Tplot just ignores all NaN data and doesn't plot it. 
@@ -342,10 +343,10 @@ def mvn_kp_standards(kp,
         try:
             if 'SWIA' not in kp.keys() or 'STATIC' not in kp.keys() or 'LPW' not in kp.keys() or 'SWEA' not in kp.keys():
                 raise Exception("NoDataException")
-            plasma_den_dataframe = kp['STATIC'].loc[:,['H+ Density','O+ Density','O2+ Density']]
-            plasma_den_dataframe['SWIA H+ Density'] = kp['SWIA'].loc[:,['H+ Density']]
-            plasma_den_dataframe['Solar Wind Electron Density'] = kp['SWEA'].loc[:,['Solar Wind Electron Density']]
-            plasma_den_dataframe['Electron Density'] = kp['LPW'].loc[:,['Electron Density']]
+            plasma_den_dataframe = kp['STATIC'].loc[:,[param_dict['H+ Density'],param_dict['O+ Density'],param_dict['O2+ Density']]]
+            plasma_den_dataframe['SWIA H+ Density'] = kp['SWIA'].loc[:,[param_dict['H+ Density']]]
+            plasma_den_dataframe['Solar Wind Electron Density'] = kp['SWEA'].loc[:,[param_dict['Solar Wind Electron Density']]]
+            plasma_den_dataframe['Electron Density'] = kp['LPW'].loc[:,param_dict[['Electron Density']]]
             
             #Whenever we do a log plot, the plotting routine stops if a column is full of NaNs.  So we need to check for 
             #this prior to plotting them.  For the record, Tplot just ignores all NaN data and doesn't plot it. 
@@ -369,10 +370,10 @@ def mvn_kp_standards(kp,
         try:
             if 'SWIA' not in kp.keys() or 'STATIC' not in kp.keys() or 'LPW' not in kp.keys() or 'SWEA' not in kp.keys():
                 raise Exception("NoDataException")
-            plasma_temp_dataframe = kp['STATIC'].loc[:,['H+ Temperature','O+ Temperature','O2+ Temperature']]
-            plasma_temp_dataframe['SWIA H+ Temperature'] = kp['SWIA'].loc[:,['H+ Temperature']]
-            plasma_temp_dataframe['Solar Wind Electron Temperature'] = kp['SWEA'].loc[:,['Solar Wind Electron Temperature']]
-            plasma_temp_dataframe['Electron Temperature'] = kp['LPW'].loc[:,['Electron Temperature']]
+            plasma_temp_dataframe = kp['STATIC'].loc[:,[param_dict['H+ Temperature'],param_dict['O+ Temperature'],param_dict['O2+ Temperature']]]
+            plasma_temp_dataframe['SWIA H+ Temperature'] = kp['SWIA'].loc[:,[param_dict['H+ Temperature']]]
+            plasma_temp_dataframe['Solar Wind Electron Temperature'] = kp['SWEA'].loc[:,[param_dict['Solar Wind Electron Temperature']]]
+            plasma_temp_dataframe['Electron Temperature'] = kp['LPW'].loc[:,[param_dict['Electron Temperature']]]
             
             #Whenever we do a log plot, the plotting routine stops if a column is full of NaNs.  So we need to check for 
             #this prior to plotting them.  For the record, Tplot just ignores all NaN data and doesn't plot it.    
@@ -396,8 +397,8 @@ def mvn_kp_standards(kp,
         try:
             if 'SWIA' not in kp.keys():
                 raise Exception("NoDataException")
-            swia_h_vel_dataframe = kp['SWIA'].loc[:,['H+ Flow Velocity MSO X', 'H+ Flow Velocity MSO Y', 'H+ Flow Velocity MSO Z']]
-            swia_h_vel_dataframe['Magnitude'] = ((kp['SWIA']['H+ Flow Velocity MSO X']*kp['SWIA']['H+ Flow Velocity MSO X']) + (kp['SWIA']['H+ Flow Velocity MSO Y']*kp['SWIA']['H+ Flow Velocity MSO Y']) + (kp['SWIA']['H+ Flow Velocity MSO Z']*kp['SWIA']['H+ Flow Velocity MSO Z'])).apply(math.sqrt) 
+            swia_h_vel_dataframe = kp['SWIA'].loc[:,[param_dict['H+ Flow Velocity MSO X'], param_dict['H+ Flow Velocity MSO Y'], param_dict['H+ Flow Velocity MSO Z']]]
+            swia_h_vel_dataframe['Magnitude'] = ((kp['SWIA'][param_dict['H+ Flow Velocity MSO X']]*kp['SWIA'][param_dict['H+ Flow Velocity MSO X']]) + (kp['SWIA'][param_dict['H+ Flow Velocity MSO Y']]*kp['SWIA'][param_dict['H+ Flow Velocity MSO Y']]) + (kp['SWIA'][param_dict['H+ Flow Velocity MSO Z']]*kp['SWIA'][param_dict['H+ Flow Velocity MSO Z']])).apply(math.sqrt) 
             pytplot.store_data(title, data={'x':kp['Time'], 'y':swia_h_vel_dataframe})
             pytplot.options(title,'legend_names',['H+ Flow Velocity MSO X', 'H+ Flow Velocity MSO Y', 'H+ Flow Velocity MSO Z', 'Magnitude'])
             names_to_plot.append(title)
@@ -413,8 +414,8 @@ def mvn_kp_standards(kp,
                 raise Exception("NoDataException")
             #This is more like a direction, not a velocity.  The values are between 0 and 1.  
             
-            static_h_vel_dataframe = kp['STATIC'].loc[:,['H+ Direction MSO X', 'H+ Direction MSO Y', 'H+ Direction MSO Z']]
-            static_h_vel_dataframe['Magnitude'] = ((kp['STATIC']['H+ Direction MSO X']*kp['STATIC']['H+ Direction MSO X']) + (kp['STATIC']['H+ Direction MSO Y']*kp['STATIC']['H+ Direction MSO Y']) + (kp['STATIC']['H+ Direction MSO Z']*kp['STATIC']['H+ Direction MSO Z'])).apply(math.sqrt) 
+            static_h_vel_dataframe = kp['STATIC'].loc[:,[param_dict['H+ Direction MSO X'], param_dict['H+ Direction MSO Y'], param_dict['H+ Direction MSO Z']]]
+            static_h_vel_dataframe['Magnitude'] = ((kp['STATIC'][param_dict['H+ Direction MSO X']]*kp['STATIC'][param_dict['H+ Direction MSO X']]) + (kp['STATIC'][param_dict['H+ Direction MSO Y']]*kp['STATIC'][param_dict['H+ Direction MSO Y']]) + (kp['STATIC'][param_dict['H+ Direction MSO Z']]*kp['STATIC'][param_dict['H+ Direction MSO Z']])).apply(math.sqrt) 
             pytplot.store_data(title, data={'x':kp['Time'], 'y':static_h_vel_dataframe})
             pytplot.options(title,'legend_names',['H+ Direction MSO X', 'H+ Direction MSO Y', 'H+ Direction MSO Z', 'Magnitude'])
             names_to_plot.append(title)
@@ -428,8 +429,8 @@ def mvn_kp_standards(kp,
         try:
             if 'STATIC' not in kp.keys():
                 raise Exception("NoDataException")
-            static_o2_vel_dataframe = kp['STATIC'].loc[:,['O2+ Flow Velocity MSO X', 'O2+ Flow Velocity MSO Y', 'O2+ Flow Velocity MSO Z']]
-            static_o2_vel_dataframe['Magnitude'] = ((kp['STATIC']['O2+ Flow Velocity MSO X']*kp['STATIC']['O2+ Flow Velocity MSO X']) + (kp['STATIC']['O2+ Flow Velocity MSO Y']*kp['STATIC']['O2+ Flow Velocity MSO Y']) + (kp['STATIC']['O2+ Flow Velocity MSO Z']*kp['STATIC']['O2+ Flow Velocity MSO Z'])).apply(math.sqrt) 
+            static_o2_vel_dataframe = kp['STATIC'].loc[:,[param_dict['O2+ Flow Velocity MSO X'], param_dict['O2+ Flow Velocity MSO Y'], param_dict['O2+ Flow Velocity MSO Z']]]
+            static_o2_vel_dataframe['Magnitude'] = ((kp['STATIC'][param_dict['O2+ Flow Velocity MSO X']]*kp['STATIC'][param_dict['O2+ Flow Velocity MSO X']]) + (kp['STATIC'][param_dict['O2+ Flow Velocity MSO Y']]*kp['STATIC'][param_dict['O2+ Flow Velocity MSO Y']]) + (kp['STATIC'][param_dict['O2+ Flow Velocity MSO Z']]*kp['STATIC'][param_dict['O2+ Flow Velocity MSO Z']])).apply(math.sqrt) 
             pytplot.store_data(title, data={'x':kp['Time'], 'y':static_o2_vel_dataframe})
             pytplot.options(title,'legend_names',['O2+ Flow Velocity MSO X', 'O2+ Flow Velocity MSO Y', 'O2+ Flow Velocity MSO Z', 'Magnitude'])
             names_to_plot.append(title)
@@ -462,7 +463,7 @@ def mvn_kp_standards(kp,
         try:
             if 'STATIC' not in kp.keys():
                 raise Exception("NoDataException")
-            sta_char_eng_dataframe = kp['STATIC'].loc[:,['H+ Energy', 'He++ Energy', 'O+ Energy', 'O2+ Energy']]
+            sta_char_eng_dataframe = kp['STATIC'].loc[:,[param_dict['H+ Energy'], param_dict['He++ Energy'], param_dict['O+ Energy'], param_dict['O2+ Energy']]]
             pytplot.store_data(title, data={'x':kp['Time'], 'y':sta_char_eng_dataframe})
             pytplot.options(title,'legend_names',['H+ Energy', 'He++ Energy', 'O+ Energy', 'O2+ Energy'])
             pytplot.options(title,'ylog',1)
@@ -483,10 +484,10 @@ def mvn_kp_standards(kp,
             
             #Could there be a more efficient way of doing this?
             radius_mars = 3396.0 
-            sun_bar_series = ((kp['SPACECRAFT']['MSO Y']*kp['SPACECRAFT']['MSO Y']) + (kp['SPACECRAFT']['MSO Z']*kp['SPACECRAFT']['MSO Z'])).apply(math.sqrt)
+            sun_bar_series = ((kp['SPACECRAFT']['MSO_Y']*kp['SPACECRAFT']['MSO_Y']) + (kp['SPACECRAFT']['MSO_Z']*kp['SPACECRAFT']['MSO_Z'])).apply(math.sqrt)
             sun_bar_series.name = "Sunlit/Eclipsed"
             index = 0
-            for mso_x in kp['SPACECRAFT']['MSO X']:
+            for mso_x in kp['SPACECRAFT']['MSO_X']:
                 if mso_x < 0:
                     if sun_bar_series[index] < radius_mars:
                         sun_bar_series[index] = 0
@@ -512,7 +513,7 @@ def mvn_kp_standards(kp,
                 raise Exception("NoDataException")
             #Whenever we do a log plot, the plotting routine stops if a column is full of NaNs.  So we need to check for 
             #this prior to plotting them.  For the record, Tplot just ignores all NaN data and doesn't plot it.    
-            solar_wind_dataframe = kp['SWIA'].loc[:,['Solar Wind Dynamic Pressure']]
+            solar_wind_dataframe = kp['SWIA'].loc[:,[param_dict['Solar Wind Dynamic Pressure']]]
             #for KP in solar_wind_dataframe.columns.values:
             #    if (len(solar_wind_dataframe[KP][solar_wind_dataframe[KP].apply(math.isnan)]) == len(solar_wind_dataframe[KP])):
             #        print(KP + " has no finite values and will not be plotted.")
@@ -532,8 +533,8 @@ def mvn_kp_standards(kp,
             if 'SWEA' not in kp.keys():
                 raise Exception("NoDataException")
             #Need to convert to float first, not sure why it is not already
-            ionosphere_dataframe = kp['SWEA'].loc[:,['Electron Spectrum Shape']]
-            ionosphere_dataframe['Electron Spectrum Shape'] = ionosphere_dataframe['Electron Spectrum Shape'].apply(float)
+            ionosphere_dataframe = kp['SWEA'].loc[:,[param_dict['Electron Spectrum Shape']]]
+            ionosphere_dataframe['Electron Spectrum Shape'] = ionosphere_dataframe[param_dict['Electron Spectrum Shape']].apply(float)
             #Whenever we do a log plot, the plotting routine stops if a column is full of NaNs.  So we need to check for 
             #this prior to plotting them.  For the record, Tplot just ignores all NaN data and doesn't plot it.    
             
@@ -555,8 +556,21 @@ def mvn_kp_standards(kp,
         try:
             if 'LPW' not in kp.keys():
                 raise Exception("NoDataException")
-            sc_pot_dataframe = kp['LPW'].loc[:,['Spacecraft Potential']]
+            sc_pot_dataframe = kp['LPW'].loc[:,[param_dict['Spacecraft Potential']]]
             pytplot.store_data(title, data={'x':kp['Time'], 'y':sc_pot_dataframe})
+            #pytplot.options('MAG Direction','legend_names',['Radial','Eastward','Northward'])
+            names_to_plot.append(title)
+            current_plot_number = current_plot_number + 1
+        except Exception as x:
+            if str(x) == "NoDataException":
+                print("LPW is not in the Key Parameter Data Structure, " + title + " will not be plotted")
+                
+                
+    if altitude:
+        title = "Spacecraft Altitude"
+        try:
+            altitude_dataframe = kp['SPACECRAFT'].loc[:,['ALTITUDE']]
+            pytplot.store_data(title, data={'x':kp['Time'], 'y':altitude_dataframe})
             #pytplot.options('MAG Direction','legend_names',['Radial','Eastward','Northward'])
             names_to_plot.append(title)
             current_plot_number = current_plot_number + 1
@@ -566,6 +580,6 @@ def mvn_kp_standards(kp,
     
     #Show the plot
     pytplot.tplot_options('wsize', [1000,200*(current_plot_number)])
-    pytplot.tplot_options('title', plot_title)
+    pytplot.tplot_options('title', title)
     pytplot.tplot(names_to_plot)
     pytplot.del_data(names_to_plot)

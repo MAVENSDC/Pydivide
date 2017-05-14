@@ -3,8 +3,8 @@ import pytplot
 import numpy as np
 import builtins
 
-def mvn_kp_alt_plot( kp, parameter=None, time=None, errors=None, 
-              SamePlot=True, SubPlot=False, list=False,
+def mvn_kp_altplot( kp, parameter=None, time=None, errors=None, 
+              SamePlot=True, list=False, title='Altitude Plot',
               **kwargs ):
     '''
     Plot the provided data plotted against spacecraft altitude.
@@ -77,7 +77,7 @@ def mvn_kp_alt_plot( kp, parameter=None, time=None, errors=None,
     z = []
     index = 0
     for i in kp['TimeString']:
-        z.append(kp['SPACECRAFT']['Altitude Aeroid'][index])
+        z.append(kp['SPACECRAFT']['ALTITUDE'][index])
         index = index + 1
 
     # Cycle through the parameters, plotting each according to
@@ -111,10 +111,12 @@ def mvn_kp_alt_plot( kp, parameter=None, time=None, errors=None,
         pytplot.store_data(pytplot_name, data = names_to_plot)
         pytplot.options(pytplot_name, 'alt', 1)
         pytplot.options(pytplot_name, 'legend_names', legend_names)
+        pytplot.tplot_options('title', title)
         pytplot.tplot_options('wsize', [1000,300])
         pytplot.tplot(pytplot_name)
         
     else:
+        pytplot.tplot_options('title', title)
         pytplot.tplot_options('wsize', [1000,300*(iplot-1)])
         pytplot.tplot(names_to_plot)
         

@@ -57,14 +57,15 @@ def mvn_kp_insitu_search(kp,
         
         
         i=0
-        bool_index = (kp['SPACECRAFT']['Altitude Aeroid'] > 0)
+        bool_index = (kp['SPACECRAFT']['ALTITUDE'] > 0)
         for inst, obs in parameter_inst_obs:
             bool_index = bool_index & (kp[inst][obs] > min[i]) & (kp[inst][obs] < max[i])
             i+=1
             
         kp_temp = {}
         for df in kp:
-            kp_temp[df] = kp[df][bool_index]
+            if kp[df] is not None:
+                kp_temp[df] = kp[df][bool_index]
             
             
         return kp_temp

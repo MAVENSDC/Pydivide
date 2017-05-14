@@ -12,7 +12,7 @@ def readme():
         return f.read()
 
 setup(name='pydivide',
-      version='0.0.4',
+      version='0.1.0',
       description='A tool to plot MAVEN Key Parameter data',
       url='http://github.com/MAVENSDC/pydivide',
       author='MAVEN SDC',
@@ -20,6 +20,7 @@ setup(name='pydivide',
       license='MIT',
       keywords='tplot maven lasp idl divide',
       packages=['pydivide'],
-      install_requires=['pytplot'],
+      install_requires=['pytplot',
+                        'netCDF4'],
       include_package_data=True,
       zip_safe=False)

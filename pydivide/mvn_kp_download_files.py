@@ -14,26 +14,25 @@ def mvn_kp_download_files(filenames=None,
                           text_files=True, 
                           cdf_files=False, 
                           new_files=False, 
-                          start='2016-07-01', 
-                          end='2016-07-05', 
+                          start_date='2014-01-01', 
+                          end_date='2020-01-01', 
                           update_prefs=False,
                           only_update_prefs=False, 
                           exclude_orbit_file=False,
                           local_dir=None,
-                          help=False,
                           unittest=False):
     
     import os
     
     #Check for orbit num rather than time string
-    if isinstance(start, int) and isinstance(end, int):
-        start, end = orbit_time(start, end)
-        start = parse(start)
-        end = parse(end)
-        start = start.replace(hour=0, minute=0, second=0)
-        end = end.replace(day=end.day+1, hour=0, minute=0, second=0)
-        start = start.strftime('%Y-%m-%d')
-        end = end.strftime('%Y-%m-%d')
+    if isinstance(start_date, int) and isinstance(end_date, int):
+        start_date, end_date = orbit_time(start_date, end_date)
+        start_date = parse(start_date)
+        end_date = parse(end_date)
+        start_date = start_date.replace(hour=0, minute=0, second=0)
+        end_date = end_date.replace(day=end_date.day+1, hour=0, minute=0, second=0)
+        start_date = start_date.strftime('%Y-%m-%d')
+        end_date = end_date.strftime('%Y-%m-%d')
         
     if (update_prefs==True or only_update_prefs==True):
         utils.set_root_data_dir()
@@ -72,8 +71,8 @@ def mvn_kp_download_files(filenames=None,
     query_args.append("level="+level)
     if (filenames!=None):
         query_args.append("file="+filenames)
-    query_args.append("start_date="+start)
-    query_args.append("end_date="+end)
+    query_args.append("start_date="+start_date)
+    query_args.append("end_date="+end_date)
     query_args.append("file_extension="+extension)
     
     if local_dir == None:
@@ -132,10 +131,6 @@ def mvn_kp_download_files(filenames=None,
             else:
                 print('Invalid input.  Please answer with y or n.')
         
-        
-    print("Before downloading data files, checking for updated KP templates from the SDC")
-    print("Not yet implemented, do we even need templates?")
-    
     if exclude_orbit_file == False:
         print("Before downloading data files, checking for updated orbit # file from naif.jpl.nasa.gov")
         print("")

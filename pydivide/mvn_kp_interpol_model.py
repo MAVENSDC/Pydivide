@@ -16,7 +16,7 @@ from scipy import interpolate, spatial
 from pydivide.mvn_kp_read_model_results import mvn_kp_read_model_results
 def mvn_kp_interpol_model(kp,
                           model = None,
-                          model_file = None,
+                          file = None,
                           nearest = False):
     
     if nearest:
@@ -24,19 +24,19 @@ def mvn_kp_interpol_model(kp,
     else:
         interp_method = 'linear'
     
-    if model==None and model_file==None:
+    if model==None and file==None:
         print("Please input either a model dictionary from mvn_kp_read_model_results, or a model file.")
         return
     
-    if model_file != None:
-        model = mvn_kp_read_model_results(model_file)
+    if file != None:
+        model = mvn_kp_read_model_results(file)
     
     model_interp = {}
     mars_radius = model['meta']['mars_radius']
     
-    sc_mso_x = kp['SPACECRAFT']['MSO X'].as_matrix()
-    sc_mso_y = kp['SPACECRAFT']['MSO Y'].as_matrix()
-    sc_mso_z = kp['SPACECRAFT']['MSO Z'].as_matrix()
+    sc_mso_x = kp['SPACECRAFT']['MSO_X'].as_matrix()
+    sc_mso_y = kp['SPACECRAFT']['MSO_Y'].as_matrix()
+    sc_mso_z = kp['SPACECRAFT']['MSO_Z'].as_matrix()
     sc_path = np.array([sc_mso_x, sc_mso_y, sc_mso_z]).T
 
 
@@ -55,7 +55,7 @@ def mvn_kp_interpol_model(kp,
             index = 0
             for point in sc_path:
                 r_mso = np.sqrt(point[0]**2 + point[1]**2 + point[2]**2)
-                alt_mso = kp['SPACECRAFT']['Altitude Aeroid'][index]
+                alt_mso = kp['SPACECRAFT']['ALTITUDE'][index]
                 lat_mso = 90 - (np.arccos(point[2]/r_mso) / (np.pi / 180))
                 lon_mso = np.arctan2(point[1], point[0]) / (np.pi / 180)
                 sc_path[index] = np.array([lon_mso, lat_mso, alt_mso])
@@ -184,7 +184,7 @@ def mvn_kp_interpol_model(kp,
             index = 0
             for point in sc_path:
                 r_mso = np.sqrt(point[0]**2 + point[1]**2 + point[2]**2)
-                alt_mso = kp['SPACECRAFT']['Altitude Aeroid'][index]
+                alt_mso = kp['SPACECRAFT']['ALTITUDE'][index]
                 lat_mso = 90 - (np.arccos(point[2]/r_mso) / (np.pi / 180))
                 lon_mso = np.arctan2(point[1], point[0]) / (np.pi / 180)
                 sc_path[index] = np.array([lon_mso, lat_mso, alt_mso])

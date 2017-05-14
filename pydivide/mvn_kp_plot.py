@@ -4,7 +4,7 @@ import pandas as pd
 import builtins
 
 def mvn_kp_plot( kp, parameter=None, time=None, errors=None, 
-              SamePlot=True, SubPlot=False, list=False, **kwargs ):
+              SamePlot=True, list=False, title = '', **kwargs ):
     '''
     Plot the provided data as a time series.
     For now, do not accept any error bar information.
@@ -95,10 +95,12 @@ def mvn_kp_plot( kp, parameter=None, time=None, errors=None,
         result = pd.concat(y_list, axis=1, join_axes=[y_list[0].index])
         pytplot.store_data(pytplot_name, data={'x':kp['Time'], 'y':result})
         pytplot.options(pytplot_name, 'legend_names', legend_names)
+        pytplot.tplot_options('title', title)
         pytplot.tplot_options('wsize', [1000,300])
         pytplot.tplot(pytplot_name)
         pytplot.del_data(pytplot_name)
     else:
+        pytplot.tplot_options('title', title)
         pytplot.tplot_options('wsize', [1000,300*(iplot-1)])
         pytplot.tplot(obs)
         pytplot.del_data(obs)

@@ -16,6 +16,7 @@ def mvn_kp_map2d( kp,
                   map_limit=None,
                   basemap=None,
                   alpha=None,
+                  title='MAVEN Mars',
                   **kwargs ):
     if list:
         x = param_list(kp)
@@ -58,17 +59,17 @@ def mvn_kp_map2d( kp,
 
     # Generate the altitude array
     if mso:
-        x = kp['SPACECRAFT']['MSO X'].as_matrix()
-        y = kp['SPACECRAFT']['MSO Y'].as_matrix()
-        z = kp['SPACECRAFT']['MSO Z'].as_matrix()
+        x = kp['SPACECRAFT']['MSO_X'].as_matrix()
+        y = kp['SPACECRAFT']['MSO_Y'].as_matrix()
+        z = kp['SPACECRAFT']['MSO_Z'].as_matrix()
         r = np.sqrt((x**2) + (y**2) + (z**2))
         lat = (90 - np.arccos(z/r)*(180/math.pi))
         lon = (np.arctan2(y,x)*(180/math.pi)) + 180
     else:
-        lon = kp['SPACECRAFT']['GEO Longitude']
-        lat = kp['SPACECRAFT']['GEO Latitude']
+        lon = kp['SPACECRAFT']['SUB_SC_LONGITUDE']
+        lat = kp['SPACECRAFT']['SUB_SC_LATITUDE']
     
-    alt = kp['SPACECRAFT']['Altitude Aeroid']
+    alt = kp['SPACECRAFT']['ALTITUDE']
     # Cycle through the parameters, plotting each according to
     #  the given keywords
     #
@@ -86,8 +87,8 @@ def mvn_kp_map2d( kp,
                                      'y':y})
             pytplot.options('%s.%s'%(inst,obs), 'map', 1)
             pytplot.store_data('subsolar', 
-                               data={'x':[kp['SPACECRAFT']['Subsolar Point GEO Longitude'],
-                                          kp['SPACECRAFT']['Subsolar Point GEO Latitude']], 
+                               data={'x':[kp['SPACECRAFT']['SUBSOLAR_POINT_GEO_LONGITUDE'],
+                                          kp['SPACECRAFT']['SUBSOLAR_POINT_GEO_LATITUDE']], 
                                     'y':alt})
             pytplot.options('subsolar', 'map', 1)
             names_to_plot.append('%s.%s.%s'%(inst,obs,'subsolar'))
@@ -99,31 +100,39 @@ def mvn_kp_map2d( kp,
             pytplot.store_data(names_to_plot[iplot], data={'x':[lon, lat], 'y':y})
             pytplot.options(names_to_plot[iplot], 'map', 1)
         
-        if basemap and mso==False:
+        if basemap:
             if basemap=='mola':
-                map_file='MOLA_color_2500x1250.jpg'
+                map_file=os.path.join(os.path.dirname(os.path.dirname(__file__)), 
+                                         'basemaps', 
+                                         'MOLA_color_2500x1250.jpg')
             elif basemap=='mola_bw':
-                map_file='MOLA_BW_2500x1250.jpg'
+                map_file=os.path.join(os.path.dirname(os.path.dirname(__file__)), 
+                                         'basemaps', 
+                                         'MOLA_BW_2500x1250.jpg')
             elif basemap=='mdim':
-                map_file='MDIM_2500x1250.jpg'
+                map_file=os.path.join(os.path.dirname(os.path.dirname(__file__)), 
+                                         'basemaps', 
+                                         'MDIM_2500x1250.jpg')
             elif basemap=='elevation':
-                map_file='MarsElevation_2500x1250.jpg'
+                map_file=os.path.join(os.path.dirname(os.path.dirname(__file__)), 
+                                         'basemaps', 
+                                         'MarsElevation_2500x1250.jpg')
             elif basemap=='mag':
-                map_file='MAG_Connerny_2005.jpg'
+                map_file=os.path.join(os.path.dirname(os.path.dirname(__file__)), 
+                                         'basemaps', 
+                                         'MAG_Connerny_2005.jpg')
             else:
-                break    
+                map_file=basemap    
             pytplot.options(names_to_plot[iplot], 
                             'basemap', 
-                            os.path.join(os.path.dirname(os.path.dirname(__file__)), 
-                                         'basemaps', 
-                                         map_file))
+                            map_file)
             if alpha:
                 pytplot.options(names_to_plot[iplot], 'alpha', alpha)
             
         iplot = iplot + 1
     
     
-        
+    pytplot.tplot_options('title', title)
     pytplot.tplot_options('wsize', [1000,300*(iplot)])
     pytplot.tplot(names_to_plot)
         

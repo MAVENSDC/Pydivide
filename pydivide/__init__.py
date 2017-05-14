@@ -1,5 +1,5 @@
 #from .mvn_kp_3d import mvn_kp_3d
-from .mvn_kp_alt_plot import mvn_kp_alt_plot
+from .mvn_kp_altplot import mvn_kp_altplot
 from .mvn_kp_bin import mvn_kp_bin
 from .mvn_kp_download_files import mvn_kp_download_files
 from .mvn_kp_download_sci_files import mvn_kp_download_sci_files
