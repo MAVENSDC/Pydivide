@@ -303,5 +303,7 @@ def mvn_kp_read(input_time, instruments = None, insitu_only=False):
     if not insitu_only and iuvs_filenames:
         for file in iuvs_filenames:
             kp_iuvs.append(read_iuvs_file(file))
-    
-    return kp_insitu, kp_iuvs
+    if kp_iuvs == []:
+        return kp_insitu
+    else:
+        return kp_insitu, kp_iuvs
