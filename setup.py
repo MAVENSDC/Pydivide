@@ -12,7 +12,7 @@ def readme():
         return f.read()
 
 setup(name='pydivide',
-      version='0.1.0',
+      version='0.1.8',
       description='A tool to plot MAVEN Key Parameter data',
       url='http://github.com/MAVENSDC/pydivide',
       author='MAVEN SDC',

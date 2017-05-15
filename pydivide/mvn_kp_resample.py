@@ -130,7 +130,6 @@ def mvn_kp_resample(kp, time, sc_only=False):
     
     #For each instrument:
     for i in range(len(inst_names)):
-        print(inst_names[i])
         if inst_tags[i] is not None:
             dataframe_initalized = False
             #For each observation mode:

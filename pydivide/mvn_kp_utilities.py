@@ -3,10 +3,6 @@ import os
 from . import mvn_kp_download_files_utilities as utils
 import numpy as np
 import collections
-from bokeh.sampledata.us_counties import lats
-from bokeh.util.logconfig import level
-from astroid.__pkginfo__ import description
-from astropy.units import year, day
 
 def param_list( kp ):
     '''
@@ -694,7 +690,7 @@ def get_values_from_list(the_list, location):
         return testing
     
 def orbit_time(begin_orbit, end_orbit=None):
-    orb_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), 
+    orb_file = os.path.join(os.path.dirname(__file__), 
                             'maven_orb_rec.orb')
     
     f = open(orb_file, "r")

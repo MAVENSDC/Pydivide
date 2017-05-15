@@ -1,5 +1,10 @@
 include README.rst
-include docs/*.html
-include docs/*.txt
-include orbitfiles/*.txt
-include basemaps/*.jpg
+include pydivide/docs/*.html
+include pydivide/docs/*.txt
+include pydivide/docs/*.pdf
+include pydivide/docs/*.docx
+include pydivide/orbitfiles/*.txt
+include pydivide/basemaps/*.jpg
+include pydivide/access.txt
+exclude pydivide/mvn_kp_3d.py
+exclude pydivide/mvn_toolkit_prefs.txt

@@ -57,8 +57,7 @@ def get_orbit_files():
     page = urllib.request.urlopen(orbit_files_url)
     page_string = str(page.read())
     full_path=os.path.realpath(__file__)
-    file_path, _ = os.path.split(full_path)
-    toolkit_path = os.path.dirname(file_path)
+    toolkit_path = os.path.dirname(full_path)
     orbit_files_path = os.path.join(toolkit_path, "orbitfiles")
 
     for matching_pattern in re.findall(pattern, page_string):
@@ -76,8 +75,7 @@ def merge_orbit_files():
     import re 
     
     full_path=os.path.realpath(__file__)
-    file_path, _ = os.path.split(full_path)
-    toolkit_path = os.path.dirname(file_path)
+    toolkit_path = os.path.dirname(full_path)
     orbit_files_path = os.path.join(toolkit_path, "orbitfiles")
     pattern = 'maven_orb_rec(_|)(|.{6})(|_.{9}).orb'
     orb_dates = []
@@ -107,9 +105,7 @@ def merge_orbit_files():
 
 def get_access():
     import os
-    full_path=os.path.realpath(__file__)
-    current_file_path, _ = os.path.split(full_path)
-    toolkit_path = os.path.dirname(current_file_path)
+    toolkit_path=os.path.dirname(__file__)
     f = open(os.path.join(toolkit_path, 'access.txt'), 'r')
     f.readline()
     s = f.readline().rstrip()
@@ -122,8 +118,7 @@ def get_access():
 def get_root_data_dir():
     import os
     full_path=os.path.realpath(__file__)
-    file_path, _ = os.path.split(full_path)
-    toolkit_path = os.path.dirname(file_path)
+    toolkit_path = os.path.dirname(full_path)
     if (not os.path.exists(os.path.join(toolkit_path, 'mvn_toolkit_prefs.txt'))):
         set_root_data_dir()
     f = open(os.path.join(toolkit_path, 'mvn_toolkit_prefs.txt'), 'r')
@@ -143,9 +138,8 @@ def set_root_data_dir():
     
     #Put path into preferences file
     full_path=os.path.realpath(__file__)
-    path, filename = os.path.split(full_path)
-    path, _ = os.path.split(path)
-    f = open(os.path.join(path, 'mvn_toolkit_prefs.txt'), 'w')
+    toolkit_path = os.path.dirname(full_path)
+    f = open(os.path.join(toolkit_path, 'mvn_toolkit_prefs.txt'), 'w')
     f.write("'; IDL Toolkit Data Preferences File'\n")
     f.write('mvn_root_data_dir: ' + download_path)
     

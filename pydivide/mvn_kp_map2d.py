@@ -102,23 +102,23 @@ def mvn_kp_map2d( kp,
         
         if basemap:
             if basemap=='mola':
-                map_file=os.path.join(os.path.dirname(os.path.dirname(__file__)), 
+                map_file=os.path.join(os.path.dirname(__file__), 
                                          'basemaps', 
                                          'MOLA_color_2500x1250.jpg')
             elif basemap=='mola_bw':
-                map_file=os.path.join(os.path.dirname(os.path.dirname(__file__)), 
+                map_file=os.path.join(os.path.dirname(__file__), 
                                          'basemaps', 
                                          'MOLA_BW_2500x1250.jpg')
             elif basemap=='mdim':
-                map_file=os.path.join(os.path.dirname(os.path.dirname(__file__)), 
+                map_file=os.path.join(os.path.dirname(__file__), 
                                          'basemaps', 
                                          'MDIM_2500x1250.jpg')
             elif basemap=='elevation':
-                map_file=os.path.join(os.path.dirname(os.path.dirname(__file__)), 
+                map_file=os.path.join(os.path.dirname(__file__), 
                                          'basemaps', 
                                          'MarsElevation_2500x1250.jpg')
             elif basemap=='mag':
-                map_file=os.path.join(os.path.dirname(os.path.dirname(__file__)), 
+                map_file=os.path.join(os.path.dirname(__file__), 
                                          'basemaps', 
                                          'MAG_Connerny_2005.jpg')
             else:
