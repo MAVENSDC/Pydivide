@@ -4,7 +4,6 @@ import os
 from pydivide.mvn_kp_utilities import mvn_kp_sc_traj_xyz
 from scipy import interpolate, spatial
 from pydivide.mvn_kp_read_model_results import mvn_kp_read_model_results
-import matplotlib.pyplot as plt
 
 def mvn_kp_create_model_maps(altitude,
                              model=None,
@@ -15,6 +14,10 @@ def mvn_kp_create_model_maps(altitude,
                              transparency=1,
                              nearest=False,
                              linear=True):
+    import matplotlib
+    matplotlib.use('tkagg')
+    import matplotlib.pyplot as plt
+    
     
     if model==None and file==None:
         print("Please input either a model or the file path/name to a model.")
