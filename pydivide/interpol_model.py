@@ -11,9 +11,9 @@
 
 
 import numpy as np
-from pydivide.mvn_kp_utilities import mvn_kp_sc_traj_xyz
+from pydivide.utilities import mvn_kp_sc_traj_xyz
 from scipy import interpolate, spatial
-from pydivide.mvn_kp_read_model_results import mvn_kp_read_model_results
+from pydivide.read_model_results import read_model_results
 
 
 def mvn_kp_interpol_model(kp,
@@ -22,11 +22,11 @@ def mvn_kp_interpol_model(kp,
                           nearest = False):
     
     print("This procedure was renamed, just use interpol_model")
-    interpol_model(kp=kp,
-                   model=model,
-                   file=file,
-                   nearest=nearest)
-    return
+    x = interpol_model(kp=kp,
+                       model=model,
+                       file=file,
+                       nearest=nearest)
+    return x
     
 def interpol_model(kp,
                    model = None,
@@ -39,11 +39,11 @@ def interpol_model(kp,
         interp_method = 'linear'
     
     if model==None and file==None:
-        print("Please input either a model dictionary from mvn_kp_read_model_results, or a model file.")
+        print("Please input either a model dictionary from read_model_results, or a model file.")
         return
     
     if file != None:
-        model = mvn_kp_read_model_results(file)
+        model = read_model_results(file)
     
     model_interp = {}
     mars_radius = model['meta']['mars_radius']

@@ -1,4 +1,4 @@
-#Functions used by mvn_kp_download_files
+#Functions used by download_files
 
 uname = ''
 pword = ''

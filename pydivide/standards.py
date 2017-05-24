@@ -1,6 +1,6 @@
 import math
 import pytplot
-from .mvn_kp_utilities import param_dict
+from .utilities import param_dict
 
 def mvn_kp_standards(kp, 
                      list_plots=False,

@@ -1,17 +1,17 @@
 import calendar
 import numpy as np
-from .mvn_kp_utilities import param_dict
-from .mvn_kp_utilities import remove_inst_tag
-from .mvn_kp_utilities import get_latest_files_from_date_range, read_iuvs_file, get_latest_iuvs_files_from_date_range
-from .mvn_kp_utilities import get_header_info
-from .mvn_kp_utilities import orbit_time
+from .utilities import param_dict
+from .utilities import remove_inst_tag
+from .utilities import get_latest_files_from_date_range, read_iuvs_file, get_latest_iuvs_files_from_date_range
+from .utilities import get_header_info
+from .utilities import orbit_time
 from _collections import OrderedDict
 import builtins
 
 def mvn_kp_read(input_time, instruments = None, insitu_only=False):
-    print("This procedure was renamed, just use bin")
-    read(input_time=input_time, instruments=instruments, insitu_only=insitu_only)
-    return
+    print("This procedure was renamed, just use read")
+    x = read(input_time=input_time, instruments=instruments, insitu_only=insitu_only)
+    return x
 
 def read(input_time, instruments = None, insitu_only=False):
     '''

@@ -1,7 +1,7 @@
-from .mvn_kp_utilities import get_inst_obs_labels
-from .mvn_kp_utilities import initialize_list
-from .mvn_kp_utilities import place_values_in_list
-from .mvn_kp_utilities import get_values_from_list
+from .utilities import get_inst_obs_labels
+from .utilities import initialize_list
+from .utilities import place_values_in_list
+from .utilities import get_values_from_list
 import math
 import numpy
 
@@ -17,18 +17,18 @@ def mvn_kp_bin(kp,
                median=False,
                unittest=False):
     print("This procedure was renamed, just use bin")
-    bin(kp,
-        parameter=parameter,
-        bin_by=bin_by,
-        mins=mins,
-        maxs=maxs,
-        binsize=binsize,
-        std=std,
-        avg=avg,
-        density=density,
-        median=median,
-        unittest=unittest)
-    return
+    x = bin(kp,
+            parameter=parameter,
+            bin_by=bin_by,
+            mins=mins,
+            maxs=maxs,
+            binsize=binsize,
+            std=std,
+            avg=avg,
+            density=density,
+            median=median,
+            unittest=unittest)
+    return x
 
 def bin(kp,
         parameter=None,

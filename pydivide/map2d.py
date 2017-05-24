@@ -1,4 +1,4 @@
-from .mvn_kp_utilities import get_inst_obs_labels, param_list, range_select, orbit_time
+from .utilities import get_inst_obs_labels, param_list, range_select, orbit_time
 import pytplot
 import numpy as np
 from datetime import datetime

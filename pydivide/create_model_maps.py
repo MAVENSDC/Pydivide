@@ -1,9 +1,9 @@
 import numpy as np
 import scipy
 import os
-from pydivide.mvn_kp_utilities import mvn_kp_sc_traj_xyz
+from .utilities import mvn_kp_sc_traj_xyz
 from scipy import interpolate, spatial
-from pydivide.mvn_kp_read_model_results import mvn_kp_read_model_results
+from .read_model_results import read_model_results
 
 
 def mvn_kp_create_model_maps(altitude,
@@ -45,7 +45,7 @@ def create_model_maps(altitude,
         print("Please input either a model or the file path/name to a model.")
         return
     if file != None:
-        model = mvn_kp_read_model_results(file)
+        model = read_model_results(file)
     
     
     print("Select a variable to plot: ")
@@ -80,7 +80,7 @@ def create_model_maps(altitude,
         interp_method = 'linear'
     
     if model==None and file==None:
-        print("Please input either a model dictionary from mvn_kp_read_model_results, or a model file.")
+        print("Please input either a model dictionary from read_model_results, or a model file.")
         return
     
     

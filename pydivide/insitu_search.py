@@ -1,12 +1,12 @@
 
-# MVN_KP_INSITU_SEARCH'
+# INSITU_SEARCH'
 #   Searches input in situ KP data structure based on min and/or max search parameters.'
 # '
-# x = mvn_kp_insitu_search(insitu_in, parameter=parameter, min=min_value, max=max_value)
+# x = insitu_search(insitu_in, parameter=parameter, min=min_value, max=max_value)
 # '
 # REQUIRED FIELDS'
 # ***************'
-#   insitu_in: in situ KP data structure (data structure output from mvn_kp_read)'
+#   insitu_in: in situ KP data structure (data structure output from read)'
 # '
 # OPTIONAL FIELDS'
 # ***************'
@@ -19,8 +19,8 @@
 #        value will correspond with each parameter (by array position). If multiple parameters & one max value,'
 #        the max value is used for all parameters. Cannot enter more max values than parameters.'
 
-from .mvn_kp_utilities import get_inst_obs_labels
-from .mvn_kp_utilities import param_list
+from .utilities import get_inst_obs_labels
+from .utilities import param_list
 import builtins 
 
 def mvn_kp_insitu_search(kp,
@@ -30,12 +30,12 @@ def mvn_kp_insitu_search(kp,
                          list=False):
 
     print("This procedure was renamed, just use insitu_search")
-    insitu_search(kp=kp, 
-                  parameter=parameter, 
-                  min=min, 
-                  max=max, 
-                  list=list)
-    return
+    x = insitu_search(kp=kp, 
+                      parameter=parameter, 
+                      min=min, 
+                      max=max, 
+                      list=list)
+    return x
 
 def insitu_search(kp,
                   parameter,

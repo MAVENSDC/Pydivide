@@ -4,8 +4,8 @@
 #
 ###############################################################################
 
-from . import mvn_kp_download_files_utilities as utils
-from .mvn_kp_utilities import orbit_time
+from . import download_files_utilities as utils
+from .utilities import orbit_time
 from dateutil.parser import parse
 
 def mvn_kp_download_files(filenames=None, 
@@ -62,14 +62,13 @@ def mvn_kp_download_sci_files(filenames=None,
                    only_update_prefs=only_update_prefs,
                    exclude_orbit_file=exclude_orbit_file,
                    local_dir=local_dir,
-                   help=help,
                    unittest=unittest)
     return
      
 def download_files(filenames=None,
                    instruments=None, 
                    list_files=False,
-                   level=None, 
+                   level='l2', 
                    insitu=True, 
                    iuvs=False, 
                    new_files=False, 

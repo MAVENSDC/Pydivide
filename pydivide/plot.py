@@ -1,4 +1,4 @@
-from .mvn_kp_utilities import get_inst_obs_labels, param_list, orbit_time
+from .utilities import get_inst_obs_labels, param_list, orbit_time
 import pytplot
 import pandas as pd
 import builtins

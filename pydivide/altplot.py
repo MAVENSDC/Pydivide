@@ -1,4 +1,4 @@
-from .mvn_kp_utilities import get_inst_obs_labels, param_list, orbit_time, range_select
+from .utilities import get_inst_obs_labels, param_list, orbit_time, range_select
 import pytplot
 import builtins
 
