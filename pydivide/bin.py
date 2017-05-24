@@ -16,6 +16,31 @@ def mvn_kp_bin(kp,
                density=False,
                median=False,
                unittest=False):
+    print("This procedure was renamed, just use bin")
+    bin(kp,
+        parameter=parameter,
+        bin_by=bin_by,
+        mins=mins,
+        maxs=maxs,
+        binsize=binsize,
+        std=std,
+        avg=avg,
+        density=density,
+        median=median,
+        unittest=unittest)
+    return
+
+def bin(kp,
+        parameter=None,
+        bin_by=None,
+        mins=None,
+        maxs=None,
+        binsize=None,
+        std=False,
+        avg=False,
+        density=False,
+        median=False,
+        unittest=False):
     
     #
     #ERROR CHECKING

@@ -4,7 +4,19 @@ import pandas as pd
 import builtins
 
 def mvn_kp_plot( kp, parameter=None, time=None, errors=None, 
-              SamePlot=True, list=False, title = '', **kwargs ):
+                 SamePlot=True, list=False, title = ''):
+    print("This procedure was renamed, just use plot")
+    plot(kp=kp, 
+         parameter=parameter, 
+         time=time, 
+         errors=errors, 
+         SamePlot=SamePlot, 
+         list=list, 
+         title=title)
+    return
+
+def plot( kp, parameter=None, time=None, errors=None, 
+          SamePlot=True, list=False, title = ''):
     '''
     Plot the provided data as a time series.
     For now, do not accept any error bar information.

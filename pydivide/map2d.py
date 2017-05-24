@@ -6,18 +6,43 @@ import builtins
 import math
 import os
 
-def mvn_kp_map2d( kp, 
-                  parameter=None, 
-                  time=None, 
-                  list=False, 
-                  color_table=None,
-                  subsolar=False,
-                  mso=False,
-                  map_limit=None,
-                  basemap=None,
-                  alpha=None,
-                  title='MAVEN Mars',
-                  **kwargs ):
+
+def mvn_kp_map2d(kp, 
+                 parameter=None, 
+                 time=None, 
+                 list=False, 
+                 color_table=None,
+                 subsolar=False,
+                 mso=False,
+                 map_limit=None,
+                 basemap=None,
+                 alpha=None,
+                 title='MAVEN Mars'):
+    print("This procedure was renamed, just use map2d")
+    map2d(kp=kp, 
+          parameter=parameter, 
+          time=time, 
+          list=list, 
+          color_table=color_table, 
+          subsolar=subsolar, 
+          mso=mso, 
+          map_limit=map_limit, 
+          basemap=basemap, 
+          alpha=alpha, 
+          title=title)
+    return
+
+def map2d( kp, 
+           parameter=None, 
+           time=None, 
+           list=False, 
+           color_table=None,
+           subsolar=False,
+           mso=False,
+           map_limit=None,
+           basemap=None,
+           alpha=None,
+           title='MAVEN Mars'):
     if list:
         x = param_list(kp)
         for param in x:

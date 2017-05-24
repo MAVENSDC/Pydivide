@@ -4,6 +4,11 @@ import numpy as np
 import pandas as pd
 
 def mvn_kp_resample(kp, time, sc_only=False):
+    print("This procedure was renamed, just use resample")
+    resample(kp=kp, time=time, sc_only=sc_only)
+    return
+
+def resample(kp, time, sc_only=False):
     
     new_total = len(time)
     start_time = time[0]

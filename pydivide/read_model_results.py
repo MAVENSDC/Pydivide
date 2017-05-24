@@ -21,8 +21,12 @@ import numpy as np
 #    ...
 #    \_ variableN
 
-
 def mvn_kp_read_model_results(file):
+    print("This procedure was renamed, just use bin")
+    read_model_results(file=file)
+    return
+
+def read_model_results(file):
     
     
     #Create dictionaries for the metadata and dimensions

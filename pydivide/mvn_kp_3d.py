@@ -6,9 +6,9 @@
 #
 
     
-from visual import *
-from visual.controls import *
-from visual.graph import *
+from vpython import *
+from vpython.controls import *
+from vpython.graph import *
 from PIL import Image
 import math
 import os
@@ -22,14 +22,14 @@ def mvn_kp_3d(kp):
     
 ##### #Buttons event handlers #################################################
     def axes_display(evt):
-       if axes_disp.GetValue():
-           geo_x_axis.opacity = 1
-           geo_y_axis.opacity = 1
-           geo_z_axis.opacity = 1
-           x_label.visible = True
-           y_label.visible = True
-           z_label.visible = True
-       else:
+        if axes_disp.GetValue():
+            geo_x_axis.opacity = 1
+            geo_y_axis.opacity = 1
+            geo_z_axis.opacity = 1
+            x_label.visible = True
+            y_label.visible = True
+            z_label.visible = True
+        else:
             geo_x_axis.opacity = 0
             geo_y_axis.opacity = 0
             geo_z_axis.opacity = 0

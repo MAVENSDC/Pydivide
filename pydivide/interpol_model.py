@@ -1,57 +1,38 @@
+#There are 3 scenarios to interpolate:
+#    1) MSO coordinate system with latitude/longitude/altitude 
+#    2) GEO coordinate system with latitude/longitude/altitude 
+#    3) MSO coordinate system with x/y/z
+#NOTE: GEO x/y/z coordinate system is not allowed
+#
+#In all 3 cases, everything is converted to an MSO lat/lon/alt coordinate system.  
+#For interpolation purposes, the atmosphere acts like a cube with dimensions lat*lon*alt
+#This makes it so the interpolation is weighted more accurately.  
+#A point that is 1 degree of lat/lon away will have as much influence as a point that is 1 kilometer higher or lower
+
+
 import numpy as np
-import scipy
-import os
 from pydivide.mvn_kp_utilities import mvn_kp_sc_traj_xyz
 from scipy import interpolate, spatial
 from pydivide.mvn_kp_read_model_results import mvn_kp_read_model_results
 
-def mvn_kp_create_model_maps(altitude,
-                             model=None,
-                             file=None,
-                             numContours=25,
-                             fill=False,
-                             ct='jet',  # https://matplotlib.org/examples/color/colormaps_reference.html
-                             transparency=1,
-                             nearest=False,
-                             linear=True):
-    import matplotlib
-    matplotlib.use('tkagg')
-    import matplotlib.pyplot as plt
+
+def mvn_kp_interpol_model(kp,
+                          model = None,
+                          file = None,
+                          nearest = False):
     
+    print("This procedure was renamed, just use interpol_model")
+    interpol_model(kp=kp,
+                   model=model,
+                   file=file,
+                   nearest=nearest)
+    return
     
-    if model==None and file==None:
-        print("Please input either a model or the file path/name to a model.")
-        return
-    if file != None:
-        model = mvn_kp_read_model_results(file)
+def interpol_model(kp,
+                   model = None,
+                   file = None,
+                   nearest = False):
     
-    
-    print("Select a variable to plot: ")
-    index=0
-    name_index_dict = {}
-    for name in model:
-        if name.lower() == 'dim':
-            continue
-        if name.lower() == 'meta':
-            continue
-        print(index, ": ", name)
-        name_index_dict[index] = name
-        index+=1
-    i_choice=int(input("Enter Selection: "))
-    dataname=name_index_dict[i_choice].lower()
-    
-    mars_radius = model['meta']['mars_radius']
-    lats = np.arange(181)-90
-    lons = np.arange(361)-180
-    sc_lat_mso = np.repeat(lats, len(lons))
-    sc_lon_mso = np.tile(lons, len(lats))
-    r = np.full(len(sc_lon_mso), altitude+mars_radius)
-    sc_alt_array = np.full(len(sc_lon_mso), altitude)
-    sc_mso_x = r * np.sin((90-sc_lat_mso)*(np.pi/180)) * np.cos(sc_lon_mso*(np.pi/180))
-    sc_mso_y = r * np.sin((90-sc_lat_mso)*(np.pi/180)) * np.sin(sc_lon_mso*(np.pi/180))
-    sc_mso_z = r * np.cos((90-sc_lat_mso)*(np.pi/180))
-    sc_path = np.array([sc_mso_x, sc_mso_y, sc_mso_z]).T
-                  
     if nearest:
         interp_method = 'nearest'
     else:
@@ -61,6 +42,18 @@ def mvn_kp_create_model_maps(altitude,
         print("Please input either a model dictionary from mvn_kp_read_model_results, or a model file.")
         return
     
+    if file != None:
+        model = mvn_kp_read_model_results(file)
+    
+    model_interp = {}
+    mars_radius = model['meta']['mars_radius']
+    
+    sc_mso_x = kp['SPACECRAFT']['MSO_X'].as_matrix()
+    sc_mso_y = kp['SPACECRAFT']['MSO_Y'].as_matrix()
+    sc_mso_z = kp['SPACECRAFT']['MSO_Z'].as_matrix()
+    sc_path = np.array([sc_mso_x, sc_mso_y, sc_mso_z]).T
+
+
     
     if 'lon' in model['dim']:
         if 'mso' == model['meta']['coord_sys'].lower():     
@@ -76,7 +69,7 @@ def mvn_kp_create_model_maps(altitude,
             index = 0
             for point in sc_path:
                 r_mso = np.sqrt(point[0]**2 + point[1]**2 + point[2]**2)
-                alt_mso = altitude
+                alt_mso = kp['SPACECRAFT']['ALTITUDE'][index]
                 lat_mso = 90 - (np.arccos(point[2]/r_mso) / (np.pi / 180))
                 lon_mso = np.arctan2(point[1], point[0]) / (np.pi / 180)
                 sc_path[index] = np.array([lon_mso, lat_mso, alt_mso])
@@ -84,7 +77,11 @@ def mvn_kp_create_model_maps(altitude,
             
             latlon_triangulation = spatial.Delaunay(data_points)
             for var in model:
-                if var.lower() != dataname:
+                if var.lower() == "geo_x":
+                    continue
+                if var.lower() == "geo_y":
+                    continue
+                if var.lower() == "geo_z":
                     continue
                 print("Interpolating variable " + var)
                 
@@ -144,7 +141,7 @@ def mvn_kp_create_model_maps(altitude,
                         delta_tot = alt_mso_model[alti2] - alt_mso_model[alti1]
                         x[index] = ((first_val*delta_2) + (second_val*delta_1)) / (delta_tot)
                     index+=1
-                tracer = np.array(x)
+                model_interp[var] = np.array(x)
                 
         if 'geo' == model['meta']['coord_sys'].lower():            
             #Build the Matrix that transforms GEO to MSO coordinates 
@@ -201,7 +198,7 @@ def mvn_kp_create_model_maps(altitude,
             index = 0
             for point in sc_path:
                 r_mso = np.sqrt(point[0]**2 + point[1]**2 + point[2]**2)
-                alt_mso = altitude
+                alt_mso = kp['SPACECRAFT']['ALTITUDE'][index]
                 lat_mso = 90 - (np.arccos(point[2]/r_mso) / (np.pi / 180))
                 lon_mso = np.arctan2(point[1], point[0]) / (np.pi / 180)
                 sc_path[index] = np.array([lon_mso, lat_mso, alt_mso])
@@ -210,7 +207,13 @@ def mvn_kp_create_model_maps(altitude,
             latlon_triangulation = spatial.Delaunay(latlon_points)
             #Loop through the variables in the model
             for var in model:
-                if var.lower() != dataname:
+                if var.lower() == "geo_x":
+                    continue
+                if var.lower() == "geo_y":
+                    continue
+                if var.lower() == "geo_z":
+                    continue
+                if var=='dim' or var=='meta':
                     continue
                 print("Interpolating variable " + var)
                 #Rearrange the data to lon/lat/alt
@@ -268,7 +271,7 @@ def mvn_kp_create_model_maps(altitude,
                         delta_tot = alt_geo_model[alti2] - alt_geo_model[alti1]
                         x[index] = ((first_val*delta_2) + (second_val*delta_1)) / (delta_tot)
                     index+=1
-                tracer = np.array(x)
+                model_interp[var] = np.array(x)
                 
     else:
         if 'mso' == model['meta']['coord_sys'].lower():   
@@ -279,7 +282,14 @@ def mvn_kp_create_model_maps(altitude,
             
             #Loop through the variables in the model
             for var in model:
-                if var.lower() != dataname:
+                if var.lower() == "geo_x":
+                    continue
+                if var.lower() == "geo_y":
+                    continue
+                if var.lower() == "geo_z":
+                    continue
+                
+                if var=='dim' or var=='meta':
                     continue
                 #Rearrange the data to lon/lat/alt
                 data = model[var]['data']
@@ -294,24 +304,6 @@ def mvn_kp_create_model_maps(altitude,
                 data_new = np.transpose(data, dim_order_array)
                 
                 #Interpolate through space
-                tracer = mvn_kp_sc_traj_xyz(x_mso_model, y_mso_model, z_mso_model, data_new, sc_mso_x, sc_mso_y, sc_mso_z, nn=interp_method)
-    
-    
-    xi, yi = np.linspace(sc_lon_mso.min(), sc_lon_mso.max(), 300), np.linspace(sc_lat_mso.min(), sc_lat_mso.max(), 300)
-    xi, yi = np.meshgrid(xi, yi)
-    zi = scipy.interpolate.griddata((sc_lon_mso, sc_lat_mso), tracer, (xi, yi), method=interp_method)
-    fig=plt.figure()
-    ax = fig.add_subplot(1,1,1)
-    if fill:
-        plt.contourf(xi, yi, zi, numContours, alpha=transparency, cmap=ct, extent=(-180,-90,180,90))
-    else:
-        CS = plt.contour(xi, yi, zi, numContours, alpha=transparency, cmap=ct)
-        plt.clabel(CS, inline=1, fontsize=7, fmt='%1.0f')
-    extent = ax.get_window_extent().transformed(fig.dpi_scale_trans.inverted())
-    plt.axis('off')
-    save_name = "ModelData_"+dataname+"_"+str(altitude)+"km"
-    if fill:
-        save_name = save_name + "_filled"
-    plt.savefig(os.path.join(os.path.dirname(file),save_name+".png"), transparent=False, bbox_inches=extent, pad_inches=0, dpi=150)
-    plt.show()
-    
+                model_interp[var] = mvn_kp_sc_traj_xyz(x_mso_model, y_mso_model, z_mso_model, data_new, sc_mso_x, sc_mso_y, sc_mso_z, nn=interp_method)
+            
+    return model_interp

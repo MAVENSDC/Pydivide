@@ -1,11 +1,22 @@
 from .mvn_kp_utilities import get_inst_obs_labels, param_list, orbit_time, range_select
 import pytplot
-import numpy as np
 import builtins
 
 def mvn_kp_altplot( kp, parameter=None, time=None, errors=None, 
-              SamePlot=True, list=False, title='Altitude Plot',
-              **kwargs ):
+              SamePlot=True, list=False, title='Altitude Plot'):
+    
+    print("This procedure was renamed, just use altplot")
+    altplot(kp,
+            parameter=parameter,
+            time=time,
+            errors=errors,
+            SamePlot=SamePlot,
+            list=list,
+            title=title)
+    return 
+
+def altplot( kp, parameter=None, time=None, errors=None, 
+              SamePlot=True, list=False, title='Altitude Plot'):
     '''
     Plot the provided data plotted against spacecraft altitude.
     For now, do not accept any error bar information.

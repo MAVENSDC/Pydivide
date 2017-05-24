@@ -9,6 +9,11 @@ from _collections import OrderedDict
 import builtins
 
 def mvn_kp_read(input_time, instruments = None, insitu_only=False):
+    print("This procedure was renamed, just use bin")
+    read(input_time=input_time, instruments=instruments, insitu_only=insitu_only)
+    return
+
+def read(input_time, instruments = None, insitu_only=False):
     '''
     Read in a given filename in situ file into a dictionary object
     Optional keywords maybe used to downselect instruments returned

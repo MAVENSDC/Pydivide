@@ -28,6 +28,20 @@ def mvn_kp_insitu_search(kp,
                          min=None,
                          max=None,
                          list=False):
+
+    print("This procedure was renamed, just use insitu_search")
+    insitu_search(kp=kp, 
+                  parameter=parameter, 
+                  min=min, 
+                  max=max, 
+                  list=list)
+    return
+
+def insitu_search(kp,
+                  parameter,
+                  min=None,
+                  max=None,
+                  list=False):
     
     if list:
         x = param_list(kp)
