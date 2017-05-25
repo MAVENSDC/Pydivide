@@ -2,14 +2,15 @@ import pytplot
 import numpy as np
 import builtins
 
-def corona(iuvs,
-           sameplot=True,
-           density=True,
-           radiance=True,
-           orbit_num=None,
-           species=None,
-           log=False,
-           title='IUVS Corona Observations'):
+def periapse(iuvs,
+             sameplot=True,
+             density=True,
+             radiance=True,
+             orbit_num=None,
+             species=None,
+             obs_num=None,
+             log=False,
+             title='IUVS Periapse Observations'):
     
     density_names_to_plot=[]
     density_legend_names = []
@@ -24,6 +25,9 @@ def corona(iuvs,
     
     if not isinstance(orbit_num, builtins.list):
         orbit_num = [orbit_num]
+    
+    if not isinstance(obs_num, builtins.list):
+        obs_num = [obs_num]
         
     if orbit_num != [None]:
         restrict_orbit = True
@@ -34,13 +38,20 @@ def corona(iuvs,
         restrict_species = True
     else:
         restrict_species = False
+        
+    if obs_num != [None]:
+        restrict_obs = True
+    else:
+        restrict_obs = False
     
     xmin = []
     xmax = []
     
     for orbit in iuvs:
         for obs in orbit:
-            if obs.lower() == 'corona_lores_high':
+            if obs.lower()[0:-1] == 'periapse':
+                if restrict_obs and int(obs[-1]) not in obs_num:
+                    continue
                 if restrict_orbit and int(orbit[obs]['orbit_number']) not in orbit_num:
                     continue
                 if density:
@@ -53,7 +64,7 @@ def corona(iuvs,
                                 xmin.append(np.min(x))
                                 xmax.append(np.max(x))
                                 density_names_to_plot.append(obs+'_density_'+var+'_'+str(orbit[obs]['orbit_number']))
-                                density_legend_names.append('Orbit '+ str(orbit[obs]['orbit_number']) + ' ' + var+' density')
+                                density_legend_names.append('Orbit '+ str(orbit[obs]['orbit_number']) + ' observation ' + str(obs[-1]) + ' ' + var +' density')
                                 data = np.array(orbit[obs]['density'][var])
                                 alts = x[~np.isnan(data)]
                                 data = data[~np.isnan(data)]
@@ -62,6 +73,7 @@ def corona(iuvs,
                                 dplot+=1
                 if radiance:
                     x = np.array(orbit[obs]['radiance']['ALTITUDE'])
+                    
                     for var in orbit[obs]['radiance']:
                         if var.lower() != "altitude":
                             if restrict_species and var not in species:
@@ -69,8 +81,8 @@ def corona(iuvs,
                             if not np.isnan(orbit[obs]['radiance'][var]).all():
                                 xmin.append(np.min(x))
                                 xmax.append(np.max(x))
-                                radiance_names_to_plot.append(obs+'_radiance_'+var+'_'+str(orbit['corona_lores_high']['orbit_number']))
-                                radiance_legend_names.append('Orbit '+ str(orbit[obs]['orbit_number']) + ' ' + var+' radiance')
+                                radiance_names_to_plot.append(obs+'_radiance_'+var+'_'+str(orbit[obs]['orbit_number']))
+                                radiance_legend_names.append('Orbit '+ str(orbit[obs]['orbit_number']) + ' observation ' + str(obs[-1]) + ' ' + var+' radiance')
                                 data = np.array(orbit[obs]['radiance'][var])
                                 alts = x[~np.isnan(data)]
                                 data = data[~np.isnan(data)]
@@ -79,29 +91,29 @@ def corona(iuvs,
                                 rplot+=1
                                     
     if radiance and rplot == 0:
-        print("There is no corona radiance data in the given IUVS variable")
+        print("There is no periapse radiance data in the given IUVS variable")
         radiance = False
     if density and dplot == 0:
-        print("There is no corona density data in the given IUVS variable")
+        print("There is no periapse density data in the given IUVS variable")
         density = False
     
     list_of_plots = []
     if sameplot:
         if density:
-            pytplot.store_data('corona_lores_high_density', data=density_names_to_plot)
-            list_of_plots.append('corona_lores_high_density')
-            pytplot.options('corona_lores_high_density', 'alt', 1)
+            pytplot.store_data('periapse_density', data=density_names_to_plot)
+            list_of_plots.append('periapse_density')
+            pytplot.options('periapse_density', 'alt', 1)
             if log:
-                pytplot.options('corona_lores_high_density', 'ylog', 1)
-            pytplot.options('corona_lores_high_density', 'legend_names', density_legend_names)
+                pytplot.options('periapse_density', 'ylog', 1)
+            pytplot.options('periapse_density', 'legend_names', density_legend_names)
             
         if radiance:
-            pytplot.store_data('corona_lores_high_radiance', data=radiance_names_to_plot)
-            list_of_plots.append('corona_lores_high_radiance')
-            pytplot.options('corona_lores_high_radiance', 'alt', 1)
+            pytplot.store_data('periapse_radiance', data=radiance_names_to_plot)
+            list_of_plots.append('periapse_radiance')
+            pytplot.options('periapse_radiance', 'alt', 1)
             if log:
-                pytplot.options('corona_lores_high_radiance', 'ylog', 1)
-            pytplot.options('corona_lores_high_radiance', 'legend_names', radiance_legend_names)
+                pytplot.options('periapse_radiance', 'ylog', 1)
+            pytplot.options('periapse_radiance', 'legend_names', radiance_legend_names)
     else:
         i=0
         for d in density_names_to_plot:

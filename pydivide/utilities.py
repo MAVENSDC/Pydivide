@@ -465,7 +465,8 @@ def get_latest_files_from_date_range(date1, date2):
             if int(version)>0:    
                 seq = ('mvn','kp','insitu',year+month+day,'v'+str(version),'r'+str(revision)+'.tab')
                 filenames.append(os.path.join(full_path, '_'.join(seq)))
-
+                
+    filenames = sorted(filenames)
     return filenames
 
 def get_latest_iuvs_files_from_date_range(date1, date2):
@@ -536,7 +537,7 @@ def get_latest_iuvs_files_from_date_range(date1, date2):
                 if int(version)>0:
                     seq = (bn,'v'+str(version),'r'+str(revision)+'.tab')
                     files_to_return.append(os.path.join(full_path,'_'.join(seq)))
-        
+    files_to_return = sorted(files_to_return)
     return files_to_return
 
 

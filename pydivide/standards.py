@@ -643,7 +643,7 @@ def standards(kp,
                 print("LPW is not in the Key Parameter Data Structure, " + title + " will not be plotted")
     
     #Show the plot
-    pytplot.tplot_options('wsize', [1000,200*(current_plot_number)])
+    pytplot.tplot_options('wsize', [1000,300*(current_plot_number)])
     pytplot.tplot_options('title', title)
     pytplot.tplot(names_to_plot)
     pytplot.del_data(names_to_plot)
