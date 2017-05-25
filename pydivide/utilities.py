@@ -886,10 +886,10 @@ def read_iuvs_file(file):
                     periapse_num += 1
                     line = f.readline()
                     n_alt_bins = int(line[19:len(line)-1].strip())
-                    header['n_alt_bins'] =  n_alt_bins
+                    header['n_alt_bins'] =  float(n_alt_bins)
                     line = f.readline()
                     n_alt_den_bins = int(line[19:len(line)-1].strip())
-                    header['n_alt_den_bins'] = n_alt_den_bins
+                    header['n_alt_den_bins'] = float(n_alt_den_bins)
                     
                     iuvs_dict['periapse'+str(periapse_num)] = {}
                     iuvs_dict['periapse'+str(periapse_num)].update(header)
@@ -906,14 +906,20 @@ def read_iuvs_file(file):
                     vals = line[20:len(line)-1].strip().split()
                     index = 0
                     for val in vals:
-                        val = float(val)
+                        if val == '-9.9999990E+09':
+                            val = float('nan')
+                        else:
+                            val = float(val)
                         temperature[list(temperature.keys())[index]].append(val)
                         index+=1
                     line = f.readline()
                     vals = line[20:len(line)-1].strip().split()
                     index = 0
                     for val in vals:
-                        val = float(val)
+                        if val == '-9.9999990E+09':
+                            val = float('nan')
+                        else:
+                            val = float(val)
                         temperature_unc[list(temperature_unc.keys())[index]].append(val)
                         index+=1
                     iuvs_dict['periapse'+str(periapse_num)]['temperature'] = temperature
@@ -931,14 +937,20 @@ def read_iuvs_file(file):
                     vals = line[20:len(line)-1].strip().split()
                     index = 0
                     for val in vals:
-                        val = float(val)
+                        if val == '-9.9999990E+09':
+                            val = float('nan')
+                        else:
+                            val = float(val)
                         scale_height[list(scale_height.keys())[index]].append(val)
                         index+=1
                     line = f.readline()
                     vals = line[20:len(line)-1].strip().split()
                     index = 0
                     for val in vals:
-                        val = float(val)
+                        if val == '-9.9999990E+09':
+                            val = float('nan')
+                        else:
+                            val = float(val)
                         scale_height_unc[list(scale_height_unc.keys())[index]].append(val)
                         index+=1
                     
@@ -958,7 +970,10 @@ def read_iuvs_file(file):
                         vals = line.strip().split()
                         index = 0
                         for val in vals:
-                            val = float(val)
+                            if val == '-9.9999990E+09':
+                                val = float('nan')
+                            else:
+                                val = float(val)
                             density[list(density.keys())[index]].append(val)
                             index+=1
                     iuvs_dict['periapse'+str(periapse_num)]['density'] = density
@@ -974,7 +989,10 @@ def read_iuvs_file(file):
                     vals = line.strip().split()
                     index = 0
                     for val in vals:
-                        val = float(val)
+                        if val == '-9.9999990E+09':
+                            val = float('nan')
+                        else:
+                            val = float(val)
                         density_sys_unc[list(density.keys())[index+1]].append(val)
                         index+=1
                         
@@ -992,7 +1010,10 @@ def read_iuvs_file(file):
                         vals = line.strip().split()
                         index = 0
                         for val in vals:
-                            val = float(val)
+                            if val == '-9.9999990E+09':
+                                val = float('nan')
+                            else:
+                                val = float(val)
                             density_unc[list(density.keys())[index]].append(val)
                             index+=1        
                     iuvs_dict['periapse'+str(periapse_num)]['density_sys_unc'] = density_sys_unc
@@ -1010,7 +1031,10 @@ def read_iuvs_file(file):
                         vals = line.strip().split()
                         index = 0
                         for val in vals:
-                            val = float(val)
+                            if val == '-9.9999990E+09':
+                                val = float('nan')
+                            else:
+                                val = float(val)
                             radiance[list(radiance.keys())[index]].append(val)
                             index+=1
                             
@@ -1027,7 +1051,10 @@ def read_iuvs_file(file):
                     vals = line.strip().split()
                     index = 0
                     for val in vals:
-                        val = float(val)
+                        if val == '-9.9999990E+09':
+                            val = float('nan')
+                        else:
+                            val = float(val)
                         radiance_sys_unc[list(radiance.keys())[index+1]].append(val)
                         index+=1
                     
@@ -1045,7 +1072,10 @@ def read_iuvs_file(file):
                         vals = line.strip().split()
                         index = 0
                         for val in vals:
-                            val = float(val)
+                            if val == '-9.9999990E+09':
+                                val = float('nan')
+                            else:
+                                val = float(val)
                             radiance_unc[list(radiance.keys())[index]].append(val)
                             index+=1
                             
@@ -1054,7 +1084,7 @@ def read_iuvs_file(file):
                 elif obs_mode == "CORONA_LORES_HIGH":
                     line = f.readline()
                     n_alt_bins = int(line[19:len(line)-1].strip())
-                    header['n_alt_bins'] =  n_alt_bins
+                    header['n_alt_bins'] =  float(n_alt_bins)
                     
                     iuvs_dict['corona_lores_high'] = {}
                     iuvs_dict['corona_lores_high'].update(header)
@@ -1072,14 +1102,20 @@ def read_iuvs_file(file):
                     vals = line[26:len(line)-1].strip().split()
                     index = 0
                     for val in vals:
-                        val = float(val)
+                        if val == '-9.9999990E+09':
+                            val = float('nan')
+                        else:
+                            val = float(val)
                         half_int_dist[list(half_int_dist.keys())[index]].append(val)
                         index+=1
                     line = f.readline()
                     vals = line[26:len(line)-1].strip().split()
                     index = 0
                     for val in vals:
-                        val = float(val)
+                        if val == '-9.9999990E+09':
+                            val = float('nan')
+                        else:
+                            val = float(val)
                         half_int_dist_unc[list(half_int_dist_unc.keys())[index]].append(val)
                         index+=1
                         
@@ -1099,7 +1135,10 @@ def read_iuvs_file(file):
                         vals = line.strip().split()
                         index = 0
                         for val in vals:
-                            val = float(val)
+                            if val == '-9.9999990E+09':
+                                val = float('nan')
+                            else:
+                                val = float(val)
                             density[list(density.keys())[index]].append(val)
                             index+=1
                     
@@ -1116,7 +1155,10 @@ def read_iuvs_file(file):
                     vals = line.strip().split()
                     index = 0
                     for val in vals:
-                        val = float(val)
+                        if val == '-9.9999990E+09':
+                            val = float('nan')
+                        else:
+                            val = float(val)
                         density_sys_unc[list(density.keys())[index+1]].append(val)
                         index+=1
                         
@@ -1135,7 +1177,10 @@ def read_iuvs_file(file):
                         vals = line.strip().split()
                         index = 0
                         for val in vals:
-                            val = float(val)
+                            if val == '-9.9999990E+09':
+                                val = float('nan')
+                            else:
+                                val = float(val)
                             density_unc[list(density.keys())[index]].append(val)
                             index+=1
                             
@@ -1155,7 +1200,10 @@ def read_iuvs_file(file):
                         vals = line.strip().split()
                         index = 0
                         for val in vals:
-                            val = float(val)
+                            if val == '-9.9999990E+09':
+                                val = float('nan')
+                            else:
+                                val = float(val)
                             radiance[list(radiance.keys())[index]].append(val)
                             index+=1
                             
@@ -1172,7 +1220,10 @@ def read_iuvs_file(file):
                     vals = line.strip().split()
                     index = 0
                     for val in vals:
-                        val = float(val)
+                        if val == '-9.9999990E+09':
+                            val = float('nan')
+                        else:
+                            val = float(val)
                         radiance_sys_unc[list(radiance.keys())[index+1]].append(val)
                         index+=1
                         
@@ -1190,7 +1241,10 @@ def read_iuvs_file(file):
                         vals = line.strip().split()
                         index = 0
                         for val in vals:
-                            val = float(val)
+                            if val == '-9.9999990E+09':
+                                val = float('nan')
+                            else:
+                                val = float(val)
                             radiance_unc[list(radiance.keys())[index]].append(val)
                             index+=1
                             
@@ -1205,12 +1259,16 @@ def read_iuvs_file(file):
                         var = f.readline().strip()
                         line = f.readline()
                         lons = line.strip().split()
+                        lons = [float(x) for x in lons]
                         lats = []
                         data = []
                         for k in range(0,45):
                             line = f.readline().strip().split()
-                            lats.append(line[0])
-                            data.append([line[1:]])
+                            lats.append(float(line[0]))
+                            line_data = line[1:]
+                            line_data = [float(x) if x!='-9.9999990E+09' else float('nan') for x in line_data]
+                            data.append(line_data)
+                            
                         maps[var] = data
                         f.readline()
     
@@ -1233,7 +1291,10 @@ def read_iuvs_file(file):
                     vals = line.strip().split()
                     index = 0
                     for val in vals:
-                        val = float(val)
+                        if val == '-9.9999990E+09':
+                            val = float('nan')
+                        else:
+                            val = float(val)
                         radiance_sys_unc[list(radiance.keys())[index+1]].append(val)
                         index+=1
                     
