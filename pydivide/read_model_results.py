@@ -1,4 +1,3 @@
-import netCDF4
 import math 
 import numpy as np
 
@@ -27,7 +26,7 @@ def mvn_kp_read_model_results(file):
     return
 
 def read_model_results(file):
-    
+    import netCDF4
     
     #Create dictionaries for the metadata and dimensions
     meta = {}
