@@ -54,15 +54,15 @@ def read(input_time, instruments = None, insitu_only=False):
     
     #Turn string input into datetime objects
     if type(input_time) is list:
-        if "T" not in input_time[0]:
-            input_time[0] = input_time[0] + 'T00:00:00'
-        if "T" not in input_time[1]:
-            input_time[1] = input_time[1] + 'T00:00:00'
+        if len(input_time[0]) <= 10:
+            input_time[0] = input_time[0] + ' 00:00:00'
+        if len(input_time[1]) <= 10:
+            input_time[1] = input_time[1] + ' 00:00:00'
         date1 = parse(input_time[0])
         date2 = parse(input_time[1])
     else:
-        if "T" not in input_time:
-            input_time = input_time + 'T00:00:00'
+        if len(input_time) <= 10:
+            input_time = input_time + ' 00:00:00'
         date1 = parse(input_time)
         date2 = date1 + timedelta(days=1)
         

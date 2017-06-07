@@ -125,7 +125,8 @@ def download_files(filenames=None,
             query_args.append("file="+filenames)
         query_args.append("start_date="+start_date)
         query_args.append("end_date="+end_date)
-        
+        if level == 'iuvs':
+            query_args.append("file_extension=tab")
         if local_dir == None:
             mvn_root_data_dir = utils.get_root_data_dir()
         else:
