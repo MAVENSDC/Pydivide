@@ -1,3 +1,7 @@
+# Copyright 2017 Regents of the University of Colorado. All Rights Reserved.
+# Released under the MIT license.
+# This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
+# Verify current version before use at: https://github.com/MAVENSDC/Pydivide
 
 # INSITU_SEARCH'
 #   Searches input in situ KP data structure based on min and/or max search parameters.'

@@ -1,3 +1,8 @@
+# Copyright 2017 Regents of the University of Colorado. All Rights Reserved.
+# Released under the MIT license.
+# This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
+# Verify current version before use at: https://github.com/MAVENSDC/Pydivide
+
 #There are 3 scenarios to interpolate:
 #    1) MSO coordinate system with latitude/longitude/altitude 
 #    2) GEO coordinate system with latitude/longitude/altitude 
