@@ -14,11 +14,10 @@ Pydivide can be used in python scripts, or interactively through IPython and the
 Install Python
 =============
 
-You will need Python version 3.5 to run pydivide.  
+You will need the Anaconda distribution of Python 3 in order to run pytplot.  
 
-It is recommended that you install `Anaconda <https://www.continuum.io/downloads/>`_, as it comes with a suite of packages that are useful for data science. 
+`Anaconda <https://www.continuum.io/downloads/>`_ comes with a suite of packages that are useful for data science. 
 
-You could also install python directly from `python.org <https://www.python.org/download/>`_.
 
 Install pydivide
 =============
@@ -28,6 +27,10 @@ Open up a terminal, and type::
 	pip install pydivide
 	
 This will install pydivide and all of it's dependencies.  
+
+You will also need to install nodejs.  This can be done through Anaconda with the following command::
+
+	conda install -c bokeh nodejs
 
 Running Pydivide
 =============
