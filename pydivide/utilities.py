@@ -819,6 +819,7 @@ def mvn_kp_sc_traj_xyz(dims_x, dims_y, dims_z, values, x_array, y_array, z_array
 def read_iuvs_file(file):
     iuvs_dict = {}
     periapse_num=0
+    occ_num = 0
     with open(file) as f:
         line = f.readline()
         while line is not '':
@@ -834,6 +835,9 @@ def read_iuvs_file(file):
                 line = f.readline()
                 header['time_stop']  = line[19:len(line)-1].strip()
                 line = f.readline()
+                if obs_mode == "OCCULTATION":
+                    header['target_name'] = line[19:len(line)-1].strip()
+                    line=f.readline()
                 header['sza'] = float(line[19:len(line)-1].strip())
                 line = f.readline()
                 header['local_time'] = float(line[19:len(line)-1].strip())
@@ -1086,6 +1090,109 @@ def read_iuvs_file(file):
                             index+=1
                             
                     iuvs_dict['periapse'+str(periapse_num)]['radiance_unc'] = radiance_unc
+                            
+                elif obs_mode == "OCCULTATION":
+                    occ_num += 1
+                    line = f.readline()
+                    n_alt_den_bins = int(line[19:len(line)-1].strip())
+                    header['n_alt_den_bins'] =  float(n_alt_den_bins)
+                    
+                    iuvs_dict['occultation'+str(occ_num)] = {}
+                    iuvs_dict['occultation'+str(occ_num)].update(header)
+                    
+                    #Empty space
+                    f.readline()
+                    
+                    #Read the Scale Heights
+                    line = f.readline()
+                    scale_height_labels = line[19:len(line)-1].strip().split()
+                    scale_height = collections.OrderedDict((x,[]) for x in scale_height_labels)
+                    scale_height_unc = collections.OrderedDict((x,[]) for x in scale_height_labels)
+                    line = f.readline()
+                    vals = line[20:len(line)-1].strip().split()
+                    index = 0
+                    for val in vals:
+                        if val == '-9.9999990E+09':
+                            val = float('nan')
+                        else:
+                            val = float(val)
+                        scale_height[list(scale_height.keys())[index]].append(val)
+                        index+=1
+                    line = f.readline()
+                    vals = line[20:len(line)-1].strip().split()
+                    index = 0
+                    for val in vals:
+                        if val == '-9.9999990E+09':
+                            val = float('nan')
+                        else:
+                            val = float(val)
+                        scale_height_unc[list(scale_height_unc.keys())[index]].append(val)
+                        index+=1
+                    
+                    iuvs_dict['occultation'+str(occ_num)]['scale_height'] = scale_height
+                    iuvs_dict['occultation'+str(occ_num)]['scale_height_unc'] = scale_height_unc  
+                    
+                    #Empty space
+                    f.readline()
+                    f.readline()
+                    
+                    #Read in the retrieval
+                    line = f.readline()
+                    retrieval_labels = line.strip().split()
+                    retrieval = collections.OrderedDict((x,[]) for x in retrieval_labels)
+                    for i in range(0,n_alt_den_bins):
+                        line = f.readline()
+                        vals = line.strip().split()
+                        index = 0
+                        for val in vals:
+                            if val == '-9.9999990E+09':
+                                val = float('nan')
+                            else:
+                                val = float(val)
+                            retrieval[list(retrieval.keys())[index]].append(val)
+                            index+=1
+                    iuvs_dict['occultation'+str(occ_num)]['retrieval'] = retrieval
+                    
+                    #Not needed lines
+                    f.readline()
+                    f.readline()
+                    f.readline()
+                    
+                    #Read in the retrieval systematic uncertainty
+                    retrieval_sys_unc = collections.OrderedDict((x,[]) for x in retrieval_labels)
+                    line = f.readline()
+                    vals = line.strip().split()
+                    index = 0
+                    for val in vals:
+                        if val == '-9.9999990E+09':
+                            val = float('nan')
+                        else:
+                            val = float(val)
+                        retrieval_sys_unc[list(retrieval.keys())[index+1]].append(val)
+                        index+=1
+                        
+                    iuvs_dict['occultation'+str(occ_num)]['retrieval_sys_unc'] = retrieval_sys_unc
+                    
+                    #Not needed lines 
+                    f.readline()
+                    f.readline()
+                    f.readline()
+                    
+                    #Read in the retrieval uncertainty
+                    retrieval_unc = collections.OrderedDict((x,[]) for x in retrieval_labels)
+                    for i in range(0,n_alt_den_bins):
+                        line = f.readline()
+                        vals = line.strip().split()
+                        index = 0
+                        for val in vals:
+                            if val == '-9.9999990E+09':
+                                val = float('nan')
+                            else:
+                                val = float(val)
+                            retrieval_unc[list(retrieval.keys())[index]].append(val)
+                            index+=1        
+                    iuvs_dict['occultation'+str(occ_num)]['retrieval_sys_unc'] = retrieval_sys_unc                  
+                    
                             
                 elif obs_mode == "CORONA_LORES_HIGH":
                     line = f.readline()
