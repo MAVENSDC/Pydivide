@@ -353,5 +353,5 @@ def create_model_maps(altitude,
         plt.savefig(os.path.join(os.path.dirname(file),save_name+".png"), transparent=False, bbox_inches=extent, pad_inches=0, dpi=150)
         plt.show()
     else:
-        return dict(lon = xi, lat = yi, param = zi)
+        return dict(lon = xi[0,:], lat = yi[:,0], param = zi)
     
