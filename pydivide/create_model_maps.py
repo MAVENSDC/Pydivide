@@ -12,6 +12,7 @@ from .read_model_results import read_model_results
 
 
 def mvn_kp_create_model_maps(altitude,
+                             variable=None,
                              model=None,
                              file=None,
                              numContours=25,
@@ -23,6 +24,7 @@ def mvn_kp_create_model_maps(altitude,
                              saveFig=True):
     print("This procedure was renamed, just use create_model_maps")
     create_model_maps(altitude,
+                      variable=variable,
                       model=model,
                       file=file,
                       numContours=numContours,
@@ -56,19 +58,23 @@ def create_model_maps(altitude,
         model = read_model_results(file)
     
     
-    print("Select a variable to plot: ")
-    index=0
-    name_index_dict = {}
-    for name in model:
-        if name.lower() == 'dim':
-            continue
-        if name.lower() == 'meta':
-            continue
-        print(index, ": ", name)
-        name_index_dict[index] = name
-        index+=1
-    i_choice=int(input("Enter Selection: "))
-    dataname=name_index_dict[i_choice].lower()
+    if (variable == None) or (variable not in model.keys()):
+        print("Variable not entered or not found, Please select one from: ")
+        index=0
+        name_index_dict = {}
+        for name in model:
+            if name.lower() == 'dim':
+                continue
+            if name.lower() == 'meta':
+                continue
+            print(index, ": ", name)
+            name_index_dict[index] = name
+            index+=1
+        i_choice=int(input("Enter Selection: "))
+        dataname=name_index_dict[i_choice].lower()
+        print(dataname)
+    else:
+        dataname=variable.lower()
     
     mars_radius = model['meta']['mars_radius']
     lats = np.arange(181)-90
