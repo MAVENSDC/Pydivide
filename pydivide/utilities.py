@@ -32,7 +32,7 @@ def compare_versions():
     version_path = dir_path + '/version.txt'
     #open version.txt in current directory and read
     with open(version_path) as f:
-        cur_vn = f.readlines()
+        cur_vn = f.readline()
     cur_vn = "".join(cur_vn)
     pr2 = cur_vn
     cur_vn = cur_vn.split(".")
