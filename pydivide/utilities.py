@@ -15,7 +15,10 @@ def compare_versions():
 
     #access complete list of revision numbers on PyPI 
     pydivide_url = "https://pypi.python.org/pypi/pydivide/json"
-    pd_pypi_vn = sorted(requests.get(pydivide_url).json()['releases'])
+    try:
+        pd_pypi_vn = sorted(requests.get(pydivide_url).json()['releases'])
+    except:
+        return
     
     #find PyPI version number
     pd_pypi_vn = pd_pypi_vn[-1]
