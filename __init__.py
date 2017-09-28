@@ -14,3 +14,6 @@ from .create_model_maps import mvn_kp_create_model_maps, create_model_maps
 from .corona import corona
 from .periapse import periapse
 from .occultation import occultation
+from .utilities import compare_versions
+
+compare_versions()
