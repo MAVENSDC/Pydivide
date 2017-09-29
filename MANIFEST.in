@@ -8,3 +8,4 @@ include pydivide/basemaps/*.jpg
 include pydivide/access.txt
 exclude pydivide/mvn_kp_3d.py
 exclude pydivide/mvn_toolkit_prefs.txt
+include pydivide/version.txt
