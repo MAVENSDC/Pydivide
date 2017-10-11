@@ -165,4 +165,6 @@ def map2d( kp,
     pytplot.tplot_options('title', title)
     pytplot.tplot_options('wsize', [1000,500*(iplot)])
     pytplot.tplot(names_to_plot)
-        
+    pytplot.del_data(names_to_plot)
+
+    return

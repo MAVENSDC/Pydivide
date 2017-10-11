@@ -652,3 +652,5 @@ def standards(kp,
     pytplot.tplot_options('title', title)
     pytplot.tplot(names_to_plot)
     pytplot.del_data(names_to_plot)
+    
+    return

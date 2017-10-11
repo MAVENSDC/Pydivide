@@ -126,3 +126,6 @@ def corona(iuvs,
     pytplot.tplot_options('title', title)
     pytplot.tplot_options('wsize', [1000,400*len(list_of_plots)])
     pytplot.tplot(list_of_plots)
+    pytplot.del_data(list_of_plots)
+    
+    return

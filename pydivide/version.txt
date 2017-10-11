@@ -1,4 +1,10 @@
-0.2.2
+0.2.4
+
+0.2.4 Changes:
+	-Bug fix from previous commit
+
+0.2.3 Changes:
+	-Deleting created tplot variables after plotting
 
 0.2.0 Changes:
 	-Made a version checker
