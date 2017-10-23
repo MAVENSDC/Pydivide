@@ -53,6 +53,23 @@ def insitu_search(kp,
             print(param)
         return
     
+    IOData = kp['IOFlag']
+    if parameter is 'inbound':
+        inbound_data = (IOData == 'I')
+        kp_temp = {}
+        for df in kp:
+            if kp[df] is not None:
+                kp_temp[df] = kp[df][inbound_data]
+        return kp_temp
+        
+    if parameter in 'outbound':
+        outbound_data = (IOData == 'O')
+        kp_temp = {}
+        for df in kp:
+            if kp[df] is not None:
+                kp_temp[df] = kp[df][outbound_data]
+        return kp_temp
+    
     if max is None:
         max = [float("inf")]*len(parameter)
     if min is None:
