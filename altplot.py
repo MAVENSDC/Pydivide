@@ -130,9 +130,10 @@ def altplot( kp, parameter=None, time=None, errors=None,
         pytplot.tplot_options('title', title)
         pytplot.tplot_options('wsize', [1000,300])
         pytplot.tplot(pytplot_name)
-        
+        pytplot.del_data(pytplot_name)
     else:
         pytplot.tplot_options('title', title)
         pytplot.tplot_options('wsize', [1000,300*(iplot-1)])
         pytplot.tplot(names_to_plot)
-        
+        pytplot.del_data(names_to_plot)
+    return

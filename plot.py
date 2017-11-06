@@ -124,4 +124,5 @@ def plot( kp, parameter=None, time=None, errors=None,
         pytplot.tplot(obs)
         pytplot.del_data(obs)
 
+    return
 #--------------------------------------------------------------------------
