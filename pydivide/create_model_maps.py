@@ -354,8 +354,9 @@ def create_model_maps(altitude,
         plt.show()
     else:
         # convert back to east longitude (as in model file)
-        return dict(lon = xi[0,:], elon=((x[0,:]+3) % 360),
+        return dict(lon = xi[0,:], elon=((xi[0,:]+360) % 360),
                     longsubsol = model['meta']['longsubsol'],
+                    dec = model['meta']['dec'],
                     Ls = model['meta']['ls'],
                     lat = yi[:,0], param = zi)
     
