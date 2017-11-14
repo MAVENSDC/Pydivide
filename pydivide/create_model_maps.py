@@ -12,16 +12,19 @@ from .read_model_results import read_model_results
 
 
 def mvn_kp_create_model_maps(altitude,
+                             variable=None,
                              model=None,
                              file=None,
                              numContours=25,
                              fill=False,
-                             ct='jet',  # https://matplotlib.org/examples/color/colormaps_reference.html
+                             ct='viridis',  # https://matplotlib.org/examples/color/colormaps_reference.html
                              transparency=1,
                              nearest=False,
-                             linear=True):
+                             linear=True,
+                             saveFig=True):
     print("This procedure was renamed, just use create_model_maps")
     create_model_maps(altitude,
+                      variable=variable,
                       model=model,
                       file=file,
                       numContours=numContours,
@@ -29,7 +32,8 @@ def mvn_kp_create_model_maps(altitude,
                       ct=ct,
                       transparency=transparency,
                       nearest=nearest,
-                      linear=linear)
+                      linear=linear,
+                      saveFig=saveFig)
     return
 
 def create_model_maps(altitude,
@@ -37,10 +41,11 @@ def create_model_maps(altitude,
                              file=None,
                              numContours=25,
                              fill=False,
-                             ct='jet',  # https://matplotlib.org/examples/color/colormaps_reference.html
+                             ct='viridis',  # https://matplotlib.org/examples/color/colormaps_reference.html
                              transparency=1,
                              nearest=False,
-                             linear=True):
+                             linear=True,
+                             saveFig=True):
     import matplotlib
     matplotlib.use('tkagg')
     import matplotlib.pyplot as plt
@@ -53,19 +58,23 @@ def create_model_maps(altitude,
         model = read_model_results(file)
     
     
-    print("Select a variable to plot: ")
-    index=0
-    name_index_dict = {}
-    for name in model:
-        if name.lower() == 'dim':
-            continue
-        if name.lower() == 'meta':
-            continue
-        print(index, ": ", name)
-        name_index_dict[index] = name
-        index+=1
-    i_choice=int(input("Enter Selection: "))
-    dataname=name_index_dict[i_choice].lower()
+    if (variable == None) or (variable not in model.keys()):
+        print("Variable not entered or not found, Please select one from: ")
+        index=0
+        name_index_dict = {}
+        for name in model:
+            if name.lower() == 'dim':
+                continue
+            if name.lower() == 'meta':
+                continue
+            print(index, ": ", name)
+            name_index_dict[index] = name
+            index+=1
+        i_choice=int(input("Enter Selection: "))
+        dataname=name_index_dict[i_choice].lower()
+        print(dataname)
+    else:
+        dataname=variable.lower()
     
     mars_radius = model['meta']['mars_radius']
     lats = np.arange(181)-90
@@ -323,22 +332,31 @@ def create_model_maps(altitude,
                 #Interpolate through space
                 tracer = mvn_kp_sc_traj_xyz(x_mso_model, y_mso_model, z_mso_model, data_new, sc_mso_x, sc_mso_y, sc_mso_z, nn=interp_method)
     
-    
     xi, yi = np.linspace(sc_lon_mso.min(), sc_lon_mso.max(), 300), np.linspace(sc_lat_mso.min(), sc_lat_mso.max(), 300)
     xi, yi = np.meshgrid(xi, yi)
     zi = scipy.interpolate.griddata((sc_lon_mso, sc_lat_mso), tracer, (xi, yi), method=interp_method)
-    fig=plt.figure()
-    ax = fig.add_subplot(1,1,1)
-    if fill:
-        plt.contourf(xi, yi, zi, numContours, alpha=transparency, cmap=ct, extent=(-180,-90,180,90))
+    
+    if savefig:
+        fig=plt.figure()
+        ax = fig.add_subplot(1,1,1)
+        if fill:
+            plt.contourf(xi, yi, zi, numContours, alpha=transparency, cmap=ct, extent=(-180,-90,180,90))
+        else:
+            CS = plt.contour(xi, yi, zi, numContours, alpha=transparency, cmap=ct)
+            plt.clabel(CS, inline=1, fontsize=7, fmt='%1.0f')
+        extent = ax.get_window_extent().transformed(fig.dpi_scale_trans.inverted())
+        plt.axis('off')
+        save_name = "ModelData_"+dataname+"_"+str(altitude)+"km"
+        if fill:
+            save_name = save_name + "_filled"
+        print("Saving file as:"+os.path.join(os.path.dirname(file),save_name+".png"))
+        plt.savefig(os.path.join(os.path.dirname(file),save_name+".png"), transparent=False, bbox_inches=extent, pad_inches=0, dpi=150)
+        plt.show()
     else:
-        CS = plt.contour(xi, yi, zi, numContours, alpha=transparency, cmap=ct)
-        plt.clabel(CS, inline=1, fontsize=7, fmt='%1.0f')
-    extent = ax.get_window_extent().transformed(fig.dpi_scale_trans.inverted())
-    plt.axis('off')
-    save_name = "ModelData_"+dataname+"_"+str(altitude)+"km"
-    if fill:
-        save_name = save_name + "_filled"
-    plt.savefig(os.path.join(os.path.dirname(file),save_name+".png"), transparent=False, bbox_inches=extent, pad_inches=0, dpi=150)
-    plt.show()
+        # convert back to east longitude (as in model file)
+        return dict(lon = xi[0,:], elon=((xi[0,:]+360) % 360),
+                    longsubsol = model['meta']['longsubsol'],
+                    dec = model['meta']['dec'],
+                    Ls = model['meta']['ls'],
+                    lat = yi[:,0], param = zi)
     
