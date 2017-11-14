@@ -35,7 +35,7 @@ def read_model_results(file):
     import collections
     
     #Create dictionaries for the metadata and dimensions
-    meta = collections.OrderedDict{}
+    meta = collections.OrderedDict()
     dim = collections.OrderedDict()
     
     #Create a dictionary for the above dictionaries

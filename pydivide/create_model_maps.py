@@ -37,15 +37,16 @@ def mvn_kp_create_model_maps(altitude,
     return
 
 def create_model_maps(altitude,
-                             model=None,
-                             file=None,
-                             numContours=25,
-                             fill=False,
-                             ct='viridis',  # https://matplotlib.org/examples/color/colormaps_reference.html
-                             transparency=1,
-                             nearest=False,
-                             linear=True,
-                             saveFig=True):
+                      variable=None,
+                      model=None,
+                      file=None,
+                      numContours=25,
+                      fill=False,
+                      ct='viridis',  # https://matplotlib.org/examples/color/colormaps_reference.html
+                      transparency=1,
+                      nearest=False,
+                      linear=True,
+                      saveFig=True):
     import matplotlib
     matplotlib.use('tkagg')
     import matplotlib.pyplot as plt
@@ -336,7 +337,7 @@ def create_model_maps(altitude,
     xi, yi = np.meshgrid(xi, yi)
     zi = scipy.interpolate.griddata((sc_lon_mso, sc_lat_mso), tracer, (xi, yi), method=interp_method)
     
-    if savefig:
+    if saveFig:
         fig=plt.figure()
         ax = fig.add_subplot(1,1,1)
         if fill:
@@ -359,4 +360,3 @@ def create_model_maps(altitude,
                     dec = model['meta']['dec'],
                     Ls = model['meta']['ls'],
                     lat = yi[:,0], param = zi)
-    
