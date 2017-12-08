@@ -164,10 +164,10 @@ def download_files(filenames=None,
                 
         if not unittest:
             print("Your request will download a total of: "+str(len(s))+" files for instrument "+str(instrument))
-            print('Would you like to procede with the download: ')
+            print('Would you like to proceed with the download? ')
             valid_response=False
             while(valid_response==False):
-                response = (input('(y/n) >'))
+                response = (input('(y/n) >  '))
                 if response=='y' or response=='Y':
                     valid_response=True
                     cancel=False
