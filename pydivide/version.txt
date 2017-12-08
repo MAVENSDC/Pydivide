@@ -1,4 +1,7 @@
-0.2.4
+0.2.5
+
+0.2.5 Changes:
+	-Added two new options to create_model_maps
 
 0.2.4 Changes:
 	-Bug fix from previous commit

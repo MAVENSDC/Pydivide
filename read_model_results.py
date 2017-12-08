@@ -32,13 +32,14 @@ def mvn_kp_read_model_results(file):
 
 def read_model_results(file):
     import netCDF4
+    import collections
     
     #Create dictionaries for the metadata and dimensions
-    meta = {}
-    dim = {}
+    meta = collections.OrderedDict()
+    dim = collections.OrderedDict()
     
     #Create a dictionary for the above dictionaries
-    results = {}
+    results = collections.OrderedDict()
     
     
     model = netCDF4.Dataset(file, "r+", format="NETCDF4")

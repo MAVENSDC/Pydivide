@@ -639,6 +639,32 @@ def get_latest_iuvs_files_from_date_range(date1, date2):
     files_to_return = sorted(files_to_return)
     return files_to_return
 
+def get_l2_files_from_date(date1, instrument):
+    from datetime import datetime, timedelta
+    from dateutil.parser import parse
+    import datetime
+    
+    
+    mvn_root_data_dir = utils.get_root_data_dir()
+    maven_data_dir = os.path.join(mvn_root_data_dir,'maven','data','sci', instrument,'l2') 
+    
+    
+    #Each file starts at midnight, so lets cut off the hours and just pay attention to the days
+    date1 = date1.replace(hour=0, minute=0, second=0)
+
+    filenames = []
+    
+    year = str(date1.year)
+    month = str('%02d' % date1.month)
+    day = str('%02d' % date1.day)
+    full_path = os.path.join(maven_data_dir,year,month)
+    if os.path.exists(full_path): 
+        for f in os.listdir(full_path):
+            if l2_regex.match(f).group('day') == day:
+                filenames.append(os.path.join(full_path, f))
+                
+    filenames = sorted(filenames)
+    return filenames
 
 def get_header_info(filename):
         # Determine number of header lines    
@@ -758,6 +784,29 @@ kp_pattern = (r'^mvn_(?P<{0}>kp)_'
                                         'gz')
 
 kp_regex = re.compile(kp_pattern)
+
+l2_pattern = (r'^mvn_(?P<{0}>[a-zA-Z0-9]+)_'
+                   '(?P<{1}>l2)'
+                   '(?P<{2}>|_[a-zA-Z0-9\-]+)_'
+                   '(?P<{3}>[0-9]{{4}})'
+                   '(?P<{4}>[0-9]{{2}})'
+                   '(?P<{5}>[0-9]{{2}})'
+                   '(?P<{6}>|T[0-9]{{6}}|t[0-9]{{6}})_'
+                   'v(?P<{7}>[0-9]+)_'
+                   'r(?P<{8}>[0-9]+)\.'
+                   '(?P<{9}>cdf)'
+                   '(?P<{10}>\.gz)*').format('instrument',
+                                        'level',
+                                        'description',
+                                        'year',
+                                        'month',
+                                        'day',
+                                        'time',
+                                        'version',
+                                        'revision',
+                                        'extension',
+                                        'gz')
+l2_regex = re.compile(l2_pattern)
 
 def initialize_list(the_list):
     index = 0
