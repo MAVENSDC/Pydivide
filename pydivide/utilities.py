@@ -69,7 +69,6 @@ def compare_versions():
         print('****************************** WARNING! ******************************')
     return
 
->>>>>>> master:pydivide/utilities.py
 def param_list( kp ):
     '''
     Return a listing of all parameters present in the given 
