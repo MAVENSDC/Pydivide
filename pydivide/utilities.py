@@ -15,14 +15,6 @@ def compare_versions():
 
     #access complete list of revision numbers on PyPI 
     pydivide_url = "https://pypi.python.org/pypi/pydivide/json"
-<<<<<<< HEAD:utilities.py
-    pd_pypi_vn = sorted(requests.get(pydivide_url).json()['releases'])
-    
-    #print PyPI version number
-    print("PyPI PyDivide Version")
-    pd_pypi_vn = pd_pypi_vn[-1]
-    print(pd_pypi_vn)
-=======
     try:
         pd_pypi_vn = sorted(requests.get(pydivide_url).json()['releases'])
     except:
@@ -31,29 +23,18 @@ def compare_versions():
     #find PyPI version number
     pd_pypi_vn = pd_pypi_vn[-1]
     pr1 = pd_pypi_vn
->>>>>>> master:pydivide/utilities.py
     pd_pypi_vn = pd_pypi_vn.split(".")
     #convert to integer array for comparison
     pd_pypi_vn = [int(i) for i in pd_pypi_vn]
     
     #find current directory out of which code is executing
     dir_path = os.path.dirname(os.path.realpath(__file__))
-<<<<<<< HEAD:utilities.py
-    print("Your PyDivide Version in " + dir_path)
-    version_path = dir_path + '/version.txt'
-    #open version.txt in current directory and read
-    with open(version_path) as f:
-        cur_vn = f.readlines()
-    cur_vn = "".join(cur_vn)
-    print(cur_vn)
-=======
     version_path = dir_path + '/version.txt'
     #open version.txt in current directory and read
     with open(version_path) as f:
         cur_vn = f.readline()
     cur_vn = "".join(cur_vn)
     pr2 = cur_vn
->>>>>>> master:pydivide/utilities.py
     cur_vn = cur_vn.split(".")
     #convert to integer array for comparison
     cur_vn = [int(i) for i in cur_vn]
@@ -75,28 +56,14 @@ def compare_versions():
 
     #if not running latest version, throw warning
     if old_flag == 1:
-<<<<<<< HEAD:utilities.py
-=======
         print("PyPI PyDivide Version")
         print(pr1)
         print("Your PyDivide Version in " + dir_path)
         print(pr2)
->>>>>>> master:pydivide/utilities.py
         print("")
         print('****************************** WARNING! ******************************')
         print('*                                                                    *')
         print('*          You are running an outdated version of PyDivide.          *')
-<<<<<<< HEAD:utilities.py
-        print('*            Sync your repository for the latest updates.            *')
-        print('*                                                                    *')
-        print('****************************** WARNING! ******************************')
-    #else inform user of updated status
-    else:
-        print("")
-        print('You are running the latest version of PyDivide.')
-        
-        
-=======
         print('*              Sync your module for the latest updates.              *')
         print('*                                                                    *')
         print('****************************** WARNING! ******************************')
