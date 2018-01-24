@@ -22,7 +22,8 @@ def mvn_kp_map2d(kp,
                  map_limit=None,
                  basemap=None,
                  alpha=None,
-                 title='MAVEN Mars'):
+                 title='MAVEN Mars',
+                 qt=True):
     print("This procedure was renamed, just use map2d")
     map2d(kp=kp, 
           parameter=parameter, 
@@ -34,7 +35,8 @@ def mvn_kp_map2d(kp,
           map_limit=map_limit, 
           basemap=basemap, 
           alpha=alpha, 
-          title=title)
+          title=title,
+          qt=qt)
     return
 
 def map2d( kp, 
@@ -47,7 +49,8 @@ def map2d( kp,
            map_limit=None,
            basemap=None,
            alpha=None,
-           title='MAVEN Mars'):
+           title='MAVEN Mars',
+           qt=True):
     if list:
         x = param_list(kp)
         for param in x:
@@ -164,7 +167,7 @@ def map2d( kp,
     
     pytplot.tplot_options('title', title)
     pytplot.tplot_options('wsize', [1000,500*(iplot)])
-    pytplot.tplot(names_to_plot)
+    pytplot.tplot(names_to_plot, qt=qt)
     pytplot.del_data(names_to_plot)
 
     return
