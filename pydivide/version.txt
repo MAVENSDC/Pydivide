@@ -1,4 +1,7 @@
-0.2.5
+0.2.6
+
+0.2.6 Changes:
+	-Added qt flag options to all plotting routines
 
 0.2.5 Changes:
 	-Added two new options to create_model_maps
