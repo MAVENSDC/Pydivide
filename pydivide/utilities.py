@@ -635,95 +635,92 @@ def get_l2_files_from_date(date1, instrument):
 def get_header_info(filename):
         # Determine number of header lines    
         nheader = 0
-        for line in open(filename):
-            if line.startswith('#'):
-                nheader = nheader+1
+        with open(filename) as f:
+            for line in f:
+                if line.startswith('#'):
+                    nheader = nheader+1
     
         #
         # Parse the header (still needs special case work)
         #
         ReadParamList = False
         index_list = []
-        fin = open(filename)
-        icol = -2 # Counting header lines detailing column names
-        iname = 1 # for counting seven lines with name info
-        ncol = -1 # Dummy value to allow reading of early headerlines?
-        col_regex = '#\s(.{16}){%3d}' % ncol # needed for column names
-        for iline in range(nheader):
-            line = fin.readline()
-            if re.search('Number of parameter columns',line): 
-                ncol = int(re.split("\s{3}",line)[1])
-                col_regex = '#\s(.{16}){%3d}' % ncol # needed for column names
-            elif re.search('Line on which data begins',line): 
-                nhead_test = int(re.split("\s{3}",line)[1])-1
-            elif re.search('Number of lines',line): 
-                ndata = int(re.split("\s{3}",line)[1])
-            elif re.search('PARAMETER',line):
-                ReadParamList = True
-                ParamHead = iline
-            elif ReadParamList:
-                icol = icol + 1
-                if icol > ncol: ReadParamList = False
-            elif re.match(col_regex,line):
-                # OK, verified match now get the values
-                temp = re.findall('(.{16})',line[3:])
-                if iname == 1: index = temp
-                elif iname == 2: obs1 = temp
-                elif iname == 3: obs2 = temp
-                elif iname == 4: obs3 = temp
-                elif iname == 5: inst = temp
-                elif iname == 6: unit = temp
-                elif iname == 7: FormatCode = temp
-                else: 
-                    print('More lines in data descriptor than expected.')
-                    print('Line %d' % iline)
-                iname = iname + 1
-            else:
-                pass
-    
-        #
-        # Generate the names list.
-        # NB, there are special case redundancies in there
-        # (e.g., LPW: Electron Density Quality (min and max))
-        # ****SWEA FLUX electron QUALITY *****
-        #
-        First = True
-        Parallel = None
-        names = []
-        for h,i,j,k in zip(inst,obs1,obs2,obs3):
-            combo_name = (' '.join([i.strip(),j.strip(),k.strip()])).strip()
-            if re.match('^LPW$',h.strip()):
-            # Max and min error bars use same name in column
-            # SIS says first entry is min and second is max
-                if re.match('(Electron|Spacecraft)(.+)Quality', combo_name):
-                    if First:
-                        combo_name = combo_name + ' Min'
-                        First = False
-                    else:
-                        combo_name = combo_name + ' Max'
-                        First = True
-            elif re.match('^SWEA$',h.strip()):
-            # electron flux qual flags do not indicate whether parallel or anti
-            # From context it is clear; but we need to specify in name
-                if re.match('.+Parallel.+',combo_name): Parallel = True
-                elif re.match('.+Anti-par',combo_name): Parallel = False
-                else: pass
-                if re.match('Flux, e-(.+)Quality', combo_name ):
-                    if Parallel: 
-                        p = re.compile( 'Flux, e- ' )
-                        combo_name = p.sub('Flux, e- Parallel ',combo_name)
-                    else:
-                        p = re.compile( 'Flux, e- ' )
-                        combo_name = p.sub('Flux, e- Anti-par ',combo_name)
-            # Add inst to names to avoid ambiguity
-            # Will need to remove these after splitting
-            names.append('.'.join([h.strip(),combo_name]))
-            names[0] = 'Time'
-    
-        #
-        # Now close the file and read the data section into a temporary DataFrame
-        #
-        fin.close()
+        with open(filename) as fin:
+            icol = -2 # Counting header lines detailing column names
+            iname = 1 # for counting seven lines with name info
+            ncol = -1 # Dummy value to allow reading of early headerlines?
+            col_regex = '#\s(.{16}){%3d}' % ncol # needed for column names
+            for iline in range(nheader):
+                line = fin.readline()
+                if re.search('Number of parameter columns',line): 
+                    ncol = int(re.split("\s{3}",line)[1])
+                    col_regex = '#\s(.{16}){%3d}' % ncol # needed for column names
+                elif re.search('Line on which data begins',line): 
+                    nhead_test = int(re.split("\s{3}",line)[1])-1
+                elif re.search('Number of lines',line): 
+                    ndata = int(re.split("\s{3}",line)[1])
+                elif re.search('PARAMETER',line):
+                    ReadParamList = True
+                    ParamHead = iline
+                elif ReadParamList:
+                    icol = icol + 1
+                    if icol > ncol: ReadParamList = False
+                elif re.match(col_regex,line):
+                    # OK, verified match now get the values
+                    temp = re.findall('(.{16})',line[3:])
+                    if iname == 1: index = temp
+                    elif iname == 2: obs1 = temp
+                    elif iname == 3: obs2 = temp
+                    elif iname == 4: obs3 = temp
+                    elif iname == 5: inst = temp
+                    elif iname == 6: unit = temp
+                    elif iname == 7: FormatCode = temp
+                    else: 
+                        print('More lines in data descriptor than expected.')
+                        print('Line %d' % iline)
+                    iname = iname + 1
+                else:
+                    pass
+        
+            #
+            # Generate the names list.
+            # NB, there are special case redundancies in there
+            # (e.g., LPW: Electron Density Quality (min and max))
+            # ****SWEA FLUX electron QUALITY *****
+            #
+            First = True
+            Parallel = None
+            names = []
+            for h,i,j,k in zip(inst,obs1,obs2,obs3):
+                combo_name = (' '.join([i.strip(),j.strip(),k.strip()])).strip()
+                if re.match('^LPW$',h.strip()):
+                # Max and min error bars use same name in column
+                # SIS says first entry is min and second is max
+                    if re.match('(Electron|Spacecraft)(.+)Quality', combo_name):
+                        if First:
+                            combo_name = combo_name + ' Min'
+                            First = False
+                        else:
+                            combo_name = combo_name + ' Max'
+                            First = True
+                elif re.match('^SWEA$',h.strip()):
+                # electron flux qual flags do not indicate whether parallel or anti
+                # From context it is clear; but we need to specify in name
+                    if re.match('.+Parallel.+',combo_name): Parallel = True
+                    elif re.match('.+Anti-par',combo_name): Parallel = False
+                    else: pass
+                    if re.match('Flux, e-(.+)Quality', combo_name ):
+                        if Parallel: 
+                            p = re.compile( 'Flux, e- ' )
+                            combo_name = p.sub('Flux, e- Parallel ',combo_name)
+                        else:
+                            p = re.compile( 'Flux, e- ' )
+                            combo_name = p.sub('Flux, e- Anti-par ',combo_name)
+                # Add inst to names to avoid ambiguity
+                # Will need to remove these after splitting
+                names.append('.'.join([h.strip(),combo_name]))
+                names[0] = 'Time'
+        
         return names, inst
 
 
@@ -808,29 +805,29 @@ def orbit_time(begin_orbit, end_orbit=None):
     orb_file = os.path.join(os.path.dirname(__file__), 
                             'maven_orb_rec.orb')
     
-    f = open(orb_file, "r")
-    if end_orbit==None:
-        end_orbit=begin_orbit
-    orbit_num = []
-    time = []
-    f.readline()
-    f.readline()
-    for line in f:
-        line = line[0:28]
-        line = line.split(' ')
-        line = [x for x in line if x != '']
-        orbit_num.append(int(line[0]))
-        time.append(line[1]+"-"+month_to_num(line[2])+"-"+line[3]+"T"+line[4])
-    try:
-        
-        if orbit_num.index(begin_orbit) > len(time) or orbit_num.index(end_orbit)+1 > len(time):
-            print("Orbit numbers not found.  Please choose a number between 1 and %s.", orbit_num[-1])
+    with open(orb_file, "r") as f:
+        if end_orbit==None:
+            end_orbit=begin_orbit
+        orbit_num = []
+        time = []
+        f.readline()
+        f.readline()
+        for line in f:
+            line = line[0:28]
+            line = line.split(' ')
+            line = [x for x in line if x != '']
+            orbit_num.append(int(line[0]))
+            time.append(line[1]+"-"+month_to_num(line[2])+"-"+line[3]+"T"+line[4])
+        try:
+            
+            if orbit_num.index(begin_orbit) > len(time) or orbit_num.index(end_orbit)+1 > len(time):
+                print("Orbit numbers not found.  Please choose a number between 1 and %s.", orbit_num[-1])
+                return [None, None]
+            else:
+                begin_time = time[orbit_num.index(begin_orbit)]
+                end_time = time[orbit_num.index(end_orbit)+1]
+        except ValueError:
             return [None, None]
-        else:
-            begin_time = time[orbit_num.index(begin_orbit)]
-            end_time = time[orbit_num.index(end_orbit)+1]
-    except ValueError:
-        return [None, None]
     return [begin_time, end_time]
 
 def month_to_num(month_string):

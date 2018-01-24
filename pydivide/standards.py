@@ -36,7 +36,8 @@ def mvn_kp_standards(kp,
                      ionosphere=False,
                      sc_pot=False,
                      altitude=False,
-                     title='Standard Plots'):
+                     title='Standard Plots',
+                     qt=True):
     print("This procedure was renamed, just use standards")
     standards(kp, 
               list_plots=list_plots,
@@ -67,7 +68,8 @@ def mvn_kp_standards(kp,
               ionosphere=ionosphere,
               sc_pot=sc_pot,
               altitude=altitude,
-              title=title)
+              title=title,
+              qt=qt)
     return
 
 def standards(kp, 
@@ -99,7 +101,8 @@ def standards(kp,
               ionosphere=False,
               sc_pot=False,
               altitude=False,
-              title='Standard Plots'):
+              title='Standard Plots',
+              qt=True):
 
     if all_plots:
         euv = True
@@ -129,7 +132,7 @@ def standards(kp,
         sc_pot = True
     
     
-    if (list == True):
+    if list_plots:
         print("all: Generate all 25 plots")
         print("euv: EUV irradiance in each of three bands")
         print("mag_mso: Magnetic field, MSO coordinates")
@@ -650,7 +653,7 @@ def standards(kp,
     #Show the plot
     pytplot.tplot_options('wsize', [1000,300*(current_plot_number)])
     pytplot.tplot_options('title', title)
-    pytplot.tplot(names_to_plot)
+    pytplot.tplot(names_to_plot, qt=qt)
     pytplot.del_data(names_to_plot)
     
     return

@@ -148,14 +148,15 @@ def read(input_time, instruments = None, insitu_only=False):
         for filename in filenames:
             # Determine number of header lines    
             nheader = 0
-            for line in open(filename):
-                if line.startswith('#'):
-                    nheader = nheader+1
-    
-            temp_data.append(pd.read_fwf(filename, skiprows=nheader, index_col=0, 
-                               widths=[19]+len(names)*[16], names = names))
-            for i in DELETEgroups:
-                del temp_data[-1][i] 
+            with open(filename) as f:
+                for line in f:
+                    if line.startswith('#'):
+                        nheader = nheader+1
+        
+                temp_data.append(pd.read_fwf(filename, skiprows=nheader, index_col=0, 
+                                   widths=[19]+len(names)*[16], names = names))
+                for i in DELETEgroups:
+                    del temp_data[-1][i] 
                 
         temp_unconverted = pd.concat(temp_data)
         

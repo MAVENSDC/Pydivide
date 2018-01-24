@@ -15,7 +15,8 @@ def periapse(iuvs,
              species=None,
              obs_num=None,
              log=False,
-             title='IUVS Periapse Observations'):
+             title='IUVS Periapse Observations',
+             qt=True):
     
     density_names_to_plot=[]
     density_legend_names = []
@@ -137,7 +138,7 @@ def periapse(iuvs,
     pytplot.tplot_options('alt_range', [np.min(xmin), np.max(xmax)])
     pytplot.tplot_options('title', title)
     pytplot.tplot_options('wsize', [1000,400*len(list_of_plots)])
-    pytplot.tplot(list_of_plots)
+    pytplot.tplot(list_of_plots, qt=False)
     pytplot.del_data(list_of_plots)
     
     return
