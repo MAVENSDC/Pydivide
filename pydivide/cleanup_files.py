@@ -8,9 +8,10 @@
 # 
 #   x = cleanup_files()
 # 
-# REQUIRED FIELDS
+# REQUIREMENTS
 # ***************
-#   None
+#   All .tab files must be named with the format "mvn_kp_insitu_YYYYMMDD_vXX_rXX.tab"
+#   Any extraneous characters or formatting changes will break the regexing for this function.
 
 from __future__ import division
 import numpy
@@ -44,6 +45,7 @@ def cleanup_files():
             files_rev = files_rev + [frev]
 
     #convert from strings to int arrays
+    tot_files = len(files_del)
     files_date = list(map(int, files_date))
     files_ver = list(map(int, files_ver))
     files_rev = list(map(int, files_rev))
@@ -90,6 +92,7 @@ def cleanup_files():
                 
     
     frev = []
+    tot_files_old = 0
     #output names of latest files
     print("Newest versions of .tab files are:")
     for key in date_dict:
@@ -114,6 +117,7 @@ def cleanup_files():
             #create string for printing    
             pr_ver_del = "    " + str(file_dict[key][newest_ind])[-34:]
             print(pr_ver_del)
+            tot_files_old = tot_files_old + 1
             #remove newest from file dictionary
             file_dict[key].remove(file_dict[key][newest_ind])
 
@@ -128,7 +132,12 @@ def cleanup_files():
         print("All files up to date. Returning...")
         return
     else:
-        del_verif = input("Would you like to remove all older versions/revisions (Y/N)? ")
+        if tot_files - tot_files_old == 1:
+            print("You have " + str(tot_files - tot_files_old) + " out of date file.")
+            del_verif = input("Would you like to remove it? (Y/N) >  ")
+        else:
+            print("You have " + str(tot_files - tot_files_old) + " out of date files.")
+            del_verif = input("Would you like to remove all older versions/revisions? (Y/N) > ")
         if del_verif == "Y" or del_verif == "y":
             print("Removing:")
             #if nothing in date key, do nothing
@@ -147,4 +156,5 @@ def cleanup_files():
             print("Old versions removed.")
         else:
             print("Old versions will not be removed. Returning...")
-            return    
+            return 
+cleanup_files()   
