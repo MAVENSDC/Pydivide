@@ -96,7 +96,8 @@ def altplot( kp, parameter=None, time=None, errors=None,
     for i in kp['TimeString']:
         z.append(kp['SPACECRAFT']['ALTITUDE'][index])
         index = index + 1
-
+    
+    pytplot.store_data('sc_alt', data={'x':kp['Time'] , 'y':z})
     # Cycle through the parameters, plotting each according to
     #  the given keywords
     #
@@ -115,7 +116,8 @@ def altplot( kp, parameter=None, time=None, errors=None,
         names_to_plot.append('%s.%s'%(inst,obs))
         legend_names.append(obs)
         
-        pytplot.store_data(names_to_plot[iplot], data={'x':z, 'y':y})
+        pytplot.store_data(names_to_plot[iplot], data={'x':kp['Time'], 'y':y})
+        pytplot.options(names_to_plot[iplot], 'link', ['alt', 'sc_alt'])
         pytplot.options(names_to_plot[iplot], 'alt', 1)
 
         
@@ -126,6 +128,7 @@ def altplot( kp, parameter=None, time=None, errors=None,
     if SamePlot:
         pytplot_name=','.join(legend_names)
         pytplot.store_data(pytplot_name, data = names_to_plot)
+        pytplot.options(pytplot_name, 'link', ['alt', 'sc_alt'])
         pytplot.options(pytplot_name, 'alt', 1)
         pytplot.options(pytplot_name, 'legend_names', legend_names)
         pytplot.tplot_options('title', title)
