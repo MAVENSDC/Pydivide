@@ -83,7 +83,7 @@ def occultation(iuvs,
     pytplot.tplot_options('alt_range', [np.min(xmin), np.max(xmax)])
     pytplot.tplot_options('title', title)
     pytplot.tplot_options('wsize', [1000,400*len(list_of_plots)])
-    pytplot.tplot(list_of_plots)
+    pytplot.tplot(list_of_plots, qt=False)
     pytplot.del_data(list_of_plots)
     
     return

@@ -48,7 +48,7 @@ def create_model_maps(altitude,
                       linear=True,
                       saveFig=True):
     import matplotlib
-    matplotlib.use('tkagg')
+    #matplotlib.use('tkagg')
     import matplotlib.pyplot as plt
     
     
@@ -352,7 +352,7 @@ def create_model_maps(altitude,
             save_name = save_name + "_filled"
         print("Saving file as:"+os.path.join(os.path.dirname(file),save_name+".png"))
         plt.savefig(os.path.join(os.path.dirname(file),save_name+".png"), transparent=False, bbox_inches=extent, pad_inches=0, dpi=150)
-        plt.show()
+        plt.show(block=True)
     else:
         # convert back to east longitude (as in model file)
         return dict(lon = xi[0,:], elon=((xi[0,:]+360) % 360),

@@ -22,7 +22,8 @@ def mvn_kp_map2d(kp,
                  map_limit=None,
                  basemap=None,
                  alpha=None,
-                 title='MAVEN Mars'):
+                 title='MAVEN Mars',
+                 qt=True):
     print("This procedure was renamed, just use map2d")
     map2d(kp=kp, 
           parameter=parameter, 
@@ -34,7 +35,8 @@ def mvn_kp_map2d(kp,
           map_limit=map_limit, 
           basemap=basemap, 
           alpha=alpha, 
-          title=title)
+          title=title,
+          qt=qt)
     return
 
 def map2d( kp, 
@@ -47,7 +49,8 @@ def map2d( kp,
            map_limit=None,
            basemap=None,
            alpha=None,
-           title='MAVEN Mars'):
+           title='MAVEN Mars',
+           qt=True):
     if list:
         x = param_list(kp)
         for param in x:
@@ -111,15 +114,18 @@ def map2d( kp,
         y = kp[inst][obs]
         
         if subsolar and mso==False:
-            pytplot.store_data('%s.%s'%(inst,obs), 
-                               data={'x':[lon, 
-                                          lat], 
-                                     'y':y})
+            pytplot.store_data('sc_lon', data={'x':kp['Time'], 'y':lon})
+            pytplot.store_data('sc_lat', data={'x':kp['Time'], 'y':lat})
+            pytplot.store_data('%s.%s'%(inst,obs), data={'x':kp['Time'],'y':y})
+            pytplot.options('%s.%s'%(inst,obs), 'link', ['lon', 'sc_lon'])
+            pytplot.options('%s.%s'%(inst,obs), 'link', ['lat', 'sc_lat'])
             pytplot.options('%s.%s'%(inst,obs), 'map', 1)
-            pytplot.store_data('subsolar', 
-                               data={'x':[kp['SPACECRAFT']['SUBSOLAR_POINT_GEO_LONGITUDE'],
-                                          kp['SPACECRAFT']['SUBSOLAR_POINT_GEO_LATITUDE']], 
-                                    'y':alt})
+            
+            pytplot.store_data('ss_lon', data={'x':kp['Time'], 'y':kp['SPACECRAFT']['SUBSOLAR_POINT_GEO_LONGITUDE']})
+            pytplot.store_data('ss_lat', data={'x':kp['Time'], 'y':kp['SPACECRAFT']['SUBSOLAR_POINT_GEO_LATITUDE']})
+            pytplot.store_data('subsolar', data={'x':kp['Time'],'y':alt})
+            pytplot.options('subsolar', 'link', ['lon', 'ss_lon'])
+            pytplot.options('subsolar', 'link', ['lat', 'ss_lat'])
             pytplot.options('subsolar', 'map', 1)
             names_to_plot.append('%s.%s.%s'%(inst,obs,'subsolar'))
             pytplot.store_data(names_to_plot[iplot], data=['%s.%s'%(inst,obs),'subsolar'])
@@ -127,7 +133,11 @@ def map2d( kp,
             pytplot.options(names_to_plot[iplot], 'colormap', ['magma', 'yellow'])
         else:
             names_to_plot.append('%s.%s'%(inst,obs))
-            pytplot.store_data(names_to_plot[iplot], data={'x':[lon, lat], 'y':y})
+            pytplot.store_data('sc_lon', data={'x':kp['Time'], 'y':lon})
+            pytplot.store_data('sc_lat', data={'x':kp['Time'], 'y':lat})
+            pytplot.store_data(names_to_plot[iplot], data={'x':kp['Time'],'y':y})
+            pytplot.options(names_to_plot[iplot], 'link', ['lon', 'sc_lon'])
+            pytplot.options(names_to_plot[iplot], 'link', ['lat', 'sc_lat'])
             pytplot.options(names_to_plot[iplot], 'map', 1)
         
         if basemap:
@@ -164,7 +174,11 @@ def map2d( kp,
     
     pytplot.tplot_options('title', title)
     pytplot.tplot_options('wsize', [1000,500*(iplot)])
-    pytplot.tplot(names_to_plot)
+    pytplot.tplot(names_to_plot, qt=qt)
+    pytplot.del_data('ss_lon')
+    pytplot.del_data('ss_lat')
+    pytplot.del_data('sc_lon')
+    pytplot.del_data('sc_lat')
     pytplot.del_data(names_to_plot)
 
     return

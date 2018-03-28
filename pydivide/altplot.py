@@ -8,7 +8,7 @@ import pytplot
 import builtins
 
 def mvn_kp_altplot( kp, parameter=None, time=None, errors=None, 
-              SamePlot=True, list=False, title='Altitude Plot'):
+              SamePlot=True, list=False, title='Altitude Plot', qt=True):
     
     print("This procedure was renamed, just use altplot")
     altplot(kp,
@@ -17,11 +17,12 @@ def mvn_kp_altplot( kp, parameter=None, time=None, errors=None,
             errors=errors,
             SamePlot=SamePlot,
             list=list,
-            title=title)
+            title=title,
+            qt=qt)
     return 
 
 def altplot( kp, parameter=None, time=None, errors=None, 
-              SamePlot=True, list=False, title='Altitude Plot'):
+              SamePlot=True, list=False, title='Altitude Plot', qt=True):
     '''
     Plot the provided data plotted against spacecraft altitude.
     For now, do not accept any error bar information.
@@ -95,7 +96,8 @@ def altplot( kp, parameter=None, time=None, errors=None,
     for i in kp['TimeString']:
         z.append(kp['SPACECRAFT']['ALTITUDE'][index])
         index = index + 1
-
+    
+    pytplot.store_data('sc_alt', data={'x':kp['Time'] , 'y':z})
     # Cycle through the parameters, plotting each according to
     #  the given keywords
     #
@@ -114,7 +116,8 @@ def altplot( kp, parameter=None, time=None, errors=None,
         names_to_plot.append('%s.%s'%(inst,obs))
         legend_names.append(obs)
         
-        pytplot.store_data(names_to_plot[iplot], data={'x':z, 'y':y})
+        pytplot.store_data(names_to_plot[iplot], data={'x':kp['Time'], 'y':y})
+        pytplot.options(names_to_plot[iplot], 'link', ['alt', 'sc_alt'])
         pytplot.options(names_to_plot[iplot], 'alt', 1)
 
         
@@ -125,15 +128,16 @@ def altplot( kp, parameter=None, time=None, errors=None,
     if SamePlot:
         pytplot_name=','.join(legend_names)
         pytplot.store_data(pytplot_name, data = names_to_plot)
+        pytplot.options(pytplot_name, 'link', ['alt', 'sc_alt'])
         pytplot.options(pytplot_name, 'alt', 1)
         pytplot.options(pytplot_name, 'legend_names', legend_names)
         pytplot.tplot_options('title', title)
         pytplot.tplot_options('wsize', [1000,300])
-        pytplot.tplot(pytplot_name)
+        pytplot.tplot(pytplot_name, qt=qt)
         pytplot.del_data(pytplot_name)
     else:
         pytplot.tplot_options('title', title)
         pytplot.tplot_options('wsize', [1000,300*(iplot-1)])
-        pytplot.tplot(names_to_plot)
+        pytplot.tplot(names_to_plot, qt=qt)
         pytplot.del_data(names_to_plot)
     return

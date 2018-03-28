@@ -99,26 +99,26 @@ def merge_orbit_files():
     with open(os.path.join(toolkit_path,'maven_orb_rec.orb'), "w") as code:
         skip_2_lines = False
         for o_file in sorted_files:
-            f = open(o_file)
-            if skip_2_lines:
-                f.readline()
-                f.readline()
-            skip_2_lines=True
-            code.write(f.read())
+            with open(o_file) as f:
+                if skip_2_lines:
+                    f.readline()
+                    f.readline()
+                skip_2_lines=True
+                code.write(f.read())
     
     return
 
 def get_access():
     import os
     toolkit_path=os.path.dirname(__file__)
-    f = open(os.path.join(toolkit_path, 'access.txt'), 'r')
-    f.readline()
-    s = f.readline().rstrip()
-    s = s.split(' ')
-    if s[1]=='1':
-        return False
-    else:
-        return True
+    with open(os.path.join(toolkit_path, 'access.txt'), 'r') as f:
+        f.readline()
+        s = f.readline().rstrip()
+        s = s.split(' ')
+        if s[1]=='1':
+            return False
+        else:
+            return True
 
 def get_root_data_dir():
     import os
@@ -126,28 +126,30 @@ def get_root_data_dir():
     toolkit_path = os.path.dirname(full_path)
     if (not os.path.exists(os.path.join(toolkit_path, 'mvn_toolkit_prefs.txt'))):
         set_root_data_dir()
-    f = open(os.path.join(toolkit_path, 'mvn_toolkit_prefs.txt'), 'r')
-    f.readline()
-    s = f.readline().rstrip()
-    #Get rid of first space
-    s = s.split(' ')
-    nothing = ' '
+    with open(os.path.join(toolkit_path, 'mvn_toolkit_prefs.txt'), 'r') as f:
+        f.readline()
+        s = f.readline().rstrip()
+        #Get rid of first space
+        s = s.split(' ')
+        nothing = ' '
     return nothing.join(s[1:])
 
         
 def set_root_data_dir():
+    import tkinter
     from tkinter import filedialog
     import os 
     
+    root=tkinter.Tk()
     download_path = filedialog.askdirectory()
     
     #Put path into preferences file
     full_path=os.path.realpath(__file__)
     toolkit_path = os.path.dirname(full_path)
-    f = open(os.path.join(toolkit_path, 'mvn_toolkit_prefs.txt'), 'w')
-    f.write("'; IDL Toolkit Data Preferences File'\n")
-    f.write('mvn_root_data_dir: ' + download_path)
-    
+    with open(os.path.join(toolkit_path, 'mvn_toolkit_prefs.txt'), 'w') as f:
+        f.write("'; IDL Toolkit Data Preferences File'\n")
+        f.write('mvn_root_data_dir: ' + download_path)
+    root.destroy()
     return
 
 def get_new_files(files_on_site, data_dir, instrument, level):

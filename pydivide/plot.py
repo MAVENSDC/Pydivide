@@ -11,7 +11,7 @@ import pandas as pd
 import builtins
 
 def mvn_kp_plot( kp, parameter=None, time=None, errors=None, 
-                 SamePlot=True, list=False, title = ''):
+                 SamePlot=True, list=False, title = '', qt=True):
     print("This procedure was renamed, just use plot")
     plot(kp=kp, 
          parameter=parameter, 
@@ -19,11 +19,12 @@ def mvn_kp_plot( kp, parameter=None, time=None, errors=None,
          errors=errors, 
          SamePlot=SamePlot, 
          list=list, 
-         title=title)
+         title=title,
+         qt=qt)
     return
 
 def plot( kp, parameter=None, time=None, errors=None, 
-          SamePlot=True, list=False, title = ''):
+          SamePlot=True, list=False, title = '', qt=True):
     '''
     Plot the provided data as a time series.
     For now, do not accept any error bar information.
@@ -116,12 +117,12 @@ def plot( kp, parameter=None, time=None, errors=None,
         pytplot.options(pytplot_name, 'legend_names', legend_names)
         pytplot.tplot_options('title', title)
         pytplot.tplot_options('wsize', [1000,300])
-        pytplot.tplot(pytplot_name)
+        pytplot.tplot(pytplot_name, qt=qt)
         pytplot.del_data(pytplot_name)
     else:
         pytplot.tplot_options('title', title)
         pytplot.tplot_options('wsize', [1000,300*(iplot-1)])
-        pytplot.tplot(obs)
+        pytplot.tplot(obs, qt=qt)
         pytplot.del_data(obs)
 
     return

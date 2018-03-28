@@ -14,7 +14,8 @@ def corona(iuvs,
            orbit_num=None,
            species=None,
            log=False,
-           title='IUVS Corona Observations'):
+           title='IUVS Corona Observations',
+           qt=True):
     
     density_names_to_plot=[]
     density_legend_names = []
@@ -125,7 +126,7 @@ def corona(iuvs,
     pytplot.tplot_options('alt_range', [np.min(xmin), np.max(xmax)])
     pytplot.tplot_options('title', title)
     pytplot.tplot_options('wsize', [1000,400*len(list_of_plots)])
-    pytplot.tplot(list_of_plots)
+    pytplot.tplot(list_of_plots, qt=qt)
     pytplot.del_data(list_of_plots)
     
     return
