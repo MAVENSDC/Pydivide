@@ -3,6 +3,7 @@
 	<name>PyDivide</name>
 	<comment></comment>
 	<projects>
+		<project>PyTplot</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

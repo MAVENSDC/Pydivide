@@ -4,8 +4,6 @@
 # Verify current version before use at: https://github.com/MAVENSDC/Pydivide
 
 
-#TVarFigure1D
-
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -54,7 +52,7 @@ def highlight_datetimes(time_start,time_end,color,ax):
 def timebar(time_list,color,width):
     dates_to_highlight = []
     for date in time_start:
-        #date = "2017-11-39 04:27:05"
+        #date = "2017-11-29 04:27:05"
         date = date.replace('-',' ')
         date = date.replace(':',' ')
         y,mo,d,h,mn,s = date.split(' ')
