@@ -140,8 +140,10 @@ def set_root_data_dir():
     from tkinter import filedialog
     import os 
     
+    #########
     root=tkinter.Tk()
     download_path = filedialog.askdirectory()
+    #########
     
     #Put path into preferences file
     full_path=os.path.realpath(__file__)
