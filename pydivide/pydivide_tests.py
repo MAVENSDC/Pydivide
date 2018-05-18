@@ -5,23 +5,23 @@ import cdflib
 import pandas as pd
 
 # # Download KP test
-# #pydivide.download_files(filenames='mvn_kp_insitu_20151230_v09_r02.tab')
-# pydivide.download_files(start_date='2015-12-25', end_date='2015-12-27')
-# pydivide.download_files(start_date='2015-12-25', end_date='2015-12-27', iuvs=True)
-pydivide.download_files(start_date='2015-12-25', end_date='2015-12-27', new_files=True,exclude_orbit_file=True, iuvs=True)
+#pydivide.download_files(filenames='mvn_kp_insitu_20151230_v09_r02.tab')
+#pydivide.download_files(start_date='2015-12-25', end_date='2015-12-27')
+#pydivide.download_files(start_date='2015-12-25', end_date='2015-12-27', iuvs=True)
+#pydivide.download_files(start_date='2015-12-25', end_date='2015-12-27', new_files=True,exclude_orbit_file=True, iuvs=True)
 #  
 # #Download science files test
 #pydivide.download_files(instruments=['swi', 'mag'], start_date='2015-12-25', end_date='2015-12-27', update_prefs=True)
 #  
 # #Read in data
-# insitu, iuvs = pydivide.read('2015-12-26')
-# insitu2, iuvs2 = pydivide.read('2015-12-26', instruments=['lpw', 'mag'])
-insitu3 = pydivide.read('2015-12-25', insitu_only=True)
+insitu, iuvs = pydivide.read('2015-12-26')
+#insitu2, iuvs2 = pydivide.read('2015-12-26', instruments=['lpw', 'mag'])
+#insitu3 = pydivide.read('2015-12-25', insitu_only=True)
 #  
 # #1D plots
 # pydivide.plot(insitu, parameter='SPACECRAFT.geo_x')
 # pydivide.plot(insitu, parameter='SPACECRAFT.GEO_X', list=True)
-pydivide.plot(insitu3, parameter='SPACECRAFT.GEO_X', time=['2015-12-25 3:45:00', '2015-12-25 15:15:00'])
+# pydivide.plot(insitu3, parameter='SPACECRAFT.GEO_X', time=['2015-12-25 3:45:00', '2015-12-25 15:15:00'])
 # pydivide.plot(insitu2, parameter=['SPACECRAFT.GEO_X', 'spacecraft.ALTITUDE'], time=['2015-12-26 3:45:00', '2015-12-26 15:15:00'])
 #  
 # #Altitude plots
@@ -55,19 +55,21 @@ pydivide.plot(insitu3, parameter='SPACECRAFT.GEO_X', time=['2015-12-25 3:45:00',
 #  
 #  
 #Create Model Maps
-# banana = pydivide.create_model_maps(altitude=170, file = 'C:/Mars Models/MGITM_LS090_F070_150812.nc', variable='o', saveFig=False)
-# pydivide.create_model_maps(altitude=200, file = 'C:/Mars Models/MAMPS_LS180_F130_081216.nc', fill=True, numContours=10, variable='geo_x', saveFig=False)
+#banana = pydivide.create_model_maps(altitude=170, file = 'C:/Mars Models/MGITM_LS090_F070_150812.nc', variable='o', saveFig=False)
+#pydivide.create_model_maps(altitude=200, file = 'C:/Mars Models/MAMPS_LS180_F130_081216.nc', fill=True, numContours=10, variable='geo_x', saveFig=False)
 #  
 # #2D Maps
-# pydivide.map2d(insitu, 'ngims.co2plus_density',  map_limit=[-60,90,60,270], mso=True)
-# pydivide.map2d(insitu, 'SWIA.HPLUS_DENSITY', time = ['2015-12-26 3:45:00', '2015-12-26 15:15:00'], basemap='C:/Mars Models/ModelData_o2plus_200km.png', mso=True)
-# pydivide.map2d(insitu, 'SWIA.HPLUS_DENSITY', time = ['2015-12-26 3:45:00', '2015-12-26 15:15:00'], basemap='C:/Mars Models/ModelData_o2plus_200km.png', mso=True, subsolar=True)
+#pydivide.map2d(insitu, 'ngims.co2plus_density',  map_limit=[-60,90,60,270], mso=True)
+#pydivide.map2d(insitu, 'SWIA.HPLUS_DENSITY', time = ['2015-12-26 3:45:00', '2015-12-26 15:15:00'], basemap='C:/Mars Models/ModelData_o2plus_200km.png', mso=True)
+#pydivide.map2d(insitu, 'SWIA.HPLUS_DENSITY', time = ['2015-12-26 3:45:00', '2015-12-26 15:15:00'], basemap='C:/Mars Models/ModelData_o2plus_200km.png', mso=True, subsolar=True)
 #  
 # #Model Interpolation
 #Sasdf = pydivide.interpol_model(insitu, file = 'C:/Mars Models/Elew_18_06_14_t00600.nc')
-#pytplot.store_data('model_interp', data={'x':insitu['Time'], 'y':asdf['Ez']})
-#pytplot.tplot('model_interp')
-#asdf = pydivide.interpol_model(insitu2, file = 'C:/Mars Models/Heliosares_Ionos_Ls180_SolMean1_12_02_13.nc', nearest=True)
+asdf = pydivide.interpol_model(insitu2, file = 'C:/Mars Models/Heliosares_Ionos_Ls180_SolMean1_12_02_13.nc', nearest=True)
+
+pytplot.store_data('model_interp', data={'x':insitu['Time'], 'y':asdf['Ez']})
+pytplot.timebar('x','model_interp',databar = False, delete = False, color = 'black', thick = 1, dash = False)
+pytplot.tplot('model_interp',pyqtgraph = True)
 
 #Corona Plots
 #insitu,iuvs = pydivide.read('2016-01-19','2016-01-20')
