@@ -8,20 +8,27 @@ import pandas as pd
 # #pydivide.download_files(filenames='mvn_kp_insitu_20151230_v09_r02.tab')
 # pydivide.download_files(start_date='2015-12-25', end_date='2015-12-27')
 # pydivide.download_files(start_date='2015-12-25', end_date='2015-12-27', iuvs=True)
-pydivide.download_files(start_date='2015-12-25', end_date='2015-12-27', new_files=True,exclude_orbit_file=True, iuvs=True)
+# pydivide.download_files(start_date='2015-12-25', end_date='2015-12-27', new_files=True,exclude_orbit_file=True, iuvs=True)
 #  
 # #Download science files test
 #pydivide.download_files(instruments=['swi', 'mag'], start_date='2015-12-25', end_date='2015-12-27', update_prefs=True)
 #  
 # #Read in data
-# insitu, iuvs = pydivide.read('2015-12-26')
+insitu, iuvs = pydivide.read('2015-12-26')
+t = insitu['Time']
+data = insitu['SPACECRAFT']['ALTITUDE']
+pytplot.store_data('sgx',data = {'x':t, 'y':data})
+pytplot.timebar(1451107200,'sgx',color='m',thick=5)
+pytplot.tplot('sgx',pyqtgraph = True)
+
 # insitu2, iuvs2 = pydivide.read('2015-12-26', instruments=['lpw', 'mag'])
-insitu3 = pydivide.read('2015-12-25', insitu_only=True)
+# insitu3 = pydivide.read('2015-12-25', insitu_only=True)
 #  
 # #1D plots
-# pydivide.plot(insitu, parameter='SPACECRAFT.geo_x')
+#pydivide.plot(insitu, parameter='SPACECRAFT.geo_x')
+#pytplot.timebar(145108800,'testing123')
 # pydivide.plot(insitu, parameter='SPACECRAFT.GEO_X', list=True)
-pydivide.plot(insitu3, parameter='SPACECRAFT.GEO_X', time=['2015-12-25 3:45:00', '2015-12-25 15:15:00'])
+# pydivide.plot(insitu3, parameter='SPACECRAFT.GEO_X', time=['2015-12-25 3:45:00', '2015-12-25 15:15:00'])
 # pydivide.plot(insitu2, parameter=['SPACECRAFT.GEO_X', 'spacecraft.ALTITUDE'], time=['2015-12-26 3:45:00', '2015-12-26 15:15:00'])
 #  
 # #Altitude plots
@@ -30,9 +37,12 @@ pydivide.plot(insitu3, parameter='SPACECRAFT.GEO_X', time=['2015-12-25 3:45:00',
 # pydivide.altplot(insitu, parameter=['LPW.ELECTRON_DENSITY', 'MAG.MSO_Y'], list=True)
 #  
 # #Binning Data
-# insitu_out = pydivide.bin(insitu, 'SWIA.HPLUS_DENSITY', 'SPACECRAFT.ALTITUDE', binsize=10, avg=True, std=True)
-# pytplot.store_data('testing123', data={'x':np.arange(len(insitu_out[0])), 'y':insitu_out[0]})
-# pytplot.tplot('testing123')
+#insitu_out = pydivide.bin(insitu, 'SWIA.HPLUS_DENSITY', 'SPACECRAFT.ALTITUDE', binsize=10, avg=True, std=True)
+#pytplot.store_data('testing123', data={'x':np.arange(len(insitu_out[0])), 'y':insitu_out[0]})
+#pytplot.timebar(0.08,'testing123')
+#print(pytplot.data_quants['testing123'].time_bar)
+#pytplot.tplot('testing123',pyqtgraph = True)
+#print("done")
 # insitu_out = pydivide.bin(insitu, 'SWIA.HPLUS_DENSITY', 'SPACECRAFT.ALTITUDE', binsize=10, median=True, density=True)
 #  
 # #insitu search
