@@ -141,7 +141,16 @@ def set_root_data_dir():
     import os 
     
     root=tkinter.Tk()
-    download_path = filedialog.askdirectory()
+    try: #bring up file window for directory choice
+        download_path = filedialog.askdirectory()
+        print("root_data_dir set to " + download_path)
+    except: #if graphic for file choosing doesn't work, enter manually
+        valid_path = input("Enter directory preference: ")
+        while os.path.exists(valid_path) == False:
+            valid_path = input("Specified path does not exist. Enter new path: ")
+        download_path = valid_path
+        print("root_data_dir set to " + download_path)
+
     
     #Put path into preferences file
     full_path=os.path.realpath(__file__)

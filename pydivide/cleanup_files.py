@@ -157,4 +157,3 @@ def cleanup_files():
         else:
             print("Old versions will not be removed. Returning...")
             return 
-cleanup_files()   
