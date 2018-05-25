@@ -128,7 +128,6 @@ def altplot( kp, parameter=None, time=None, errors=None,
     if SamePlot:
         pytplot_name=','.join(legend_names)
         pytplot.store_data(pytplot_name, data = names_to_plot)
-        pytplot.options(pytplot_name, 'link', ['alt', 'sc_alt'])
         pytplot.options(pytplot_name, 'alt', 1)
         pytplot.options(pytplot_name, 'legend_names', legend_names)
         pytplot.tplot_options('title', title)

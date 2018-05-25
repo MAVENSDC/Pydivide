@@ -63,7 +63,11 @@ def corona(iuvs,
                                 data = np.array(orbit[obs]['density'][var])
                                 alts = x[~np.isnan(data)]
                                 data = data[~np.isnan(data)]
-                                pytplot.store_data(density_names_to_plot[dplot], data={'x':alts, 'y':data})
+                                fake_times = np.arange(len(alts))
+                                pytplot.store_data(density_names_to_plot[dplot], data={'x':fake_times, 'y':data})
+                                pytplot.store_data(density_names_to_plot[dplot]+"_alt", data={'x':fake_times, 'y':alts})
+                                pytplot.options(density_names_to_plot[dplot], "link", ['alt', density_names_to_plot[dplot]+"_alt"])
+                                pytplot.options(density_names_to_plot[dplot], 'alt', 1)
                                 pytplot.options(density_names_to_plot[dplot], 'alt', 1)
                                 dplot+=1
                 if radiance:
@@ -80,7 +84,10 @@ def corona(iuvs,
                                 data = np.array(orbit[obs]['radiance'][var])
                                 alts = x[~np.isnan(data)]
                                 data = data[~np.isnan(data)]
-                                pytplot.store_data(radiance_names_to_plot[rplot], data={'x':alts, 'y':data})
+                                fake_times = np.arange(len(alts))
+                                pytplot.store_data(radiance_names_to_plot[rplot], data={'x':fake_times, 'y':data})
+                                pytplot.store_data(radiance_names_to_plot[rplot]+"_alt", data={'x':fake_times, 'y':alts})
+                                pytplot.options(radiance_names_to_plot[rplot], "link", ['alt', radiance_names_to_plot[rplot]+"_alt"])
                                 pytplot.options(radiance_names_to_plot[rplot], 'alt', 1)
                                 rplot+=1
                                     

@@ -455,7 +455,7 @@ def standards(kp,
             #        print(KP + " has no finite values and will not be plotted.")
             #        plasma_temp_dataframe = plasma_temp_dataframe.drop(KP, 1)
             
-            pytplot.store_data(title, data={'x':kp['Time'], 'y':plasma_temp})
+            pytplot.store_data(title, data={'x':kp['Time'], 'y':plasma_temp_dataframe})
             pytplot.options(title,'legend_names',['H+ Temperature','O+ Temperature','O2+ Temperature', 'SWIA H+ Temperature','Solar Wind Electron Temperature','Electron Temperature'])
             pytplot.options(title,'ylog',1)
             names_to_plot.append(title)
