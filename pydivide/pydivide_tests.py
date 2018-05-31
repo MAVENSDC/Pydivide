@@ -14,12 +14,12 @@ import pandas as pd
 #pydivide.download_files(instruments=['swi', 'mag'], start_date='2015-12-25', end_date='2015-12-27', update_prefs=True)
 #  
 # 1D PLOT TIMEBAR
-# insitu, iuvs = pydivide.read('2015-12-26')
-# t = insitu['Time']
-# data = insitu['SPACECRAFT']['ALTITUDE']
-# pytplot.store_data('sgx',data = {'x':t, 'y':data})
-# pytplot.timebar(1451107201,'sgx',color='m',thick=5)
-# pytplot.tplot('sgx',pyqtgraph = True,'alt')
+insitu, iuvs = pydivide.read('2015-12-26')
+t = insitu['Time']
+data = insitu['SPACECRAFT']['ALTITUDE']
+pytplot.store_data('sgx',data = {'x':t, 'y':data})
+pytplot.timebar(1451107201,'sgx',color='m',thick=5)
+pytplot.tplot('sgx',pyqtgraph = True)
 
 #PLOT TIMEBAR ALT
 # insitu = pydivide.read('2017-06-19')
@@ -32,28 +32,27 @@ import pandas as pd
 # pytplot.options('sc_lat','alt', 1)
 # pytplot.timebar([1497841413,1497842413],'sc_lat',color='m',thick=10)
 # pytplot.timebar([1497843413,1497844413],'sc_lat',color='g',thick=5)
-# pytplot.timebar([1497839413,1497836413],'sc_lat',color='c',thick=7)
-#  
-# pytplot.tplot(['sc_lat'], pyqtgraph=True)
+# pytplot.timebar([1497839413,1497836413],'sc_lat',color='c',thick=7) 
+#pytplot.tplot(['sc_lat'], pyqtgraph=True)
 
 #MAP TIMEBAR
-insitu = pydivide.read('2017-06-19')
-t = insitu['Time']
-data = insitu['SPACECRAFT']['ALTITUDE']
-lat = insitu['SPACECRAFT']['SUB_SC_LATITUDE']
- 
-lon = insitu['SPACECRAFT']['SUB_SC_LONGITUDE']
-pytplot.store_data('sc_lat', data={'x':t, 'y':lat})
- 
-pytplot.store_data('sc_lon', data={'x':t, 'y':lon})
-pytplot.store_data('sc_alt', data={'x':t, 'y':data})
-pytplot.options('sc_alt', 'link', ['lat', 'sc_lat'])
-pytplot.options('sc_alt', 'link', ['lon', 'sc_lon'])
-pytplot.options('sc_alt','map', 1)
-pytplot.timebar([1497841413,1497842413],'sc_alt',color='m',thick=10)
-pytplot.timebar([1497843413,1497844413],'sc_alt',color='g',thick=5)
-pytplot.timebar([1497839413,1497836413],'sc_alt',color='c',thick=7)
-pytplot.tplot(['sc_alt'], pyqtgraph=True)
+# insitu = pydivide.read('2017-06-19')
+# t = insitu['Time']
+# data = insitu['SPACECRAFT']['ALTITUDE']
+# lat = insitu['SPACECRAFT']['SUB_SC_LATITUDE']
+#  
+# lon = insitu['SPACECRAFT']['SUB_SC_LONGITUDE']
+# pytplot.store_data('sc_lat', data={'x':t, 'y':lat})
+#  
+# pytplot.store_data('sc_lon', data={'x':t, 'y':lon})
+# pytplot.store_data('sc_alt', data={'x':t, 'y':data})
+# pytplot.options('sc_alt', 'link', ['lat', 'sc_lat'])
+# pytplot.options('sc_alt', 'link', ['lon', 'sc_lon'])
+# pytplot.options('sc_alt','map', 1)
+# pytplot.timebar([1497841413,1497842413],'sc_alt',color='m',thick=10)
+# pytplot.timebar([1497843413,1497844413],'sc_alt',color='g',thick=5)
+# pytplot.timebar([1497839413,1497836413],'sc_alt',color='c',thick=7)
+# pytplot.tplot(['sc_alt'], pyqtgraph=True)
 
 #insitu2, iuvs2 = pydivide.read('2015-12-26', instruments=['lpw', 'mag'])
 #insitu3 = pydivide.read('2015-12-25', insitu_only=True)
