@@ -716,6 +716,13 @@ def get_header_info(filename):
                         else:
                             p = re.compile( 'Flux, e- ' )
                             combo_name = p.sub('Flux, e- Anti-par ',combo_name)
+                    if re.match('Electron eflux (.+)Quality', combo_name ):
+                        if Parallel: 
+                            p = re.compile( 'Electron eflux ' )
+                            combo_name = p.sub('Electron eflux  Parallel ',combo_name)
+                        else:
+                            p = re.compile( 'Electron eflux ' )
+                            combo_name = p.sub('Electron eflux  Anti-par ',combo_name)
                 # Add inst to names to avoid ambiguity
                 # Will need to remove these after splitting
                 names.append('.'.join([h.strip(),combo_name]))
@@ -1560,6 +1567,18 @@ param_dict = {'Electron Density':'ELECTRON_DENSITY',
             'Flux, e- Anti-par (100-500 ev) Quality':'ELECTRON_ANTI_PARALLEL_FLUX_MID_QUAL',
             'Flux, e- Anti-par (500-1000 ev)':'ELECTRON_ANTI_PARALLEL_FLUX_HIGH',
             'Flux, e- Anti-par (500-1000 ev) Quality':'ELECTRON_ANTI_PARALLEL_FLUX_HIGH_QUAL',
+            'Electron eflux Parallel (5-100 ev)':'ELECTRON_PARALLEL_FLUX_LOW',
+            'Electron eflux Parallel (5-100 ev) Quality':'ELECTRON_PARALLEL_FLUX_LOW_QUAL',
+            'Electron eflux Parallel (100-500 ev)':'ELECTRON_PARALLEL_FLUX_MID',
+            'Electron eflux Parallel (100-500 ev) Quality':'ELECTRON_PARALLEL_FLUX_MID_QUAL',
+            'Electron eflux Parallel (500-1000 ev)':'ELECTRON_PARALLEL_FLUX_HIGH',
+            'Electron eflux Parallel (500-1000 ev) Quality':'ELECTRON_PARALLEL_FLUX_HIGH_QUAL',
+            'Electron eflux Anti-par (5-100 ev)':'ELECTRON_ANTI_PARALLEL_FLUX_LOW',
+            'Electron eflux Anti-par (5-100 ev) Quality':'ELECTRON_ANTI_PARALLEL_FLUX_LOW_QUAL',
+            'Electron eflux Anti-par (100-500 ev)':'ELECTRON_ANTI_PARALLEL_FLUX_MID',
+            'Electron eflux Anti-par (100-500 ev) Quality':'ELECTRON_ANTI_PARALLEL_FLUX_MID_QUAL',
+            'Electron eflux Anti-par (500-1000 ev)':'ELECTRON_ANTI_PARALLEL_FLUX_HIGH',
+            'Electron eflux Anti-par (500-1000 ev) Quality':'ELECTRON_ANTI_PARALLEL_FLUX_HIGH_QUAL',
             'Electron Spectrum Shape':'ELECTRON_SPECTRUM_SHAPE_PARAMETER',
             'Spectrum Shape Quality':'ELECTRON_SPECTRUM_SHAPE_PARAMETER_QUAL',
             'H+ Density':'HPLUS_DENSITY',

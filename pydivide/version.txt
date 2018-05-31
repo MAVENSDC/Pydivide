@@ -1,4 +1,7 @@
-0.2.6
+0.2.7
+
+0.2.7 Changes:
+	-Made changes for the latest version of pytplot and the KP data
 
 0.2.6 Changes:
 	-Added qt flag options to all plotting routines
