@@ -17,3 +17,4 @@ models/sample_models/*.sav
 tests/
 archive_tools/
 dist/
+pydivide/pydivide_tests.py
