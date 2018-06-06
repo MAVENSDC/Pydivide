@@ -303,4 +303,3 @@ def cleanup_files():
             print("Old versions will not be removed.")
     
     ##### IUVS FILE CLEANUP #####       
-cleanup_files()
