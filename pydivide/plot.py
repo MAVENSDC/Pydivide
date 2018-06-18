@@ -117,12 +117,12 @@ def plot( kp, parameter=None, time=None, errors=None,
         pytplot.options(pytplot_name, 'legend_names', legend_names)
         pytplot.tplot_options('title', title)
         pytplot.tplot_options('wsize', [1000,300])
-        pytplot.tplot(pytplot_name, qt=qt)
+        pytplot.tplot(pytplot_name, bokeh=not qt)
         pytplot.del_data(pytplot_name)
     else:
         pytplot.tplot_options('title', title)
         pytplot.tplot_options('wsize', [1000,300*(iplot-1)])
-        pytplot.tplot(obs, qt=qt)
+        pytplot.tplot(obs, bokeh=not qt)
         pytplot.del_data(obs)
 
     return

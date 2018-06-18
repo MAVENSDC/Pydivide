@@ -91,8 +91,8 @@ def resample(kp, time, sc_only=False):
     #
     closest_values = []
     for k in range(len(time)):
-        closest_value_index = np.absolute(old_time.as_matrix()-time[k]).argmin()
-        closest_values.append((old_time.as_matrix()-time[k])[closest_value_index] + time[k])
+        closest_value_index = np.absolute(old_time.values-time[k]).argmin()
+        closest_values.append((old_time.values-time[k])[closest_value_index] + time[k])
         
     #
     #Get the new indexes of the dataframes based on the time 
@@ -103,7 +103,7 @@ def resample(kp, time, sc_only=False):
     new_time_series = pd.Series(new_time_strings)
     
     #Orbit Series
-    spline_function = interpolate.interp1d(old_time.as_matrix(), Orbit.as_matrix())
+    spline_function = interpolate.interp1d(old_time.values, Orbit.values)
     temp_series = pd.Series(spline_function(time))
     temp_df = temp_series.to_frame('Orbit')
     temp_df['Time Index'] = new_time_series
@@ -164,7 +164,7 @@ def resample(kp, time, sc_only=False):
                         temp_series.append(kp[inst_names[i]][obs][kp['Time'] == closest_values[k]])
                     temp_series = pd.Series(temp_series)
                 else:
-                    spline_function = interpolate.interp1d(old_time.as_matrix(), kp[inst_names[i]][obs].as_matrix())
+                    spline_function = interpolate.interp1d(old_time.values, kp[inst_names[i]][obs].values)
                     temp_series = pd.Series(spline_function(time))
                 #Turn the series into a dataframe if it hasn't been done yet.  
                 #Else, add it to the dataframe
