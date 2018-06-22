@@ -132,11 +132,11 @@ def altplot( kp, parameter=None, time=None, errors=None,
         pytplot.options(pytplot_name, 'legend_names', legend_names)
         pytplot.tplot_options('title', title)
         pytplot.tplot_options('wsize', [1000,300])
-        pytplot.tplot(pytplot_name, qt=qt)
+        pytplot.tplot(pytplot_name, bokeh=not qt)
         pytplot.del_data(pytplot_name)
     else:
         pytplot.tplot_options('title', title)
         pytplot.tplot_options('wsize', [1000,300*(iplot-1)])
-        pytplot.tplot(names_to_plot, qt=qt)
+        pytplot.tplot(names_to_plot, bokeh=not qt)
         pytplot.del_data(names_to_plot)
     return

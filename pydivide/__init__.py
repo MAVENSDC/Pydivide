@@ -20,5 +20,5 @@ from .corona import corona
 from .periapse import periapse
 from .occultation import occultation
 from .utilities import compare_versions
-
+from .cleanup_files import cleanup_files
 compare_versions()

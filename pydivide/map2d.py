@@ -174,7 +174,7 @@ def map2d( kp,
     
     pytplot.tplot_options('title', title)
     pytplot.tplot_options('wsize', [1000,500*(iplot)])
-    pytplot.tplot(names_to_plot, qt=qt)
+    pytplot.tplot(names_to_plot, bokeh=not qt)
     pytplot.del_data('ss_lon')
     pytplot.del_data('ss_lat')
     pytplot.del_data('sc_lon')

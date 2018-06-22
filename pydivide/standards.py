@@ -653,7 +653,7 @@ def standards(kp,
     #Show the plot
     pytplot.tplot_options('wsize', [1000,300*(current_plot_number)])
     pytplot.tplot_options('title', title)
-    pytplot.tplot(names_to_plot, qt=qt)
+    pytplot.tplot(names_to_plot, bokeh=not qt)
     pytplot.del_data(names_to_plot)
     
     return
