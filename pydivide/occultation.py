@@ -56,7 +56,10 @@ def occultation(iuvs,
                             data = np.array(orbit[obs]['retrieval'][var])
                             alts = x[~np.isnan(data)]
                             data = data[~np.isnan(data)]
-                            pytplot.store_data(retrieval_names_to_plot[dplot], data={'x':alts, 'y':data})
+                            fake_times = np.arange(len(alts))
+                            pytplot.store_data(retrieval_names_to_plot[dplot], data={'x':fake_times, 'y':data})
+                            pytplot.store_data(retrieval_names_to_plot[dplot]+"_alt", data={'x':fake_times, 'y':alts})
+                            pytplot.options(retrieval_names_to_plot[dplot], 'link', ['alt',retrieval_names_to_plot[dplot]+'_alt'])
                             pytplot.options(retrieval_names_to_plot[dplot], 'alt', 1)
                             dplot+=1
                                     
