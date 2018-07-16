@@ -12,7 +12,10 @@
 # REQUIREMENTS
 #     All .tab files must be named with the following formats: 
 #     "mvn_kp_insitu_YYYYMMDD_vXX_rXX.tab"
-#     "mvn_kp_iuvs_ORBIT_YYYYMMDDTHHMMSS_VXX_rXX.tab"
+#     Ex: mvn_kp_insitu_20170619_v13_r04.tab
+#     "mvn_kp_iuvs_ORBIT_YYYYMMDDTHHMMSS_vXX_rXX.tab"
+#     Ex: mvn_kp_iuvs_02403_20151225T003727_v07_r01.tab
+#
 #     Any extraneous characters or formatting changes will break the regexing for this function.
 #     Will ignore files not ending in .tab and not starting with "mvn_kp_insitu" or "mvn_kp_iuvs".
 
