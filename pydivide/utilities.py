@@ -518,15 +518,21 @@ def get_latest_files_from_date_range(date1, date2):
             version = 0
             revision = 0
             for f in os.listdir(full_path):
-                if kp_regex.match(f).group('day') == day:
-                    v = kp_regex.match(f).group('version')
-                    if int(v) > int(version):
-                        version = v
+                try:
+                    if kp_regex.match(f).group('day') == day:
+                        v = kp_regex.match(f).group('version')
+                        if int(v) > int(version):
+                            version = v
+                except:
+                    pass
             for f in os.listdir(full_path):
-                if kp_regex.match(f).group('day') == day and kp_regex.match(f).group('version') == version:
-                    r = kp_regex.match(f).group('revision')
-                    if int(r) > int(revision):
-                        revision = r
+                try:
+                    if kp_regex.match(f).group('day') == day and kp_regex.match(f).group('version') == version:
+                        r = kp_regex.match(f).group('revision')
+                        if int(r) > int(revision):
+                            revision = r
+                except:
+                    pass
             if int(version)>0:    
                 seq = ('mvn','kp','insitu',year+month+day,'v'+str(version),'r'+str(revision)+'.tab')
                 filenames.append(os.path.join(full_path, '_'.join(seq)))
