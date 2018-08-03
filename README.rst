@@ -26,7 +26,7 @@ Open up a terminal, and type::
 
 	pip install pydivide
 	
-This will install pydivide and all of it's dependencies.  
+This will install pydivide and all of its dependencies.  
 
 You will also need to install nodejs.  This can be done through Anaconda with the following command::
 
