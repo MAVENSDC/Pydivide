@@ -45,8 +45,6 @@ def altplot( kp, parameter=None, time=None, errors=None,
             parameter-dependent determination, requiring an add'l routine.
         SamePlot: if True, put all curves on same axes
                   if False, generate new axes for each plot
-        SubPlot: if True, stack plots with common x axis
-                 if False and nplots > 1, make several distinct plots
     Output: None
         -> Generates plot(s) as requested.  But since there is no plot
            object returned, can not alter any plot subsequently (yet)
