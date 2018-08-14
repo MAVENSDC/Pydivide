@@ -139,7 +139,7 @@ def map2d( kp,
             pytplot.options(names_to_plot[iplot], 'link', ['lon', 'sc_lon'])
             pytplot.options(names_to_plot[iplot], 'link', ['lat', 'sc_lat'])
             pytplot.options(names_to_plot[iplot], 'map', 1)
-            pytplot.options(names_to_plot[iplot], color_table)
+            pytplot.options(names_to_plot[iplot], 'colormap', color_table)
         
         if basemap:
             if basemap=='mola':
