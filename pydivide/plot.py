@@ -9,20 +9,20 @@ import pandas as pd
 import builtins
 
 def mvn_kp_plot( kp, parameter=None, time=None, errors=None, 
-                 SamePlot=True, list=False, title = '', qt=True):
+                 sameplot=True, list=False, title = '', qt=True):
     print("This procedure was renamed, just use plot")
     plot(kp=kp, 
          parameter=parameter, 
          time=time, 
          errors=errors, 
-         SamePlot=SamePlot, 
+         sameplot=sameplot, 
          list=list, 
          title=title,
          qt=qt)
     return
 
 def plot( kp, parameter=None, time=None, errors=None, 
-          SamePlot=True, list=False, title = '', qt=True):
+          sameplot=True, list=False, title = '', qt=True):
     '''
     Plot the provided data as a time series.
     For now, do not accept any error bar information.
@@ -38,15 +38,8 @@ def plot( kp, parameter=None, time=None, errors=None,
             single parameter is provided, it must be an int or str.  If
             several are provided it must be a list.  A list may contain
             a mixture of data types.
-        Errors: **Not Yet Implemented**
-            Will be the Parameter(s) to use for the generation of error
-            bars in the created plots.  Since each inst.obs *may* define
-            its own unique useage of the 'quality flag', this will be a
-            parameter-dependent determination, requiring an add'l routine.
-        SamePlot: if True, put all curves on same axes
+        sameplot: if True, put all curves on same axes
                   if False, generate new axes for each plot
-        SubPlot: if True, stack plots with common x axis
-                 if False and nplots > 1, make several distinct plots
     Output: None
         -> Generates plot(s) as requested.  But since there is no plot
            object returned, can not alter any plot subsequently (yet)
@@ -96,7 +89,7 @@ def plot( kp, parameter=None, time=None, errors=None,
     for inst_temp,obs_temp in inst_obs:
     # First, generate the dependent array from data
         y = kp[inst_temp][obs_temp]
-        if SamePlot:
+        if sameplot:
             y_list.append(y)
             legend_names.append(obs_temp)
         else:
@@ -108,7 +101,7 @@ def plot( kp, parameter=None, time=None, errors=None,
     if time is not None:
         pytplot.xlim(time[0], time[1])
     
-    if SamePlot:
+    if sameplot:
         pytplot_name=''.join(legend_names)
         result = pd.concat(y_list, axis=1, join_axes=[y_list[0].index])
         pytplot.store_data(pytplot_name, data={'x':kp['Time'], 'y':result})

@@ -8,21 +8,21 @@ import pytplot
 import builtins
 
 def mvn_kp_altplot( kp, parameter=None, time=None, errors=None, 
-              SamePlot=True, list=False, title='Altitude Plot', qt=True):
+              sameplot=True, list=False, title='Altitude Plot', qt=True):
     
     print("This procedure was renamed, just use altplot")
     altplot(kp,
             parameter=parameter,
             time=time,
             errors=errors,
-            SamePlot=SamePlot,
+            sameplot=sameplot,
             list=list,
             title=title,
             qt=qt)
     return 
 
 def altplot( kp, parameter=None, time=None, errors=None, 
-              SamePlot=True, list=False, title='Altitude Plot', qt=True):
+              sameplot=True, list=False, title='Altitude Plot', qt=True):
     '''
     Plot the provided data plotted against spacecraft altitude.
     For now, do not accept any error bar information.
@@ -43,7 +43,7 @@ def altplot( kp, parameter=None, time=None, errors=None,
             bars in the created plots.  Since each inst.obs *may* define
             its own unique useage of the 'quality flag', this will be a
             parameter-dependent determination, requiring an add'l routine.
-        SamePlot: if True, put all curves on same axes
+        sameplot: if True, put all curves on same axes
                   if False, generate new axes for each plot
     Output: None
         -> Generates plot(s) as requested.  But since there is no plot
@@ -123,7 +123,7 @@ def altplot( kp, parameter=None, time=None, errors=None,
         iplot = iplot + 1
     
 
-    if SamePlot:
+    if sameplot:
         pytplot_name=','.join(legend_names)
         pytplot.store_data(pytplot_name, data = names_to_plot)
         pytplot.options(pytplot_name, 'alt', 1)
