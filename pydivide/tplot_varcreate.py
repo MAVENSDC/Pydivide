@@ -6,7 +6,8 @@
 #Creates tplot variables from the insitu variable
 
 import pytplot
-def tplot_varcreate(insitu):
+def tplot_varcreate(kp):
+	insitu = kp
 	#initialize each instrument
 	inst_list = ["EUV","LPW","STATIC","SWEA","SWIA","MAG","SEP","NGIMS"]
 	for instrument in inst_list:
