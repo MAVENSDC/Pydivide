@@ -1,0 +1,1626 @@
+\documentclass{article}
+\usepackage{gensymb}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage[section]{placeins}
+\setlength{\parskip}{1em}
+\usepackage{easy-todo}
+\usepackage{chngcntr}
+\usepackage{amssymb}
+\usepackage[none]{hyphenat}
+\usepackage{listings}
+\usepackage{minted}
+\usepackage{float}
+\usepackage{todonotes}
+\usepackage{graphicx}
+\usepackage{verbatim}
+\usepackage{grffile}
+\usepackage{epstopdf}
+\epstopdfsetup{outdir=./}
+\usepackage[draft=false]{hyperref}
+
+\begin{document}
+\newminted{python}{
+    fontsize=\footnotesize, 
+    escapeinside=||,
+    mathescape=true,
+    numbersep=5pt,
+    linenos=true,
+    autogobble,
+    framesep=3mm} 
+\counterwithin{figure}{section}
+\begin{titlepage}
+    \begin{center}
+        \vspace*{3cm}
+        
+        \textbf{\LARGE{PyDIVIDE User's Guide}}
+        
+        
+        \vspace{1cm}
+        
+        \textnormal{\large{Bryan Harter\\Elysia Lucas}}
+        \vspace{0.5cm}
+        
+        \textnormal{Updated: \today}
+
+        \vfill
+        
+        \vspace{0.8cm}
+        
+        MAVEN Visualization Team\\
+        Laboratory for Atmospheric and Space Physics\\
+        University of Colorado - Boulder
+        
+        
+    \end{center}
+\end{titlepage}
+
+
+\tableofcontents
+
+\newpage
+\section{Introduction}
+\overfullrule=0pt
+PyDIVIDE is a toolkit that allows the user to quickly plot MAVEN Key Parameter data. This toolkit reads all data into a common structure, which allows comparisons across multiple instruments. PyDIVIDE also includes generic analysis routines for comparing data to existing models of Martian atmosphere.
+
+\section{Toolkit Installation}
+\subsection{System Requirements}
+\overfullrule=0pt
+The MAVEN PyDIVIDE toolkit currently requires Anaconda 5.0 or above. Anaconda will install Python, as well as numerous software libraries for scientific computing. This toolkit is only compatible with Python 3.0 or above.
+
+\subsection{Downloading the Toolkit}
+To install the PyDIVIDE toolkit, type the following command into the local terminal/Anaconda Prompt terminal.
+\vspace{-5mm}
+\begin{minted}{bash}
+  >> pip install pydivide
+\end{minted}
+The following is necessary for custom bokeh colorbars and timestamps:
+\vspace{-5mm}
+\begin{minted}{bash}
+  >> conda install -c bokeh nodejs
+\end{minted}
+The PyDIVIDE toolkit can also be downloaded from the MAVEN Science Data Center GitHub page, \href{https://github.com/MAVENSDC}{https://github.com/MAVENSDC.}
+This will require manual installation of all dependencies of PyDIVIDE. It is recommended that PyDIVIDE be installed via the pip command above.
+
+\subsection{Updating the Toolkit}
+The latest version of PyDIVIDE can be installed by typing the following command into the terminal:
+\vspace{-5mm}
+\begin{minted}{bash}
+  >> pip install pydivide --upgrade
+\end{minted}
+
+\subsection{Mandatory Data Directory Structure}
+\label{subsec:Mandatory Data Directory Structure}
+PyDIVIDE requires data files to be stored in an automatically-created directory structure, elaborated upon later in this section. This has a similar format to the SDC and SSL directory structures. The root directory for data storage can be chosen by the user. When first running a \texttt{download\_files} or \texttt{read} procedure, the user will be prompted to select the \texttt{root\_data\_dir}. After the directory is selected, it is saved in \texttt{mvn\_toolkit\_prefs.txt}, and can later be changed manually as desired. After the first selection of the directory, the user will not be prompted by \texttt{download\_files} or \texttt{read} again. \texttt{download\_files} will place files into the chosen directory structure, and \texttt{read} will pull data files from that directory structure. The requisite directory structure is formatted as such:\\
+\texttt{<root\_data\_dir>/maven/data/sci/kp/insitu/YYYY/MM/}\\
+\texttt{\indent \indent \indent \indent \indent \indent \indent \indent \indent \indent \enskip /kp/iuvs/YYYY/MM/}\\
+
+\noindent Level 2 instrument data downloaded via \texttt{download\_files} will be placed into the following directory structure:\\
+\texttt{<root\_data\_dir>/maven/data/sci/sta/l2/YYYY/MM/}\\
+\texttt{\indent \indent \indent \indent \indent \indent \indent \indent \indent \indent \enskip /sep/l2/YYYY/MM/}\\
+\texttt{\indent \indent \indent \indent \indent \indent \indent \indent \indent \indent \enskip /swi/l2/YYYY/MM/}\\
+\texttt{\indent \indent \indent \indent \indent \indent \indent \indent \indent \indent \enskip /swe/l2/YYYY/MM/}\\
+\texttt{\indent \indent \indent \indent \indent \indent \indent \indent \indent \indent \enskip /lpw/l2/YYYY/MM/}\\
+\texttt{\indent \indent \indent \indent \indent \indent \indent \indent \indent \indent \enskip /mag/l2/YYYY/MM/}\\
+\texttt{\indent \indent \indent \indent \indent \indent \indent \indent \indent \indent \enskip /iuv/l2/YYYY/MM/}\\
+\texttt{\indent \indent \indent \indent \indent \indent \indent \indent \indent \indent \enskip /ngi/l2/YYYY/MM/}\\
+\texttt{\indent \indent \indent \indent \indent \indent \indent \indent \indent \indent \enskip /euv/l2/YYYY/MM/}\\
+\texttt{\indent \indent \indent \indent \indent \indent \indent \indent \indent \indent \enskip /acc/l2/YYYY/MM/}\\
+
+\bold{Note:} For Windows systems, the forward slashes above (/) will instead be\\
+\indent back slashes (\textbackslash).
+
+\subsection{Starting PyDIVIDE}
+An IDE is the recommended way to run PyDIVIDE procedures; however, they can also be run from the terminal. To start an interactive session of Python, enter the following commands into the terminal:
+\vspace{-5mm}
+\begin{minted}{bash}
+  >> IPython
+  >> import pydivide
+\end{minted}
+PyDIVIDE function calls can now be entered into the terminal.
+
+\subsection{Getting More Help}
+Feel free to express any further problems or questions about installation or operation of the toolkit to the developers at \href{maven_divide@lasp.colorado.edu}{maven\_divide@lasp.colorado.edu.}
+
+\section{Function Categories}
+This section serves to outline the rough order in which the functions should be called in order to plot/list/model/manipulate various sets of data.
+
+\subsection{Downloading and Reading Data Files}
+\indent \texttt{download\_files}: \textcolor{blue}{Section \ref{subsec:downloadfiles}}\\
+\indent \texttt{read\_model\_results}: \textcolor{blue}{Section \ref{subsec:readmodelresults}}\\
+\indent \texttt{read}: \textcolor{blue}{Section \ref{subsec:read}}\\
+\vspace{-10mm}
+\subsection{Manipulating Key Parameter Data}
+\vspace{-10mm}
+\noindent\\
+\indent \texttt{bin}: \textcolor{blue}{Section \ref{subsec:bin}}\\
+\indent \texttt{insitu\_search}: \textcolor{blue}{Section \ref{subsec:insitusearch}}\\
+\indent \texttt{resample}: \textcolor{blue}{Section \ref{subsec:resample}}\\
+\vspace{-10mm}
+\subsection{Plotting Key Parameter Data}
+\vspace{-10mm}
+\noindent\\
+\indent \texttt{altplot}: \textcolor{blue}{Section \ref{subsec:altplot}}\\
+\indent \texttt{corona}: \textcolor{blue}{Section \ref{subsec:corona}}\\
+\indent \texttt{map2d}: \textcolor{blue}{Section \ref{subsec:map2d}}\\
+\indent \texttt{occultation}: \textcolor{blue}{Section \ref{subsec:occultation}}\\
+\indent \texttt{periapse}: \textcolor{blue}{Section \ref{subsec:periapse}}\\
+\indent \texttt{plot}: \textcolor{blue}{Section \ref{subsec:plot}}\\
+\indent \texttt{standards}: \textcolor{blue}{Section \ref{subsec:standards}}\\
+\vspace{-10mm}
+\subsection{Prediction Models}
+\vspace{-10mm}
+\noindent\\
+\indent \texttt{create\_model\_maps}: \textcolor{blue}{Section \ref{subsec:createmodelmaps}}\\
+\indent \texttt{interpol\_model}: \textcolor{blue}{Section \ref{subsec:interpolmodel}}\\
+\vspace{-10mm}
+\subsection{Toolkit Utilities}
+\vspace{-10mm}
+\noindent\\
+\indent \texttt{cleanup\_files}: \textcolor{blue}{Section \ref{subsec:cleanupfiles}}\\
+\indent \texttt{tplot\_varcreate}: \textcolor{blue}{Section \ref{subsec:tplotvarcreate}}\\
+
+\newpage
+\section{PyDIVIDE Functions}
+All functions within PyDIVIDE are listed in this section in alphabetical order.
+
+\subsection{altplot}
+\label{subsec:altplot}
+\vspace{-5mm}
+\textit{Function Call:}\\
+\vspace{-10mm}
+\begin{minted}{python}
+    altplot(kp,
+            parameter=None,
+            time=None,
+            sameplot=True,
+            list=False,
+            title='Altitude Plot',
+            qt=True)
+\end{minted}
+\vspace{-5mm}
+\noindent
+\textit{Description:}\\
+\indent Plot the provided data against spacecraft altitude. If time is not provided,\\
+\indent plot the entire dataset.\\
+\textit{Required Arguments:}\\
+\indent \texttt{kp}: \textsc{struct}\\
+\indent \indent KP insitu data structure read from file(s).\\ 
+\indent \texttt{parameter}: \textsc{int, list, str}\\
+\indent \indent Parameter(s) to be plotted. Can be provided as integer (by index)\\
+\indent \indent or string (by name: inst.obs). List may contain various data types.\\
+\noindent \textit{Optional Arguments:}\\
+\indent \texttt{time}: \textsc{[str/int,str/int]}\\
+\indent \indent Two-element list of strings or integers indicating the time range\\
+\indent \indent to be plotted. Currently, no checks if time range is within data.\\
+\indent \texttt{sameplot}: \textsc{bool}\\
+\indent \indent If True, put all curves on same axes.\\
+\indent \indent If False, generate new axes for each plot.\\
+\indent \texttt{list}: \textsc{bool}\\
+\indent \indent List all KP parameters instead of plotting.\\
+\indent \texttt{title}: \textsc{str}\\
+\indent \indent Sets plot title. Default is `Altitude Plot'.\\
+\indent \texttt{qt}: \textsc{bool}\\
+\indent \indent If True, plot with PyQtGraph.\\
+\indent \indent If False, plot with bokeh.\\
+\noindent \textit{Examples:}\\
+\vspace{-5mm}
+\indent Plot \texttt{LPW.ELECTRON\_DENSITY} and \texttt{MAG.MSO\_Y} against spacecraft altitude.
+\begin{minted}{python}
+    >> pydivide.altplot(insitu, 
+       parameter=['LPW.ELECTRON_DENSITY','MAG.MSO_Y'])
+\end{minted}
+\begin{figure}[H]
+\centering
+\includegraphics[width=100mm,scale=0.5]{altplot.JPG}
+\end{figure}
+
+\subsection{bin}
+\label{subsec:bin}
+\vspace{-5mm}
+\textit{Function Call:}\\
+\vspace{-10mm}
+\begin{minted}{python}
+    bin(kp,
+        parameter=None,
+        bin_by=None,
+        mins=None,
+        maxs=None,
+        binsize=None,
+        avg=False,
+        std=False,
+        density=False,
+        median=False)
+\end{minted}
+\vspace{-5mm}
+\noindent
+\textit{Description:}\\
+\indent Bins insitu Key Parameters by up to 8 different parameters, specified within\\
+\indent the data structure. Necessary that at least one of \texttt{avg}, \texttt{std}, \texttt{median}, or\\
+\indent \texttt{density} be specified.\\
+\textit{Required Arguments:}\\
+\indent \texttt{kp}: \textsc{struct}\\
+\indent \indent KP insitu data structure read from file(s).\\ 
+\indent \texttt{parameter}: \textsc{str}\\
+\indent \indent Key Parameter to be binned. Only one may be binned at a time.\\
+\indent \texttt{bin\_by}: \textsc{int, str}\\
+\indent \indent Parameters (index or name) by which to bin the specified Key Parameter.\\
+\indent \texttt{binsize}: \textsc{int, list}\\
+\indent \indent Bin size for each binning dimension. Number of elements must be equal \\
+\indent \indent to those in \texttt{bin\_by}.\\
+\textit{Optional Arguments:}\\
+\indent \texttt{mins}: \textsc{int, list}\\
+\indent \indent Minimum value(s) for each binning scheme. Number of elements must\\
+\indent \indent be equal to those in \texttt{bin\_by}.\\
+\indent \texttt{maxs}: \textsc{int, list}\\
+\indent \indent Maximum value(s) for each binning scheme. Number of elements must\\
+\indent \indent be equal to those in \texttt{bin\_by}.\\
+\indent \texttt{avg}: \textsc{bool}\\
+\indent \indent Calculate average per bin.\\
+\indent \texttt{std}: \textsc{bool}\\
+\indent \indent Calculate standard deviation per bin.\\
+\indent \texttt{density}: \textsc{bool}\\
+\indent \indent Returns number of items in each bin.\\
+\indent \texttt{median}: \textsc{bool}\\
+\indent \indent Calculate median per bin.\\
+\textit{Returns:}\\
+\indent This procedures outputs up to 4 arrays to user-defined variables,\\
+\indent corresponding to \texttt{avg}, \texttt{std}, \texttt{median}, and \texttt{density}.\\
+\noindent \textit{Examples:}\\
+\indent Bin STATIC O\textsuperscript{+} characteristic energy by spacecraft latitude (1\degree \ resolution) \\
+\indent and longitude (2\degree \ resolution).
+\vspace{-5mm}
+\begin{minted}{python}
+    >> output_avg = pydivide.bin(insitu,
+                    parameter='static.oplus_char_energy',
+                    bin_by=['spacecraft.geo_latitude',
+                    'spacecraft.geo_longitude'],
+                    avg=True,binsize=[2,1])
+\end{minted}
+\noindent \indent Bin SWIA H\textsuperscript{+} density by spacecraft altitude (10km resolution), return average \\
+\indent value and standard deviation for each bin.
+\vspace{-5mm}
+\begin{minted}{python}
+    >> output_avg,output_std = pydivide.bin(insitu,
+                               parameter='swia.hplus_density',
+                               bin_by='spacecraft.altitude',
+                               binsize=10,avg=True,std=True)
+\end{minted}
+
+\subsection{cleanup\_files}
+\label{subsec:cleanupfiles}
+\vspace{-5mm}
+\textit{Function Call:}\\
+\vspace{-10mm}
+\begin{minted}{python}
+    cleanup_files()
+\end{minted}
+\vspace{-5mm}
+\noindent
+\textit{Description:}\\
+\indent Searches code directory for *.tab files, keeps latest versions/revisions,\\
+\indent asks to delete old versions/revisions. Will ignore files not ending in .tab\\
+\indent and not starting with "mvn\_kp\_insitu" or "mvn\_kp\_iuvs".\\
+\textit{Required Arguments:}\\
+\indent None.\\
+\noindent \textit{Optional Arguments:}\\
+\indent None.\\
+\noindent \textit{File Requirements:}\\
+\indent All *.tab files must be named with the following formats:\\
+\indent \indent ``mvn\_kp\_insitu\_YYYYMMDD\_vXX\_rXX.tab"\\
+\indent \indent \indent Ex: mvn\_kp\_insitu\_20170619\_v13\_r04.tab\\
+\indent \indent ``mvn\_kp\_iuvs\_ORBIT\_YYYYMMDDTHHMMSS\_vXX\_rXX.tab"\\
+\indent \indent \indent Ex: mvn\_kp\_iuvs\_02403\_20151225T003727\_v07\_r01.tab\\
+\indent Any extraneous characters or formatting changes to the filename are not\\
+\indent compatible with the function regexing.\\
+\noindent \textit{Examples:}\\
+\indent Remove all out-of-date insitu and IUVS files from the local directory.\\
+\vspace{-10mm}
+\begin{minted}{python}
+   >> pydivide.cleanup_files()
+\end{minted}
+
+\subsection{corona}
+\label{subsec:corona}
+\vspace{-5mm}
+\textit{Function Call:}\\
+\vspace{-10mm}
+\begin{minted}{python}
+    corona(iuvs,
+           sameplot=True,
+           density=True,
+           radiance=True,
+           orbit_num=None,
+           species=None,
+           log=False,
+           title='IUVS Corona Observations',
+           qt=True)
+\end{minted}
+\noindent
+\textit{Description:}\\
+\indent Create altitude plots of corona limb scans from IUVS KP files, containing\\
+\indent radiance and density data of various chemical species.\\
+\textit{Required Arguments:}\\
+\indent \texttt{iuvs}: \textsc{struct}\\
+\indent \indent IUVS Key Parameter data structure returned from \texttt{read}.\\
+\textit{Optional Arguments:}\\
+\indent \texttt{sameplot}: \textsc{bool}\\
+\indent \indent If True, will plot everything on one plot.\\
+\indent \indent If False, will create stacked plots.\\
+\indent \texttt{density}: \textsc{bool}\\
+\indent \indent Plot density.\\
+\indent \texttt{radiance}: \textsc{bool}\\
+\indent \indent Plot radiance.\\
+\indent \texttt{orbit\_num}: \textsc{int, list}\\
+\indent \indent Orbit number(s) to be plotted.\\
+\indent \texttt{species}: \textsc{str, list}\\
+\indent \indent Plots only specified chemical species (\hyperref[sec:chemicalspecies]{Appendix A}).\\
+\indent \texttt{log}: \textsc{bool}\\
+\indent \indent Sets logarithmic axes for plotting.\\
+\indent \texttt{title}: \textsc{str}\\
+\indent \indent Sets plot title. Default is `IUVS Corona Observations'.\\
+\indent \texttt{qt}: \textsc{bool}\\
+\indent \indent If True, plot with PyQtGraph.\\
+\indent \indent If False, plot with bokeh.\\
+\noindent \textit{Examples:}\\
+\indent Plot all IUVS radiance and density data.
+\vspace{-5mm}
+\begin{minted}{python}
+   >> insitu,iuvs = pydivide.read('2015-06-02','2015-06-03')
+   >> pydivide.corona(iuvs)
+\end{minted}
+\vspace{-5mm}
+\begin{figure}[H]
+\centering
+\includegraphics[width=100mm,scale=0.5]{corona1.JPG}
+\end{figure}
+\vspace{-5mm}
+\indent Plot IUVS radiance and density data for H, O, and O\textsubscript{1304} for\\
+\indent orbits 2540 and 2456.\\
+\vspace{-10mm}
+\begin{minted}{python}
+   >> insitu,iuvs = pydivide.read('2016-01-19','2016-01-20')
+   >> pydivide.corona(iuvs,
+                      species=['H','O','O_1304'],
+                      orbit_num=[2540,2456],
+                      title='Example Title')
+\end{minted}
+\begin{figure}[H]
+\centering
+\includegraphics[width=100mm,scale=0.5]{corona2.JPG}
+\end{figure}
+
+\subsection{create\_model\_maps}
+\label{subsec:createmodelmaps}
+\textit{Function Call:}\\
+\vspace{-10mm}
+\begin{minted}{python}
+    create_model_maps(altitude,
+                      variable=None,
+                      model=None,
+                      file=None,
+                      numContours=25,
+                      fill=False,
+                      ct='viridis',
+                      transparency=1,
+                      nearest=False,
+                      linear=True,
+                      saveFig=True)
+\end{minted}
+\vspace{-5mm}
+\noindent
+\textit{Description:}\\
+\indent Generates a .png contour map of a model at a specific altitude. These can\\
+\indent be used as a background in \hyperref[subsec:map2d]{\texttt{map2d}}. The models must be downloaded manually\\
+\indent from the SDC website:\\
+\indent \hyperlink{https://lasp.colorado.edu/maven/sdc/public/pages/models.html}{https://lasp.colorado.edu/maven/sdc/public/pages/models.html}.\\
+\textit{Required Arguments:}\\
+\indent \texttt{altitude}: \textsc{int}\\
+\indent \indent Specified altitude of output map.\\
+\indent \texttt{variable}: \textsc{str}\\
+\indent \indent Plots specified chemical species (\hyperref[sec:chemicalspecies]{Appendix A}).\\
+\indent \texttt{model}: \textsc{dict}\\
+\indent \indent Model variable produced from prior call to \texttt{\hyperref[subsec:readmodelresults]{read\_model\_results}}.\\
+\indent \texttt{file}: \textsc{str}\\
+\indent \indent If model \textit{not} provided (produced from \texttt{\hyperref[subsec:readmodelresults]{read\_model\_results}}), full path\\
+\indent \indent to model can be set and read.\\
+\textit{Optional Arguments:}\\
+\indent \texttt{numContours}: \textsc{int}\\
+\indent \indent Specifies number of contour lines. Default is 25.\\
+\indent \texttt{fill}: \textsc{bool}\\
+\indent \indent If True, fills in contour levels instead of generating lines.\\
+\indent \texttt{ct}: \textsc{str}\\
+\indent \indent Sets color table. Valid color tables can be found here:\\
+\indent \indent \href{https://matplotlib.org/examples/color/colormaps_reference.html}{https://matplotlib.org/examples/color/colormaps\_reference.html}\\
+\indent \texttt{transparency}: \textsc{int, float}\\
+\indent \indent Sets transparency between [0,1] inclusive. 0 is completely transparent,\\
+\indent \indent and 1 is completely opaque.\\
+\indent \texttt{nearest}: \textsc{bool}\\
+\indent \indent If True, instead of interpolating nearby values, this returns\\
+\indent \indent the value of the nearest neighbor altitude.\\
+\indent \texttt{linear}: \textsc{bool}\\
+\indent \indent If True, performs linear interpolation between 2 altitude layers.\\
+\indent \texttt{saveFig}: \textsc{bool}\\
+\indent \indent If True, saves figure as .png file.\\
+\textit{Returns:}\\
+\indent A .png file will be created in the same directory as the specified input model.\\
+\noindent \textit{Examples:}\\
+\indent Interpolate all model tracers to spacecraft trajectory using nearest neighbor\\
+\indent interpolation.\\
+\vspace{-10mm}
+\begin{minted}{python}
+   >> pydivide.create_model_maps(altitude=170, 
+      file = '<dir_path>/MAMPS_LS180_F130_081216.nc',
+      variable='geo_x',
+      saveFig=True)
+\end{minted}
+\begin{figure}[H]
+\centering
+\includegraphics[width=100mm,scale=0.5]{ModelData_geo_x_170km.png}
+\end{figure}
+
+\subsection{download\_files}
+\label{subsec:downloadfiles}
+\vspace{-5mm}
+\textit{Function Call:}\\
+\vspace{-10mm}
+\begin{minted}{python}
+    download_files(filenames=None,
+                   instruments=None, 
+                   list_files=False,
+                   level='l2', 
+                   insitu=True, 
+                   iuvs=False, 
+                   new_files=False, 
+                   start_date='2014-01-01', 
+                   end_date='2020-01-01', 
+                   update_prefs=False,
+                   only_update_prefs=False, 
+                   exclude_orbit_file=False,
+                   local_dir=None)
+    
+\end{minted}
+\vspace{-5mm}
+\noindent
+\textit{Description:}\\
+\indent Download insitu and/or IUVS Key Parameter (KP) data files from the\\
+\indent MAVEN SDC web server. Also compatible with instrument-specific data\\
+\indent downloads. \texttt{insitu}, \texttt{iuvs}, or at least one \texttt{instrument} must be specified.\\
+\textit{Required Arguments:}\\
+\indent \texttt{insitu}: \textsc{bool}\\
+\indent \indent Search/download insitu KP data files.\\
+\indent \texttt{iuvs}: \textsc{bool}\\
+\indent \indent Search/download IUVS KP data files.\\
+\indent \texttt{instruments}: \textsc{str, list}\\
+\indent \indent Search/download data for one or more 3-character instrument abbreviations\\
+\indent \indent listed in Section \ref{subsec:Mandatory Data Directory Structure}.\\
+\textit{Optional Arguments:}\\
+\indent \texttt{filenames}: \textsc{str, array}\\
+\indent \indent Specific filename strings to search/download.\\
+\indent \texttt{list\_files}: \textsc{bool}\\
+\indent \indent List files available for download based on various parameters.\\
+\indent \texttt{level}: \textsc{str}\\
+\indent \indent Specifies desired data level to download, requires specific instrument\\
+\indent \indent argument(s). Options include: l0\\
+\indent \indent \indent \indent \indent \indent \indent \indent \indent \indent \indent \thinspace l1, l1a, l1b, l1c\\
+\indent \indent \indent \indent \indent \indent \indent \indent \indent \indent \indent \thinspace l2, l2a, l2b, l2c\\
+\indent \indent \indent \indent \indent \indent \indent \indent \indent \indent \indent \thinspace l3, l3a, l3b, l3c\\
+\indent \indent By default, KP data is downloaded, at which the data is sufficiently\\
+\indent \indent calibrated for science analysis.\\
+\indent \texttt{new\_files}: \textsc{bool}\\
+\indent \indent Search/download files on the SDC server that do not exist locally.\\
+\indent \texttt{start\_date}: \textsc{`yyyy-mm-dd'}\\
+\indent \indent Search/download data from start\_date to present, inclusive.\\
+\indent \texttt{end\_date}: \textsc{`yyyy-mm-dd'}\\
+\indent \indent Search/download data prior to end\_date, inclusive.\\
+\indent \texttt{update\_prefs}: \textsc{bool}\\
+\indent \indent Before searching/downloading data, open window to allow user to\\
+\indent \indent update \texttt{root\_data\_dir} in \texttt{mvn\_toolkit\_prefs.txt}. Once the new\\
+\indent \indent path is selected, the search/download will proceed according\\
+\indent \indent to the remaining arguments.\\
+\indent \texttt{only\_update\_prefs}: \textsc{bool}\\
+\indent \indent Like \texttt{update\_prefs}, but will not attempt to search/download files.\\
+\indent \texttt{exclude\_orbit\_file}: \textsc{bool}\\
+\indent \indent Do not download new version of orbit number file from \\
+\indent \indent \href{https://naif.jpl.nasa.gov/naif/}{https://naif.jpl.nasa.gov/naif/}.\\
+\indent \texttt{local\_dir}: \textsc{str}\\
+\indent \indent Specify a directory for file download. Overrides (but does not overwrite)\\
+\indent \indent \texttt{root\_data\_dir} in \texttt{mvn\_toolkit\_prefs.txt}.\\
+\noindent \textit{Examples:}\\
+\indent Download all available insitu data between 2015-01-01 and \\
+\indent 2015-01-31, inclusive:
+\vspace{-5mm}
+\begin{minted}{python}
+   >> pydivide.download_files(start_date='2015-01-01',
+                              end_date='2015-01-31',
+                              insitu=True)
+\end{minted}
+\indent \indent List all available CDF insitu KP files on the server: \\
+\vspace{-10mm}
+\begin{minted}{python}
+   >> pydivide.download_files(insitu=True,
+                              list_files=True)
+\end{minted}
+\indent \indent Download all \textit{new} IUVS files from 6 April 2015 not found in the \\
+\indent local directory.\\
+\vspace{-10mm}
+\begin{minted}{python}
+   >> pydivide.download_files(iuvs=True,
+                              new_files=True,
+                              end_date='2015-04-06')
+\end{minted}
+\indent \indent List all available Level 2 data files for SWIA.\\
+\vspace{-10mm}
+\begin{minted}{python}
+   >> pydivide.download_files(instruments='swi',
+                              list_files=True,
+                              level='l2')
+\end{minted}
+\indent \indent List all available Level 2 data files for SWIA for the month of January 2015.
+\vspace{-10mm}
+\begin{minted}{python}
+   >> pydivide.download_files(start_date='2015-01-01',
+                              end_date='2015-01-31',
+                              instruments='swi',
+                              list_files=True,
+                              level='l2')
+\end{minted}
+\indent \indent Download all \textit{new} Level 2 data files for NGIMS, STATIC, and EUV.
+\vspace{-5mm}
+\begin{minted}{python}
+   >> pydivide.download_files(instruments=['ngi','sta','euv'],
+                              new_files=True)
+\end{minted}
+
+\subsection{insitu\_search}
+\label{subsec:insitusearch}
+\vspace{-5mm}
+\textit{Function Call:}\\
+\vspace{-10mm}
+\begin{minted}{python}
+    insitu_search(kp,
+                  parameter,
+                  min=None,
+                  max=None,
+                  list=False)
+\end{minted}
+\vspace{-5mm}
+\noindent
+\textit{Description:}\\
+\indent Search existing insitu data structure for specified data, output new structure.\\
+\indent containing only the specified data.\\
+\noindent \textit{Required Arguments:}\\
+\indent \texttt{kp}: \textsc{struct}\\
+\indent \indent KP insitu data structure read from file(s).\\ 
+\noindent \textit{Optional Arguments:}\\
+\indent \texttt{parameter}: \textsc{str, int, list}\\
+\indent \indent Name or index of Key Parameter to be searched. May also be entered\\
+\indent \indent as list of strings or indices to search for multiple parameters.\\
+\indent \texttt{min}: \textsc{int, list}\\
+\indent \indent Minimum value for specified search criteria. If excluded, minimum\\
+\indent \indent is assumed to be $-\infty$. If multiple minima specified, they will\\
+\indent \indent be applied respectively to specified parameters.\\
+\indent \texttt{max}: \textsc{int, list}\\
+\indent \indent Maximum value for specified search criteria. If excluded, maximum\\
+\indent \indent is assumed to be $\infty$. If multiple maxima specified, they will\\
+\indent \indent be applied respectively to specified parameters.\\
+\indent \texttt{list}: \textsc{bool}\\
+\indent \indent Display ordered list of all parameters in \texttt{insitu} input.\\
+\indent \indent If list is called, no other arguments will be executed, and no\\
+\indent \indent output data structure will be returned.\\
+\noindent \textit{Examples:}\\
+\indent Find all STATIC O\textsuperscript{+} density data greater than 3000 cm\textsuperscript{-3} and less than\\
+\indent 1000000 cm\textsuperscript{-3}, store results in \texttt{insitu\_new}.
+\vspace{-5mm}
+\begin{minted}{python}
+   >> insitu_new = pydivide.insitu_search(insitu,
+                   parameter='static.oplus_density',
+                   min=3000,
+                   max=1000000)
+\end{minted}
+
+\subsection{interpol\_model}
+\label{subsec:interpolmodel}
+\vspace{-5mm}
+\textit{Function Call:}\\
+\vspace{-10mm}
+\begin{minted}{python}
+    interpol_model(kp,
+                   model=None,
+                   file=None,
+                   nearest=False)
+\end{minted}
+\vspace{-5mm}
+\noindent
+\textit{Description:}\\
+\indent \\
+\indent Reads in MAVEN's position from insitu, and determines the value of the\\
+\indent models at those points.\\
+\textit{Required Arguments:}\\
+\indent \texttt{kp}: \textsc{struct}\\
+\indent \indent KP insitu data structure read from file(s).\\ 
+\indent \texttt{model}: \textsc{str}\\
+\indent \indent Source of simulation data to be interpolated.\\
+\indent \texttt{file}: \textsc{str}\\
+\indent \indent If model not provided, can specify the full path to the model.\\
+\textit{Optional Arguments:}\\
+\indent \texttt{nearest}: \textsc{bool}\\
+\indent \indent If True, instead of interpolating nearby values, this returns\\
+\indent \indent the value of the nearest neighbor altitude.\\
+\textit{Returns:}\\
+\indent Returns array of data representative of what the spacecraft would have\\
+\indent measured if it were traveling through the model.\\
+\noindent \textit{Examples:}\\
+\indent Interpolate all model tracers to the spacecraft trajectory using nearest\\
+\indent neighbor interpolation.
+\vspace{-5mm}
+\begin{minted}{python}
+   >> results = pydivide.interpol_model(insitu,
+                file='<dir_path>/Elew_18_06_14_t00600.nc',
+                nearest=True)
+\end{minted}
+
+\subsection{map2d}
+\label{subsec:map2d}
+\textit{Function Call:}\\
+\vspace{-10mm}
+\begin{minted}{python}
+    map2d(kp,  
+          parameter=None, 
+          time=None, 
+          list=False, 
+          color_table=None,
+          subsolar=False,
+          mso=False,
+          map_limit=None,
+          basemap=None,
+          alpha=None,
+          title='MAVEN Mars',
+          qt=True)
+\end{minted}
+\vspace{-5mm}
+\noindent
+\textit{Description:}\\
+\indent Produces a 2D map of Mars, either in the planetocentric or MSO coordinate\\
+\indent system, with the MAVEN orbital projection and a variety of basemaps.\\
+\indent Spacecraft orbital path may be colored by a given insitu KP data value.
+\textit{Required Arguments:}\\
+\indent \texttt{kp}: \textsc{struct}\\
+\indent \indent KP insitu data structure read from file(s).\\ 
+\indent \texttt{parameter}: \textsc{str}\\
+\indent \indent Insitu Key Parameter for setting spacecraft trajectory color.\\
+\textit{Optional Arguments:}\\
+\indent \texttt{time}: \textsc{list}\\
+\indent \indent Plots subset of insitu KP data. \texttt{time} must be expressed in the format \\
+\indent \indent `YYYY-MM-DD HH:MM:SS'.\\
+\indent \texttt{list}: \textsc{bool}\\
+\indent \indent Display list of all parameters in data structure. All other keywords\\
+\indent \indent will be ignored if set.\\
+\indent \texttt{color\_table}: \textsc{str, list}\\
+\indent \indent Specifies color table(s) to use for plotting.\\
+\indent \indent \texttt{subsolar}: \textsc{bool}\\
+\indent \indent Plot path of subsolar point, not valid for MSO coordinates.\\
+\indent \texttt{mso}: \textsc{bool}\\
+\indent \indent Plot using MSO map projection.\\
+\indent \texttt{map\_limit}: \textsc{list}\\
+\indent \indent Sets the bounding box on the map in lat/lon coordinates: [x0,y0,x1,y1].\\
+\indent \texttt{basemap}: \textsc{str}\\
+\indent \indent Name of basemap on which the spacecraft data will be overlaid.\\
+\indent \indent Choices include:\\
+\vspace{-7mm}
+\begin{itemize}
+    \setlength{\itemindent}{2em}
+    \item `mdim': Mars Digital Image Model
+    \item `mola': Mars Topography (color)
+    \item `mola\_bw': Mars Topography (black and white)
+    \item `mag': Mars Crustal Magnetism
+    \item `<dir\_path>/file.png': User-defined basemap
+\end{itemize}
+\vspace{-3mm}
+\noindent
+\indent \texttt{alpha}: \textsc{int, float}\\
+\indent \indent Sets trajectory transparency, valid between [0,1] inclusive.\\
+\indent \texttt{title}: \textsc{str}\\
+\indent \indent Sets plot title.\\
+\indent \texttt{qt}: \textsc{bool}\\
+\indent \indent If True, plot with PyQtGraph.\\
+\indent \indent If False, plot with bokeh.\\
+\noindent \textit{Examples:}\\
+\indent Plot spacecraft altitude along MAVEN surface orbital track.\\
+\vspace{-10mm}
+\begin{minted}{python}
+   >> pydivide.map2d(insitu,
+                     'spacecraft.altitude')
+\end{minted}
+\begin{figure}[H]
+\centering
+\includegraphics[width=125mm,scale=0.5]{map2d_altitude.png}
+\end{figure}
+\noindent \indent Plot spacecraft altitude along MAVEN surface orbital track using MOLA\\
+\indent altimetry basemap; plot subsolar point path.\\
+\vspace{-10mm}
+\begin{minted}{python}
+   >> pydivide.map2d(insitu,
+                     'spacecraft.altitude',
+                     basemap='mola',
+                     subsolar=True)
+\end{minted}
+\begin{figure}[H]
+\centering
+\includegraphics[width=125mm,scale=0.5]{map2d_alt_mola.png}
+\end{figure}
+\noindent \indent Plot NGIMS CO\textsubscript{2}\textsuperscript{+} density along MAVEN surface orbital track. Limit map \\
+\indent to \pm60\degree \ latitude and 90\degree \ to 270\degree \ longitude in MSO coordinates.\\
+\vspace{-10mm}
+\begin{minted}{python}
+   >> pydivide.map2d(insitu,
+                     'ngims.co2plus_density',
+                     map_limit=[-60,90,60,270],
+                     mso=True)
+\end{minted}
+\begin{figure}[H]
+\centering
+\includegraphics[width=125mm,scale=0.5]{map2d_ngims.png}
+\end{figure}
+
+\newpage
+\subsection{occultation}
+\label{subsec:occultation}
+\vspace{-5mm}
+\textit{Function Call:}\\
+\vspace{-10mm}
+\begin{minted}{python}
+    occultation(iuvs,
+                sameplot=True,
+                orbit_num=None,
+                species=None,
+                log=False,
+                title='IUVS Occultation Observations',
+                qt=True):
+\end{minted}
+\vspace{-5mm}
+\noindent
+\textit{Description:}\\
+\indent Plots altitude vs. various species' densities.\\
+\textit{Required Arguments:}\\
+\indent \texttt{iuvs}: \textsc{struct}\\
+\indent \indent IUVS Key Parameter data structure returned from \texttt{read}.\\
+\textit{Optional Arguments:}\\
+\indent \texttt{sameplot}: \textsc{bool}\\
+\indent \indent If True, will plot everything on one plot.\\
+\indent \indent If False, will create stacked plots.\\
+\indent \texttt{orbit\_num}: \textsc{int, list}\\
+\indent \indent Orbit number(s) to be plotted.\\
+\indent \texttt{species}: \textsc{str, list}\\
+\indent \indent Plots only specified chemical species (\hyperref[sec:chemicalspecies]{Appendix A}).\\
+\indent \texttt{log}: \textsc{bool}\\
+\indent \indent Sets logarithmic axes for plotting.\\
+\indent \texttt{title}: \textsc{str}\\
+\indent \indent Sets plot title. Default is `IUVS Occultation Observations'.\\
+\indent \texttt{qt}: \textsc{bool}\\
+\indent \indent If True, plot with PyQtGraph.\\
+\indent \indent If False, plot with bokeh.\\
+\noindent \textit{Examples:}\\
+\indent Plot IUVS data for orbit 2135.\\
+\vspace{-10mm}
+\begin{minted}{python}
+   >> insitu,iuvs = pydivide.read('2015-11-03','2015-11-04')
+   >> pydivide.occultation(iuvs,
+                           orbit_num=[2135],
+                           title='Example Title')
+\end{minted}
+\begin{figure}[H]
+\centering
+\includegraphics[width=100mm,scale=0.5]{occultation.JPG}
+\end{figure}
+
+
+\subsection{periapse}
+\label{subsec:periapse}
+\vspace{-5mm}
+\textit{Function Call:}\\
+\vspace{-10mm}
+\begin{minted}{python}
+    periapse(iuvs,
+             sameplot=True,
+             density=True,
+             radiance=True,
+             orbit_num=None,
+             species=None,
+             obs_num=None,
+             log=False,
+             title='IUVS Periapse Observations',
+             qt=True)
+\end{minted}
+\vspace{-5mm}
+\noindent
+\textit{Description:}\\
+\indent Create altitude plots of periapse limb scans from IUVS KP files. These scans\\
+\indent contain radiance and density data of various species.\\
+\textit{Required Arguments:}\\
+\indent \texttt{iuvs}: \textsc{struct}\\
+\indent \indent IUVS Key Parameter data structure returned from \texttt{read}.\\
+\textit{Optional Arguments:}\\
+\indent \texttt{sameplot}: \textsc{bool}\\
+\indent \indent If True, will plot everything on one plot.\\
+\indent \indent If False, will create stacked plots.\\
+\indent \texttt{density}: \textsc{bool}\\
+\indent \indent Plot density.\\
+\indent \texttt{radiance}: \textsc{bool}\\
+\indent \indent Plot radiance.\\
+\indent \texttt{orbit\_num}: \textsc{int, list}\\
+\indent \indent Orbit number(s) to be plotted.\\
+\indent \texttt{species}: \textsc{str, list}\\
+\indent \indent Plots only specified chemical species (\hyperref[sec:chemicalspecies]{Appendix A}).\\
+\indent \texttt{obs\_num}: \textsc{int, list}\\
+\indent \indent Observation number(s) to be plotted. There are up to 3 periapse observations\\
+\indent \indent per orbit.\\
+\indent \texttt{log}: \textsc{bool}\\
+\indent \indent Sets logarithmic axes for plotting.\\
+\indent \texttt{title}: \textsc{str}\\
+\indent \indent Sets plot title. Default is `IUVS Periapse Observations'.\\
+\indent \texttt{qt}: \textsc{bool}\\
+\indent \indent If True, plot with PyQtGraph.\\
+\indent \indent If False, plot with bokeh.\\
+\noindent \textit{Examples:}\\
+\indent Plot Orbit 1307 N\textsubscript{2} density and radiance data.\\
+\vspace{-10mm}
+\begin{minted}{python}
+   >> pydivide.periapse(iuvs,
+                        log=True,
+                        species='N2',
+                        orbit_num=1307)
+\end{minted}
+\begin{figure}[H]
+\centering
+\includegraphics[width=100mm,scale=0.5]{periapse.JPG}
+\end{figure}
+
+
+\subsection{plot}
+\label{subsec:plot}
+\vspace{-5mm}
+\textit{Function Call:}\\
+\vspace{-10mm}
+\begin{minted}{python}
+    plot(kp, 
+         parameter=None, 
+         time=None,
+         sameplot=True, 
+         list=False, 
+         title = '', 
+         qt=True)
+\end{minted}
+\vspace{-5mm}
+\noindent
+\textit{Description:}\\
+\indent Plot time-series data from \texttt{insitu} data structure.\\
+\textit{Required Arguments:}\\
+\indent \texttt{kp}: \textsc{struct}\\
+\indent \indent KP insitu data structure read from file(s).\\ 
+\indent \texttt{parameter}: \textsc{int, str}\\
+\indent \indent Name or index of Key Parameter(s) to be plotted.\\
+\textit{Optional Arguments:}\\
+\indent \texttt{time}: \textsc{[str,str]}\\
+\indent \indent Plots subset of insitu KP data. \texttt{time} must be expressed in the format \\
+\indent \indent [`YYYY-MM-DD HH:MM:SS',`YYYY-MM-DD HH:MM:SS'].\\
+\indent \texttt{sameplot}: \textsc{bool}\\
+\indent \indent If True, will plot everything on one plot.\\
+\indent \indent If False, will create stacked plots.\\
+\indent \texttt{list}: \textsc{bool}\\
+\indent \indent List all KP parameters.\\
+\indent \texttt{title}: \textsc{str}\\
+\indent \indent Sets plot title.\\ 
+\indent \texttt{qt}: \textsc{bool}\\
+\indent \indent If True, plot with PyQtGraph.\\
+\indent \indent If False, plot with bokeh.\\
+\noindent \textit{Examples:}\\
+\indent Plot SWIA H\textsuperscript{+} density.\\
+\vspace{-10mm}
+\begin{minted}{python}
+   >> pydivide.plot(insitu,parameter='swia.hplus_density')
+\end{minted}
+\begin{figure}[H]
+\centering
+\includegraphics[width=100mm,scale=0.5]{plot_swiahplus.JPG}
+\end{figure}
+\noindent \indent Plot SWIA H\textsuperscript{+} density and altitude in the same window.\\
+\vspace{-10mm}
+\begin{minted}{python}
+   >> pydivide.plot(insitu,parameter=['swia.hplus_density',
+                    'spacecraft.altitude'],sameplot=True)
+\end{minted}
+\begin{figure}[H]
+\centering
+\includegraphics[width=100mm,scale=0.5]{plot_swiah_alt.JPG}
+\end{figure}
+\noindent \indent List all KP data parameters.\\
+\vspace{-10mm}
+\begin{minted}{python}
+   >> pydivide.plot(insitu,list=True)
+\end{minted}
+\noindent \indent Plot SWIA H\textsuperscript{+} density between 02:00 and 12:00 UTC on 2016-04-10.
+\vspace{-5mm}
+\begin{minted}{python}
+   >> pydivide.plot(insitu,parameter='swia.hplus_density',
+      time=['2016-04-10 02:00:00','2016-04-10 12:00:00'])
+\end{minted}
+\begin{figure}[H]
+\centering
+\includegraphics[width=100mm,scale=0.5]{plot_swiahplus_time.JPG}
+\end{figure}
+
+
+
+
+\newpage
+\subsection{read}
+\label{subsec:read}
+\vspace{-5mm}
+\textit{Function Call:}\\
+\vspace{-10mm}
+\begin{minted}{python}
+    read(input_time,
+         instruments=None, 
+         insitu_only=False
+\end{minted}
+\vspace{-5mm}
+\noindent
+\textit{Description:}\\
+\indent Ingests a subset of local KP data into one or more data structures.\\
+\indent These data structures are the primary inputs to various functions in\\
+\indent the PyDIVIDE and PyTplot toolkits. Upon first calling the \texttt{read}\\
+\indent function, the user will be prompted to choose the \texttt{root\_data\_dir}.\\
+\textit{Required Arguments:}\\
+\indent \texttt{input\_time}: \textsc{date, [start date, end date]}.\\
+\indent \indent The user must provide a time constraint for data retrieval. These\\
+\indent \indent constraints must be provided in either of the following formats:\\
+\indent \indent \indent `YYYY-MM-DD'\\
+\indent \indent \indent `YYYY-MM-DD HH:MM:SS'\\
+\indent \indent For a single time string, the function will return data for the \\
+\indent \indent default time period (1 day = 86400 s), beginning at the specified\\
+\indent \indent time. The user may also enter a two-element list, corresponding to\\
+\indent \indent beginning and end times.\\
+\noindent \textit{Optional Arguments:}\\
+\indent \texttt{instruments}: \textsc{str, list}\\
+\indent \indent One or more 3-character instrument abbreviations for \\
+\indent \indent instrument-specific data retrieval.\\
+\indent \texttt{insitu\_only}: \textsc{bool}\\
+\indent \indent Will only read insitu instrument data.\\
+\textit{Returns:}\\
+\indent \texttt{insitu}: \textsc{struct}\\
+\indent \indent Contains insitu instrument KP data, as well as spacecraft position\\
+\indent \indent and orientation information.\\
+\indent \texttt{iuvs}: \textsc{struct}\\
+\indent \indent Contains IUVS instrument KP data.\\
+\noindent \textit{Examples:}\\
+\indent Retrieve insitu and IUVS data for LPW and MAG on 2015-12-26.
+\vspace{-5mm}
+\begin{minted}{python}
+   >> insitu,iuvs = pydivide.read('2015-12-26',
+                    instruments=['lpw','mag'])
+\end{minted}
+\indent \indent Retrieve only insitu data for all instruments on 2017-06-19.
+\vspace{-5mm}
+\begin{minted}{python}
+   >> insitu = pydivide.read('2017-06-19',
+                             insitu_only=True)
+\end{minted}
+
+\newpage
+\subsection{read\_model\_results}
+\label{subsec:readmodelresults}
+\vspace{-5mm}
+\textit{Function Call:}\\
+\vspace{-10mm}
+\begin{minted}{python}
+    read_model_results(file)
+\end{minted}
+\vspace{-5mm}
+\noindent
+\textit{Description:}\\
+\indent Reads results of specified simulation into a dictionary object containing\\
+\indent sub-directories for metadata, dimension information, and model tracers.\\
+\indent This function can read any of the models currently on the MAVEN SDC\\
+\indent website with the .nc extension, which can be found here:\\
+\indent \href{https://lasp.colorado.edu/maven/sdc/public/pages/models.html}{https://lasp.colorado.edu/maven/sdc/public/pages/models.html}\\
+\indent The desired model must be downloaded prior to running this procedure.
+\textit{Required Arguments:}\\
+\indent \texttt{file}: \textsc{str}\\
+\indent \indent Simulation result filename to be read.\\
+\textit{Optional Arguments:}\\
+\indent None.\\
+\textit{Returns:}\\
+\indent Dictionary object of simulation results, structured roughly as follows:\\
+\vspace{-10mm}
+\begin{minted}{python}
+   output
+        meta
+            longsubsol
+            ls
+            ...
+        dim
+            lat/x
+            lon/y
+            alt/z
+        var1
+            dim_order (x,y,z; z,y,x; etc)
+            data
+        var2
+            dim_order
+            data
+        ...
+\end{minted}
+\noindent \textit{Examples:}\\
+\indent Read the University of Michigan group's ionospheric model for mean solar\\
+\indent activity ($F_{10.7} = 130$).
+\vspace{-5mm}
+\begin{minted}{python}
+   >> model = pydivide.read_model_results(
+              '<dir_path>/MGITM_LS270_F130_150519.nc')
+\end{minted}
+\noindent
+\indent Read the LATMOS group's ionospheric model for solar maximum levels.
+\vspace{-5mm}
+\begin{minted}{python}
+   >> model = pydivide.read_model_results(
+              '<dir_path>/Heliosares_Ionos_Ls270_SolMax1_26_01_15.nc')
+\end{minted}
+
+\subsection{resample}
+\label{subsec:resample}
+\textit{Function Call:}\\
+\vspace{-10mm}
+\begin{minted}{python}
+    resample(kp,
+             time)
+\end{minted}
+\vspace{-5mm}
+\noindent
+\textit{Description:}\\
+\indent Modifies KP structure index to user specified time via interpolation.\\
+\textit{Required Arguments:}\\
+\indent \texttt{kp}: \textsc{struct}\\
+\indent \indent KP insitu data structure read from file(s).\\ 
+\indent \texttt{time}: \textsc{list}\\
+\indent \indent Specifies subset of insitu KP data for resampling. \texttt{time} must be expressed\\
+\indent \indent in the format `YYYY-MM-DD HH:MM:SS'.\\
+\textit{Optional Arguments:}\\
+\indent None.\\
+\noindent \textit{Examples:}\\
+\indent Resample insitu time to 2016-06-20 coarse survey 3D file time.
+\vspace{-5mm}
+\begin{minted}{python}
+   >> swi_cdf = cdflib.CDF(
+                '<dir_path>/mvn_swi_l2_coarsesvy3d_20160620_v01_r00.cdf')
+   >> newtime = swi_cdf.varget('time_unix')
+   >> insitu_resampled = pydivide.resample(insitu,
+                                           newtime)
+\end{minted}
+
+\subsection{standards}
+\label{subsec:standards}
+\vspace{-5mm}
+\textit{Function Call:}\\
+\vspace{-10mm}
+\begin{minted}{python}
+    standards(kp, 
+              list_plots=False,
+              all_plots=False,
+              euv=False,
+              mag_mso=False,
+              mag_geo=False,
+              mag_cone=False,
+              mag_dir=False,
+              ngims_neutral=False,
+              ngims_ions=False,
+              eph_angle=False,
+              eph_geo=False,
+              eph_mso=False,
+              swea=False,
+              sep_ion=False,
+              sep_electron=False,
+              wave=False,
+              plasma_den=False,
+              plasma_temp=False,
+              swia_h_vel=False,
+              static_h_vel=False,
+              static_o2_vel=False,
+              static_flux=False,
+              static_energy=False,
+              sun_bar=False,
+              solar_wind=False,
+              ionosphere=False,
+              sc_pot=False,
+              altitude=False,
+              title='Standard Plots',
+              qt=True)
+\end{minted}
+\vspace{-5mm}
+\noindent
+\textit{Description:}\\
+\indent Generate all or a subset of 25 standardized plots, created from insitu KP\\
+\indent data on the MAVEN SDC website.\\
+\textit{Required Arguments:}\\
+\indent \texttt{kp}: \textsc{struct}\\
+\indent \indent KP insitu data structure read from file(s).\\ 
+\indent \texttt{keyword}: \textsc{bool}\\
+\indent \indent At least one or more of the following arguments are required; they may\\
+\indent \indent be used in conjunction with one another.\\
+\indent \indent \texttt{all\_plots}: generate all 25 plots\\
+\indent \indent \texttt{euv}: EUV irradiance in each of 3 bands\\
+\indent \indent \texttt{mag\_mso}: magnetic field, MSO coordinates\\
+\indent \indent \texttt{mag\_geo}: magnetic field, geographic coordinates\\
+\indent \indent \texttt{mag\_cone}: magnetic clock and cone angles, MSO coordinates\\
+\indent \indent \texttt{mag\_dir}: magnetic field, radial/horizontal/northward/eastward components\\
+\indent \indent \texttt{ngims\_neutral}: neutral atmospheric component densities\\
+\indent \indent \texttt{ngims\_ions}: ionized atmospheric component densities\\
+\indent \indent \texttt{eph\_angle}: spacecraft ephemeris information\\
+\indent \indent \texttt{eph\_geo}: spacecraft position, geographic coordinates\\
+\indent \indent \texttt{eph\_mso}: spacecraft position, MSO coordinates\\
+\indent \indent \texttt{swea}: electron parallel/anti-parallel fluxes\\
+\indent \indent \texttt{sep\_ion}: ion energy flux\\
+\indent \indent \texttt{sep\_electron}: electron energy flux\\
+\indent \indent \texttt{wave}: electric field wave power\\
+\indent \indent \texttt{plasma\_den}: plasma density\\
+\indent \indent \texttt{plasma\_temp}: plasma temperature\\
+\indent \indent \texttt{swia\_h\_vel}: H\textsuperscript{+} flow velocity, SWIA MSO coordinates\\
+\indent \indent \texttt{static\_h\_vel}: H\textsuperscript{+} flow velocity, STATIC MSO coordinates\\
+\indent \indent \texttt{static\_o2\_vel}: O\textsubscript{2}\textsuperscript{+} flow velocity, STATIC MSO coordinates\\
+\indent \indent \texttt{static\_flux}: H\textsuperscript{+}/H\textsuperscript{++} and pick-up ion omni-directional flux\\
+\indent \indent \texttt{static\_energy}: H\textsuperscript{+}/H\textsuperscript{++} and pick-up ion characteristic energy\\
+\indent \indent \texttt{sun\_bar}: MAVEN sunlight indicator\\
+\indent \indent \texttt{solar\_wind}: solar wind dynamic pressure\\
+\indent \indent \texttt{ionosphere}: electron spectrum shape parameter\\
+\indent \indent \texttt{altitude}: spacecraft altitude\\
+\indent \indent \texttt{sc\_pot}: spacecraft potential\\
+\textit{Optional Arguments:}\\
+\indent \texttt{list\_plots}: \textsc{bool}\\
+\indent \indent Display list and description of all available plots.\\
+\indent \texttt{title}: \textsc{str}\\
+\indent \indent Title name for all plots.\\
+\indent \texttt{qt}: \textsc{bool}\\
+\indent \indent If True, plot with PyQtGraph.\\
+\indent \indent If False, plot with bokeh.\\
+\noindent \textit{Examples:}\\
+\indent Plot all 25 standard plots. \textbf{Note:} not recommended for general use as this\\
+\indent will generate 25 very narrow plots; may be useful for a quick glance.\\
+\vspace{-10mm}
+\begin{minted}{python}
+   >> insitu,iuvs = pydivide.read('2017-06-19','2017-06-20')
+   >> pydivide.standards(insitu,
+                         all_plots=True)
+\end{minted}
+\begin{figure}[H]
+\centering
+\includegraphics[width=125mm,scale=0.5]{standards_allplots.JPG}
+\end{figure}
+\indent Generate figure containing 3 plots: magnetic field standard plot in Mars\\
+\indent Solar Orbital coordinates (x, y, z, magnitude), standard spacecraft ephemeris\\
+\indent information (sub-spacecraft lat/lon, subsolar lat/lon, local solar time, solar\\
+\indent zenith angle, Mars season), and STATIC H\textsuperscript{+}/H\textsuperscript{++} and pick-up ion\\
+\indent omni-directional flux.\\
+\vspace{-10mm}
+\begin{minted}{python}
+   >> insitu,iuvs = pydivide.read('2017-06-19','2017-06-20')
+   >> pydivide.standards(insitu,
+                         mag_mso=True,
+                         eph_angle=True,
+                         static_flux=True,
+                         title='Example Title')
+\end{minted}
+\begin{figure}[H]
+\centering
+\includegraphics[width=125mm,scale=0.5]{standards_static.JPG}
+\end{figure}
+
+
+\subsection{tplot\_varcreate}
+\label{subsec:tplotvarcreate}
+\vspace{-5mm}
+\textit{Function Call:}\\
+\vspace{-10mm}
+\begin{minted}{python}
+    tplot_varcreate(kp)
+\end{minted}
+\vspace{-5mm}
+\noindent
+\textit{Description:}\\
+\indent Creates TVars (tplot variables) for each instrument, named with the format:
+\indent \texttt{mvn\_kp::instrument::observation}.\\
+\textit{Required Arguments:}\\
+\indent \texttt{kp}: \textsc{struct}\\
+\indent \indent KP insitu data structure read from file(s).\\ 
+\noindent \textit{Optional Arguments:}\\
+\indent None.\\
+\noindent \textit{Examples:}\\
+\indent Create TVars for all instruments: EUV, LPW, STATIC, SWEA, SWIA,\\ 
+\indent MAG, SEP, and NGIMS, with data from 2017-06-19.
+\vspace{-5mm}
+\begin{minted}{python}
+   >> insitu = pydivide.read('2017-06-19')
+   >> pydivide.tplot_varcreate(insitu)
+\end{minted}
+
+\newpage
+\appendix
+\section{Chemical Species}
+\label{sec:chemicalspecies}
+\begin{itemize}
+    \item \texttt{C}
+    \item \texttt{C\_1561}
+    \item \texttt{C\_1657}
+    \item \texttt{CO Cameron}
+    \item \texttt{CO2}
+    \item \texttt{CO2+}
+    \item \texttt{CO2pUVD}
+    \item \texttt{H}
+    \item \texttt{N}
+    \item \texttt{N2}
+    \item \texttt{N\_1493}
+    \item \texttt{NO}
+    \item \texttt{O}
+    \item \texttt{O2}
+    \item \texttt{O3}
+    \item \texttt{O\_1304}
+    \item \texttt{O\_1356}
+    \item \texttt{O\_2972}
+\end{itemize}
+\section{KP Data Structures}
+\label{sec:kpds}
+Insitu parameters are callable either by name or number listed below.\\
+IUVS parameters are only callable by name.
+\subsection{INSITU}
+\begin{enumerate}
+    \item \texttt{TimeString}
+    \item \texttt{Time}
+    \item \texttt{Orbit}
+    \item \texttt{IOflag}
+\end{enumerate}
+\subsubsection{LPW}
+\begin{enumerate}
+\setcounter{enumi}{4}
+    \item \texttt{LPW.ELECTRON\_DENSITY}
+    \item \texttt{LPW.ELECTRON\_DENSITY\_QUAL\_MIN}
+    \item \texttt{LPW.ELECTRON\_DENSITY\_QUAL\_MAX}
+    \item \texttt{LPW.ELECTRON\_TEMPERATURE}
+    \item \texttt{LPW.ELECTRON\_TEMPERATURE\_QUAL\_MIN}
+    \item \texttt{LPW.ELECTRON\_TEMPERATURE\_QUAL\_MAX}
+    \item \texttt{LPW.SPACECRAFT\_POTENTIAL}
+    \item \texttt{LPW.SPACECRAFT\_POTENTIAL\_QUAL\_MIN}
+    \item \texttt{LPW.SPACECRAFT\_POTENTIAL\_QUAL\_MAX}
+    \item \texttt{LPW.EWAVE\_LOW\_FREQ}
+    \item \texttt{LPW.EWAVE\_LOW\_FREQ\_QUAL}
+    \item \texttt{LPW.EWAVE\_MID\_FREQ}
+    \item \texttt{LPW.EWAVE\_MID\_FREQ\_QUAL}
+    \item \texttt{LPW.EWAVE\_HIGH\_FREQ}
+    \item \texttt{LPW.EWAVE\_HIGH\_FREQ\_QUAL}
+\end{enumerate}
+
+\subsubsection{EUV}
+\begin{enumerate}
+\setcounter{enumi}{19}
+    \item \texttt{EUV.IRRADIANCE\_LOW}
+    \item \texttt{EUV.IRRADIANCE\_LOW\_QUAL}
+    \item \texttt{EUV.IRRADIANCE\_MID}
+    \item \texttt{EUV.IRRADIANCE\_MID\_QUAL}
+    \item \texttt{EUV.IRRADIANCE\_LYMAN}
+    \item \texttt{EUV.IRRADIANCE\_LYMAN\_QUAL}
+\end{enumerate}
+
+\subsubsection{SWEA}
+\begin{enumerate}
+\setcounter{enumi}{25}
+    \item \texttt{SWEA.SOLAR\_WIND\_ELECTRON\_DENSITY}
+    \item \texttt{SWEA.SOLAR\_WIND\_ELECTRON\_DENSITY\_QUAL}
+    \item \texttt{SWEA.SOLAR\_WIND\_ELECTRON\_TEMPERATURE}
+    \item \texttt{SWEA.SOLAR\_WIND\_ELECTRON\_TEMPERATURE\_QUAL}
+    \item \texttt{SWEA.ELECTRON\_PARALLEL\_FLUX\_LOW}
+    \item \texttt{SWEA.ELECTRON\_PARALLEL\_FLUX\_LOW\_QUAL}
+    \item \texttt{SWEA.ELECTRON\_PARALLEL\_FLUX\_MID}
+    \item \texttt{SWEA.ELECTRON\_PARALLEL\_FLUX\_MID\_QUAL}
+    \item \texttt{SWEA.ELECTRON\_PARALLEL\_FLUX\_HIGH}
+    \item \texttt{SWEA.ELECTRON\_PARALLEL\_FLUX\_HIGH\_QUAL}
+    \item \texttt{SWEA.ELECTRON\_ANTI\_PARALLEL\_FLUX\_LOW}
+    \item \texttt{SWEA.ELECTRON\_ANTI\_PARALLEL\_FLUX\_LOW\_QUAL}
+    \item \texttt{SWEA.ELECTRON\_ANTI\_PARALLEL\_FLUX\_MID}
+    \item \texttt{SWEA.ELECTRON\_ANTI\_PARALLEL\_FLUX\_MID\_QUAL}
+    \item \texttt{SWEA.ELECTRON\_ANTI\_PARALLEL\_FLUX\_HIGH}
+    \item \texttt{SWEA.ELECTRON\_ANTI\_PARALLEL\_FLUX\_HIGH\_QUAL}
+    \item \texttt{SWEA.ELECTRON\_SPECTRUM\_SHAPE\_PARAMETER}
+    \item \texttt{SWEA.ELECTRON\_SPECTRUM\_SHAPE\_PARAMETER\_QUAL}
+\end{enumerate}
+
+\subsubsection{SWIA}
+\begin{enumerate}
+\setcounter{enumi}{43}
+    \item \texttt{SWIA.HPLUS\_DENSITY}
+    \item \texttt{SWIA.HPLUS\_DENSITY\_QUAL}
+    \item \texttt{SWIA.HPLUS\_FLOW\_VELOCITY\_MSO\_X}
+    \item \texttt{SWIA.HPLUS\_FLOW\_VELOCITY\_MSO\_X\_QUAL}
+    \item \texttt{SWIA.HPLUS\_FLOW\_VELOCITY\_MSO\_Y}
+    \item \texttt{SWIA.HPLUS\_FLOW\_VELOCITY\_MSO\_Y\_QUAL}
+    \item \texttt{SWIA.HPLUS\_FLOW\_VELOCITY\_MSO\_Z}
+    \item \texttt{SWIA.HPLUS\_FLOW\_VELOCITY\_MSO\_Z\_QUAL}
+    \item \texttt{SWIA.HPLUS\_TEMPERATURE}
+    \item \texttt{SWIA.HPLUS\_TEMPERATURE\_QUAL}
+    \item \texttt{SWIA.SOLAR\_WIND\_DYNAMIC\_PRESSURE}
+    \item \texttt{SWIA.SOLAR\_WIND\_DYNAMIC\_PRESSURE\_QUAL}
+\end{enumerate}
+
+\subsubsection{STATIC}
+\begin{enumerate}
+\setcounter{enumi}{55}
+    \item \texttt{STATIC.STATIC\_QUALITY\_FLAG}
+    \item \texttt{STATIC.HPLUS\_DENSITY}
+    \item \texttt{STATIC.HPLUS\_DENSITY\_QUAL}
+    \item \texttt{STATIC.OPLUS\_DENSITY}
+    \item \texttt{STATIC.OPLUS\_DENSITY\_QUAL}
+    \item \texttt{STATIC.O2PLUS\_DENSITY}
+    \item \texttt{STATIC.O2PLUS\_DENSITY\_QUAL}
+    \item \texttt{STATIC.HPLUS\_TEMPERATURE}
+    \item \texttt{STATIC.HPLUS\_TEMPERATURE\_QUAL}
+    \item \texttt{STATIC.OPLUS\_TEMPERATURE}
+    \item \texttt{STATIC.OPLUS\_TEMPERATURE\_QUAL}
+    \item \texttt{STATIC.O2PLUS\_TEMPERATURE}
+    \item \texttt{STATIC.O2PLUS\_TEMPERATURE\_QUAL}
+    \item \texttt{STATIC.O2PLUS\_FLOW\_VELOCITY\_MAVEN\_APP\_X}
+    \item \texttt{STATIC.O2PLUS\_FLOW\_VELOCITY\_MAVEN\_APP\_X\_QUAL}
+    \item \texttt{STATIC.O2PLUS\_FLOW\_VELOCITY\_MAVEN\_APP\_Y}
+    \item \texttt{STATIC.O2PLUS\_FLOW\_VELOCITY\_MAVEN\_APP\_Y\_QUAL}
+    \item \texttt{STATIC.O2PLUS\_FLOW\_VELOCITY\_MAVEN\_APP\_Zz}
+    \item \texttt{STATIC.O2PLUS\_FLOW\_VELOCITY\_MAVEN\_APP\_Z\_QUAL}
+    \item \texttt{STATIC.O2PLUS\_FLOW\_VELOCITY\_MSO\_X}
+    \item \texttt{STATIC.O2PLUS\_FLOW\_VELOCITY\_MSO\_X\_QUAL}
+    \item \texttt{STATIC.O2PLUS\_FLOW\_VELOCITY\_MSO\_Y}
+    \item \texttt{STATIC.O2PLUS\_FLOW\_VELOCITY\_MSO\_Y\_QUAL}
+    \item \texttt{STATIC.O2PLUS\_FLOW\_VELOCITY\_MSO\_Z}
+    \item \texttt{STATIC.O2PLUS\_FLOW\_VELOCITY\_MSO\_Z\_QUAL}
+    \item \texttt{STATIC.HPLUS\_OMNI\_DIRECTIONAL\_FLUX}
+    \item \texttt{STATIC.HPLUS\_CHARACTERISTIC\_ENERGY}
+    \item \texttt{STATIC.HPLUS\_CHARACTERISTIC\_ENERGY\_QUAL}
+    \item \texttt{STATIC.HEPLUS\_OMNI\_DIRECTIONAL\_FLUX}
+    \item \texttt{STATIC.HEPLUS\_CHARACTERISTIC\_ENERGY}
+    \item \texttt{HSTATIC.HEPLUS\_CHARACTERISTIC\_ENERGY\_QUAL}
+    \item \texttt{STATIC.OPLUS\_OMNI\_DIRECTIONAL\_FLUX}
+    \item \texttt{STATIC.OPLUS\_CHARACTERISTIC\_ENERGY}
+    \item \texttt{STATIC.OPLUS\_CHARACTERISTIC\_ENERGY\_QUAL}
+    \item \texttt{STATIC.O2PLUS\_OMNI\_DIRECTIONAL\_FLUX}
+    \item \texttt{STATIC.O2PLUS\_CHARACTERISTIC\_ENERGY}
+    \item \texttt{STATIC.O2PLUS\_CHARACTERISTIC\_ENERGY\_QUAL}
+    \item \texttt{STATIC.HPLUS\_CHARACTERISTIC\_DIRECTION\_MSO\_X}
+    \item \texttt{STATIC.HPLUS\_CHARACTERISTIC\_DIRECTION\_MSO\_Y}
+    \item \texttt{STATIC.HPLUS\_CHARACTERISTIC\_DIRECTION\_MSO\_Z}
+    \item \texttt{STATIC.HPLUS\_CHARACTERISTIC\_ANGULAR\_WIDTH}
+    \item \texttt{STATIC.HPLUS\_CHARACTERISTIC\_ANGULAR\_WIDTH\_QUAL}
+    \item \texttt{STATIC.DOMINANT\_PICKUP\_ION\_CHARACTERISTIC\_DIRECTION\_MSO\_X}
+    \item \texttt{STATIC.DOMINANT\_PICKUP\_ION\_CHARACTERISTIC\_DIRECTION\_MSO\_Y}
+    \item \texttt{STATIC.DOMINANT\_PICKUP\_ION\_CHARACTERISTIC\_DIRECTION\_MSO\_Z}
+    \item \texttt{STATIC.DOMINANT\_PICKUP\_ION\_CHARACTERISTIC\_ANGULAR\_WIDTH}
+    \item \texttt{STATIC.DOMINANT\_PICKUP\_ION\_CHARACTERISTIC\_ANGULAR\_WIDTH\_QUAL}
+\end{enumerate}
+
+\subsubsection{SEP}
+\begin{enumerate}
+\setcounter{enumi}{102}
+    \item \texttt{SEP.ION\_ENERGY\_FLUX\_\_FOV\_1\_F}
+    \item \texttt{SEP.ION\_ENERGY\_FLUX\_\_FOV\_1\_F\_QUAL}
+    \item \texttt{SEP.ION\_ENERGY\_FLUX\_\_FOV\_1\_R}
+    \item \texttt{SEP.ION\_ENERGY\_FLUX\_\_FOV\_1\_R\_QUAL}
+    \item \texttt{SEP.ION\_ENERGY\_FLUX\_\_FOV\_2\_F}
+    \item \texttt{SEP.ION\_ENERGY\_FLUX\_\_FOV\_2\_F\_QUAL}
+    \item \texttt{SEP.ION\_ENERGY\_FLUX\_\_FOV\_2\_R}
+    \item \texttt{SEP.ION\_ENERGY\_FLUX\_\_FOV\_2\_R\_QUAL}
+    \item \texttt{SEP.ELECTRON\_ENERGY\_FLUX\_\_\_FOV\_1\_F}
+    \item \texttt{SEP.ELECTRON\_ENERGY\_FLUX\_\_\_FOV\_1\_F\_QUAL}
+    \item \texttt{SEP.ELECTRON\_ENERGY\_FLUX\_\_\_FOV\_1\_R}
+    \item \texttt{SEP.ELECTRON\_ENERGY\_FLUX\_\_\_FOV\_1\_R\_QUAL}
+    \item \texttt{SEP.ELECTRON\_ENERGY\_FLUX\_\_\_FOV\_2\_F}
+    \item \texttt{SEP.ELECTRON\_ENERGY\_FLUX\_\_\_FOV\_2\_F\_QUAL}
+    \item \texttt{SEP.ELECTRON\_ENERGY\_FLUX\_\_\_FOV\_2\_R}
+    \item \texttt{SEP.ELECTRON\_ENERGY\_FLUX\_\_\_FOV\_2\_R\_QUAL}
+    \item \texttt{SEP.LOOK\_DIRECTION\_1\_F\_MSO\_X}
+    \item \texttt{SEP.LOOK\_DIRECTION\_1\_F\_MSO\_Y}
+    \item \texttt{SEP.LOOK\_DIRECTION\_1\_F\_MSO\_Z}
+    \item \texttt{SEP.LOOK\_DIRECTION\_1\_R\_MSO\_X}
+    \item \texttt{SEP.LOOK\_DIRECTION\_1\_R\_MSO\_Y}
+    \item \texttt{SEP.LOOK\_DIRECTION\_1\_R\_MSO\_Z}
+    \item \texttt{SEP.LOOK\_DIRECTION\_2\_F\_MSO\_X}
+    \item \texttt{SEP.LOOK\_DIRECTION\_2\_F\_MSO\_Y}
+    \item \texttt{SEP.LOOK\_DIRECTION\_2\_F\_MSO\_Z}
+    \item \texttt{SEP.LOOK\_DIRECTION\_2\_R\_MSO\_X}
+    \item \texttt{SEP.LOOK\_DIRECTION\_2\_R\_MSO\_Y}
+    \item \texttt{SEP.LOOK\_DIRECTION\_2\_R\_MSO\_Z}
+\end{enumerate}
+
+\subsubsection{MAG}
+\begin{enumerate}
+\setcounter{enumi}{130}
+    \item \texttt{MAG.MSO\_X}
+    \item \texttt{MAG.MSO\_X\_QUAL}
+    \item \texttt{MAG.MSO\_Y}
+    \item \texttt{MAG.MSO\_Y\_QUAL}
+    \item \texttt{MAG.MSO\_Z}
+    \item \texttt{MAG.MSO\_Z\_QUAL}
+    \item \texttt{MAG.GEO\_X}
+    \item \texttt{MAG.GEO\_X\_QUAL}
+    \item \texttt{MAG.GEO\_Y}
+    \item \texttt{MAG.GEO\_Y\_QUAL}
+    \item \texttt{MAG.GEO\_Z}
+    \item \texttt{MAG.GEO\_Z\_QUAL}
+    \item \texttt{MAG.RMS\_DEVIATION}
+    \item \texttt{MAG.RMS\_DEVIATION\_QUAL}
+\end{enumerate}
+
+\subsubsection{NGIMS}
+\begin{enumerate}
+\setcounter{enumi}{144}
+    \item \texttt{NGIMS.HE\_DENSITY}
+    \item \texttt{NGIMS.HE\_DENSITY\_PRECISION}
+    \item \texttt{NGIMS.HE\_DENSITY\_QUAL}
+    \item \texttt{NGIMS.O\_DENSITY}
+    \item \texttt{NGIMS.O\_DENSITY\_PRECISION}
+    \item \texttt{NGIMS.O\_DENSITY\_QUAL}
+    \item \texttt{NGIMS.CO\_DENSITY}
+    \item \texttt{NGIMS.CO\_DENSITY\_PRECISION}
+    \item \texttt{NGIMS.CO\_DENSITY\_QUAL}
+    \item \texttt{NGIMS.N2\_DENSITY}
+    \item \texttt{NGIMS.N2\_DENSITY\_PRECISION}
+    \item \texttt{NGIMS.N2\_DENSITY\_QUAL}
+    \item \texttt{NGIMS.NO\_DENSITY}
+    \item \texttt{NGIMS.NO\_DENSITY\_PRECISION}
+    \item \texttt{NGIMS.NO\_DENSITY\_QUAL}
+    \item \texttt{NGIMS.AR\_DENSITY}
+    \item \texttt{NGIMS.AR\_DENSITY\_PRECISION}
+    \item \texttt{NGIMS.AR\_DENSITY\_QUAL}
+    \item \texttt{NGIMS.CO2\_DENSITY}
+    \item \texttt{NGIMS.CO2\_DENSITY\_PRECISION}
+    \item \texttt{NGIMS.CO2\_DENSITY\_QUAL}
+    \item \texttt{NGIMS.O2PLUS\_DENSITY}
+    \item \texttt{NGIMS.O2PLUS\_DENSITY\_PRECISION}
+    \item \texttt{NGIMS.O2PLUS\_DENSITY\_QUAL}
+    \item \texttt{NGIMS.CO2PLUS\_DENSITY}
+    \item \texttt{NGIMS.CO2PLUS\_DENSITY\_PRECISION}
+    \item \texttt{NGIMS.CO2PLUS\_DENSITY\_QUAL}
+    \item \texttt{NGIMS.NOPLUS\_DENSITY}
+    \item \texttt{NGIMS.NOPLUS\_DENSITY\_PRECISION}
+    \item \texttt{NGIMS.NOPLUS\_DENSITY\_QUAL}
+    \item \texttt{NGIMS.OPLUS\_DENSITY}
+    \item \texttt{NGIMS.OPLUS\_DENSITY\_PRECISION}
+    \item \texttt{NGIMS.OPLUS\_DENSITY\_QUAL}
+    \item \texttt{NGIMS.CO2PLUS\_N2PLUS\_DENSITY}
+    \item \texttt{NGIMS.CO2PLUS\_N2PLUS\_DENSITY\_PRECISION}
+    \item \texttt{NGIMS.CO2PLUS\_N2PLUS\_DENSITY\_QUAL}
+    \item \texttt{NGIMS.CPLUS\_DENSITY}
+    \item \texttt{NGIMS.CPLUS\_DENSITY\_PRECISION}
+    \item \texttt{NGIMS.CPLUS\_DENSITY\_QUAL}
+    \item \texttt{NGIMS.OHPLUS\_DENSITY}
+    \item \texttt{NGIMS.OHPLUS\_DENSITY\_PRECISION}
+    \item \texttt{NGIMS.OHPLUS\_DENSITY\_QUAL}
+    \item \texttt{NGIMS.NPLUS\_DENSITY}
+    \item \texttt{NGIMS.NPLUS\_DENSITY\_PRECISION}
+    \item \texttt{NGIMS.NPLUS\_DENSITY\_QUAL}
+\end{enumerate}
+
+\subsubsection{APP}
+\begin{enumerate}
+\setcounter{enumi}{189}
+    \item \texttt{APP.ATTITUDE\_GEO\_X}
+    \item \texttt{APP.ATTITUDE\_GEO\_Y}
+    \item \texttt{APP.ATTITUDE\_GEO\_Z}
+    \item \texttt{APP.ATTITUDE\_MSO\_X}
+    \item \texttt{APP.ATTITUDE\_MSO\_Y}
+    \item \texttt{APP.ATTITUDE\_MSO\_Z}
+\end{enumerate}
+
+\subsubsection{SPACECRAFT}
+\begin{enumerate}
+\setcounter{enumi}{195}
+    \item \texttt{SPACECRAFT.GEO\_X}
+    \item \texttt{SPACECRAFT.GEO\_Y}
+    \item \texttt{SPACECRAFT.GEO\_Z}
+    \item \texttt{SPACECRAFT.MSO\_X}
+    \item \texttt{SPACECRAFT.MSO\_Y}
+    \item \texttt{SPACECRAFT.MSO\_Z}
+    \item \texttt{SPACECRAFT.SUB\_SC\_LONGITUDE}
+    \item \texttt{SPACECRAFT.SUB\_SC\_LATITUDE}
+    \item \texttt{SPACECRAFT.SZA}
+    \item \texttt{SPACECRAFT.LOCAL\_TIME}
+    \item \texttt{SPACECRAFT.ALTITUDE}
+    \item \texttt{SPACECRAFT.ATTITUDE\_GEO\_X}
+    \item \texttt{SPACECRAFT.ATTITUDE\_GEO\_Y}
+    \item \texttt{SPACECRAFT.ATTITUDE\_GEO\_Z}
+    \item \texttt{SPACECRAFT.ATTITUDE\_MSO\_X}
+    \item \texttt{SPACECRAFT.ATTITUDE\_MSO\_Y}
+    \item \texttt{SPACECRAFT.ATTITUDE\_MSO\_Z}
+    \item \texttt{SPACECRAFT.MARS\_SEASON}
+    \item \texttt{SPACECRAFT.MARS\_SUN\_DISTANCE}
+    \item \texttt{SPACECRAFT.SUBSOLAR\_POINT\_GEO\_LONGITUDE}
+    \item \texttt{SPACECRAFT.SUBSOLAR\_POINT\_GEO\_LATITUDE}
+    \item \texttt{SPACECRAFT.SUBMARS\_POINT\_SOLAR\_LONGITUDE}
+    \item \texttt{SPACECRAFT.SUBMARS\_POINT\_SOLAR\_LATITUDE}
+    \item \texttt{SPACECRAFT.T11}
+    \item \texttt{SPACECRAFT.T12}
+    \item \texttt{SPACECRAFT.T13}
+    \item \texttt{SPACECRAFT.T21}
+    \item \texttt{SPACECRAFT.T22}
+    \item \texttt{SPACECRAFT.T23}
+    \item \texttt{SPACECRAFT.T31}
+    \item \texttt{SPACECRAFT.T32}
+    \item \texttt{SPACECRAFT.T33}
+    \item \texttt{SPACECRAFT.SPACECRAFT\_T11}
+    \item \texttt{SPACECRAFT.SPACECRAFT\_T12}
+    \item \texttt{SPACECRAFT.SPACECRAFT\_T13}
+    \item \texttt{SPACECRAFT.SPACECRAFT\_T21}
+    \item \texttt{SPACECRAFT.SPACECRAFT\_T22}
+    \item \texttt{SPACECRAFT.SPACECRAFT\_T23}
+    \item \texttt{SPACECRAFT.SPACECRAFT\_T31}
+    \item \texttt{SPACECRAFT.SPACECRAFT\_T32}
+    \item \texttt{SPACECRAFT.SPACECRAFT\_T33}
+\end{enumerate}
+
+
+\subsection{IUVS}
+\subsubsection{ALL}
+\begin{itemize}
+    \item \texttt{TIME\_START}
+    \item \texttt{TIME\_STOP}
+    \item \texttt{SZA}
+    \item \texttt{LOCAL\_TIME}
+    \item \texttt{LAT}
+    \item \texttt{LON}
+    \item \texttt{LAT\_MSO}
+    \item \texttt{LON\_MSO}
+    \item \texttt{ORBIT\_NUMBER}
+    \item \texttt{MARS\_SEASON\_LS}
+    \item \texttt{SPACECRAFT\_GEO}
+    \item \texttt{SPACECRAFT\_MSO}
+    \item \texttt{SUN\_GEO}
+    \item \texttt{SPACECRAFT\_GEO\_LONGITUDE}
+    \item \texttt{SPACECRAFT\_GEO\_LATITUDE}
+    \item \texttt{SPACECRAFT\_MSO\_LONGITUDE}
+    \item \texttt{SPACECRAFT\_MSO\_LATITUDE}
+    \item \texttt{SUBSOLAR\_POINT\_GEO\_LONGITUDE}
+    \item \texttt{SUBSOLAR\_POINT\_GEO\_LATITUDE}
+    \item \texttt{SPACECRAFT\_SZA}
+    \item \texttt{SPACECRAFT\_LOCAL\_TIME}
+    \item \texttt{SPACECRAFT\_ALTITUDE}
+    \item \texttt{MARS\_SUN\_DISTANCE}
+\end{itemize}
+\subsubsection{PERIAPSE1/PERIAPSE2/PERIAPSE3}
+\begin{itemize}
+    \item \texttt{SCALE\_HEIGHT}
+    \item \texttt{DENSITY}
+    \item \texttt{RADIANCE}
+    \item \texttt{TEMPERATURE}
+    \item \texttt{ALT}
+\end{itemize}
+\subsubsection{APOAPSE}
+\begin{itemize}
+    \item \texttt{OZONE\_DEPTH}
+    \item \texttt{AURORAL\_INDEX}
+    \item \texttt{DUST\_DEPTH}
+    \item \texttt{RADIANCE}
+    \item \texttt{SZA\_BP}
+    \item \texttt{LOCAL\_TIME\_BP}
+    \item \texttt{LON\_BINS}
+    \item \texttt{LAT\_BINS}
+\end{itemize}
+\subsubsection{CORONA\_LORES\_HIGH}
+\begin{itemize}
+    \item \texttt{HALF\_INT\_DISTANCE}
+    \item \texttt{TEMPERATURE}
+    \item \texttt{DENSITY}
+    \item \texttt{RADIANCE}
+    \item \texttt{ALT}
+\end{itemize}
+\subsubsection{OCCULTATION}
+\begin{itemize}
+    \item \texttt{CO2}
+    \item \texttt{O2}
+    \item \texttt{O3}
+    \item \texttt{TEMPERATURE}
+\end{itemize}
+\end{document}u
