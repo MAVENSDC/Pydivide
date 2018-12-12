@@ -419,7 +419,7 @@ def get_inst_obs_labels( kp, name ):
     name = ('%s' % name)
     
     #Turn it into uppercase
-    name = name.upper()
+    #name = name.upper()
     
     # Now, split at the dot (if it exists)
     tags = name.split('.')

@@ -279,24 +279,6 @@ def read(input_time, instruments = None, insitu_only=False):
             APP = APP.rename(index=str, columns = param_dict)
         if SPACECRAFT is not None:
             SPACECRAFT = SPACECRAFT.rename(index=str, columns = param_dict)
-        #
-        # Clean up SPACECRAFT column names
-        #
-        #newcol = []
-        #for oldcol in SPACECRAFT.columns:
-        #    if oldcol.startswith('Spacecraft'):
-        #        newcol.append(oldcol[len('Spacecraft '):])
-        #    elif oldcol.startswith('Rot matrix MARS'):
-        #        a,b = re.findall('\d{1}',oldcol)
-        #        newcol.append('T%s%s' % (a,b))
-        #    elif oldcol.startswith('Rot matrix SPC'):
-        #        a,b = re.findall('\d{1}', oldcol)
-        #        newcol.append('SPACECRAFT_T%s%s' % (a,b))
-        #    else:
-        #        newcol.append(oldcol)
-        #SPACECRAFT.columns = newcol
-        
-        
         
         # Do not forget to save units
         # Define the list of first level tag names
