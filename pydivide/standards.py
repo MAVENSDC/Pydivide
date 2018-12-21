@@ -103,7 +103,7 @@ def standards(kp,
               altitude=False,
               title='Standard Plots',
               qt=True):
-
+    main_title=title
     if all_plots:
         euv = True
         mag_mso = True
@@ -652,7 +652,7 @@ def standards(kp,
     
     #Show the plot
     pytplot.tplot_options('wsize', [1000,300*(current_plot_number)])
-    pytplot.tplot_options('title', title)
+    pytplot.tplot_options('title', main_title)
     pytplot.tplot(names_to_plot, bokeh=not qt)
     pytplot.del_data(names_to_plot)
     

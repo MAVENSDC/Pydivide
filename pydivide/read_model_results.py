@@ -26,22 +26,26 @@ import numpy as np
 #    \_ variableN
 
 def mvn_kp_read_model_results(file):
-    print("This procedure was renamed, just use bin")
+    print("This procedure was renamed, just use read_model_results()")
     read_model_results(file=file)
     return
 
 def read_model_results(file):
-    import netCDF4
+    try:
+        import netCDF4
+    except:
+        print("Install the python library netCDF4 to read model results")
+        print("pip install netCDF4")
+        return
     import collections
-    
+
     #Create dictionaries for the metadata and dimensions
     meta = collections.OrderedDict()
     dim = collections.OrderedDict()
     
     #Create a dictionary for the above dictionaries
     results = collections.OrderedDict()
-    
-    
+
     model = netCDF4.Dataset(file, "r+", format="NETCDF4")
     lat_size = None
     lon_size = None

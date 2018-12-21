@@ -10,10 +10,15 @@ pword = ''
 
 def get_filenames(query, public):
     import urllib
-    
+    #import os
+    #import ssl
+    #import http.cookiejar
+    #cj = http.cookiejar.CookieJar()
+    #ssl._create_default_https_context = ssl._create_unverified_context
+    #os.environ['PYTHONHTTPSVERIFY'] = ''
     public_url = 'https://lasp.colorado.edu/maven/sdc/public/files/api/v1/search/science/fn_metadata/file_names'+'?'+query
     private_url = 'https://lasp.colorado.edu/maven/sdc/service/files/api/v1/search/science/fn_metadata/file_names'+'?'+query
-    
+    #private_url= 'https://lasp.colorado.edu/maven/sdc/service/events/api/v1/events?start_date=2015-08-03&end_date=2015-08-03'
     if (public==False):
         username = uname
         password = pword
