@@ -1,23 +1,7 @@
-# Copyright 2018 Regents of the University of Colorado. All Rights Reserved.
+# Copyright 2019 Regents of the University of Colorado. All Rights Reserved.
 # Released under the MIT license.
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/Pydivide
-
-# CLEANUP_FILES
-#     Searches code directory for .tab files, keeps latest versions/revisions, asks to delete old versions/revisions
-# 
-# FUNCTION CALL
-#     cleanup_files()
-# 
-# REQUIREMENTS
-#     All .tab files must be named with the following formats: 
-#     "mvn_kp_insitu_YYYYMMDD_vXX_rXX.tab"
-#     Ex: mvn_kp_insitu_20170619_v13_r04.tab
-#     "mvn_kp_iuvs_ORBIT_YYYYMMDDTHHMMSS_vXX_rXX.tab"
-#     Ex: mvn_kp_iuvs_02403_20151225T003727_v07_r01.tab
-#
-#     Any extraneous characters or formatting changes will break the regexing for this function.
-#     Will ignore files not ending in .tab and not starting with "mvn_kp_insitu" or "mvn_kp_iuvs".
 
 from __future__ import division
 import numpy
@@ -26,6 +10,33 @@ from pydivide.download_files_utilities import get_root_data_dir
 import os
 
 def cleanup_files():
+#     r'''
+#     Searches code directory for *.tab files, keeps latest versions/revisions,
+#     asks to delete old versions/revisions. Will ignore files not ending in
+#     .tab and not starting with ”mvn_kp_insitu” or ”mvn_kp_iuvs”. 
+# 
+#     Required Arguments:
+#         None
+#     
+#     Optional Arguments:
+#         None
+#             
+#     File Requirements: 
+#         All *.tab files must be named with the following formats: 
+#         “mvn_kp_insitu_YYYYMMDD_vXX_rXX.tab”
+#             Ex: mvn_kp_insitu_20170619_v13_r04.tab 
+#         “mvn_kp_iuvs_ORBIT_YYYYMMDDTHHMMSS_vXX_rXX.tab” 
+#             Ex: mvn_kp_iuvs_02403_20151225T003727_v07_r01.tab 
+#         
+#         Any extraneous characters or formatting changes to the filename are 
+#         not compatible with the function regexing. 
+#         
+#     Examples: 
+#         Remove all out-of-date insitu and IUVS files from the local directory. 
+#         >> pydivide.cleanup_files()
+# 
+#     '''
+    
     #pull directory path preferences from mvn_toolkit_prefs.txt
     dir_path = get_root_data_dir()
     print(" ")

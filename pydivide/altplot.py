@@ -1,4 +1,4 @@
-# Copyright 2018 Regents of the University of Colorado. All Rights Reserved.
+# Copyright 2019 Regents of the University of Colorado. All Rights Reserved.
 # Released under the MIT license.
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/Pydivide
@@ -21,37 +21,50 @@ def mvn_kp_altplot( kp, parameter=None, time=None, errors=None,
             qt=qt)
     return 
 
-def altplot( kp, parameter=None, time=None, errors=None, 
-              sameplot=True, list=False, title='Altitude Plot', qt=True):
-    '''
-    Plot the provided data plotted against spacecraft altitude.
-    For now, do not accept any error bar information.
-    If time is not provided plot entire data set.
+def altplot(kp, 
+            parameter=None, 
+            time=None, 
+            errors=None, 
+            sameplot=True, 
+            list=False, 
+            title='Altitude Plot', 
+            qt=True):
+    
 
-    Input:
-        kp: insitu kp data structure/dictionary read from file(s)
-        Time: Two-element list of strings or integers indicating the 
-            range of Time to be plotted.  At present, there are no
-            checks on whether provided Times are within provided data
-        Parameter: The parameter(s) to be plotted.  Can be provided as
-            integers (by index) or strings (by name: inst.obs).  If a 
-            single parameter is provided, it must be an int or str.  If
-            several are provided it must be a list.  A list may contain
-            a mixture of data types.
-        Errors: **Not Yet Implemented**
-            Will be the Parameter(s) to use for the generation of error
-            bars in the created plots.  Since each inst.obs *may* define
-            its own unique useage of the 'quality flag', this will be a
-            parameter-dependent determination, requiring an add'l routine.
-        sameplot: if True, put all curves on same axes
-                  if False, generate new axes for each plot
-    Output: None
-        -> Generates plot(s) as requested.  But since there is no plot
-           object returned, can not alter any plot subsequently (yet)
-
-    ToDo: Provide mechanism for calculating and plotting error bars
-          Return plot object(s) for subsequent editing?
-    '''
+#     '''
+#     Plot the provided data against spacecraft altitude. 
+#     If time is not provided, plot the entire dataset. 
+#   
+#     Required Arguments:
+#         kp: STRUCT
+#             KP insitu data structure read from file(s).
+#         parameter: INT, LIST, STR
+#             Parameter(s) to be plotted. Can be provided as integer (by index) or string (by name: inst.obs). List may contain various data types.
+#         bin_by: INT, STR
+#             Parameters(index or name) by which to bin the specified Key Parameter.
+#         binsize: INT, LIST
+#             Bin size for each binning dimension. Number of elements must be equal to those in bin_by. 
+#       
+#     Optional Arguments:
+#         time: [STR, STR] or [INT, INT]
+#             Two-element list of strings or integers indicating the time range to be plotted. Currently, no checks if time range is within data. 
+#         sameplot: BOOL 
+#             If True, put all curves on same axes. If False, generate new axes for each plot. 
+#         list: BOOL 
+#             List all KP parameters instead of plotting. 
+#         title: STR 
+#             Sets plot title. Default is ‘Altitude Plot’. 
+#         qt: BOOL 
+#             If True, plot with PyQtGraph. If False, plot with bokeh. 
+#               
+#     Returns: 
+#         None
+#   
+#     Examples: 
+#         Plot LPW.ELECTRON_DENSITY and MAG.MSO_Y against spacecraft altitude. 
+#         >> pydivide.altplot(insitu, parameter=['LPW.ELECTRON_DENSITY','MAG.MSO_Y'])
+#           
+#     '''
     
     if list:
         x = param_list(kp)

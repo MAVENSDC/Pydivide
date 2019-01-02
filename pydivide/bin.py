@@ -1,4 +1,4 @@
-# Copyright 2018 Regents of the University of Colorado. All Rights Reserved.
+# Copyright 2019 Regents of the University of Colorado. All Rights Reserved.
 # Released under the MIT license.
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/Pydivide
@@ -47,6 +47,55 @@ def bin(kp,
         median=False,
         unittest=False):
     
+#     r'''
+#     Bins insitu Key Parameters by up to 8 different parameters,
+#     specified within the data structure. Necessary that at least
+#     one of the binning schemes [avg, std, median, density] must be 
+#     specified. 
+# 
+#     Required Arguments:
+#         kp: STRUCT
+#             KP insitu data structure read from file(s).
+#         parameter: STR
+#             Key Parameter to be binned. Only one may be binned at a time.
+#         bin_by: INT, STR
+#             Parameters(index or name) by which to bin the specified Key Parameter.
+#         binsize: INT, LIST
+#             Bin size for each binning dimension. Number of elements must be equal to those in bin_by. 
+#     
+#     Optional Arguments:
+#         mins: int, list
+#             Minimum value(s) for each binning scheme. Number of elements must be equal to those in bin_by.
+#         maxs: int, list
+#             Maximum value(s) for each binning scheme. Number of elements must be equal to those in bin_by.
+#         avg: bool
+#             Calculate average per bin.
+#         std: bool 
+#             Calculate standard deviation per bin.
+#         density: bool 
+#             Returns number of items in each bin. 
+#         median: bool 
+#             Calculate median per bin.
+#     Returns: 
+#         This procedure outputs up to 4 arrays to user-defined variables, corresponding to avg, std, median, and density. 
+# 
+#     Examples: 
+#         Bin STATIC O+ characteristic energy by spacecraft latitude (1° resolution) and longitude (2° resolution). 
+#         >> output_avg = pydivide.bin(insitu, 
+#                                      parameter='static.oplus_char_energy', 
+#                                      bin_by=['spacecraft.geo_latitude', 'spacecraft.geo_longitude'], 
+#                                      avg=True,
+#                                      binsize=[2,1])
+#                                      
+#         Bin SWIA H+ density by spacecraft altitude (10km resolution), return average value and standard deviation for each bin. 
+#         >> output_avg,output_std = pydivide.bin(insitu, 
+#                                                 parameter='swia.hplus_density', 
+#                                                 bin_by='spacecraft.altitude', 
+#                                                 binsize=10,
+#                                                 avg=True,
+#                                                 std=True)
+# 
+#     '''
     #
     #ERROR CHECKING
     #
