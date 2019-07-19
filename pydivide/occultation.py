@@ -7,17 +7,18 @@ import pytplot
 import numpy as np
 import builtins
 
+
 def occultation(iuvs,
-               sameplot=True,
-               orbit_num=None,
-               species=None,
-               log=False,
-               title='IUVS Occultation Observations',
-               qt=True):
+                sameplot=True,
+                orbit_num=None,
+                species=None,
+                log=False,
+                title='IUVS Occultation Observations',
+                qt=True):
     
-    retrieval_names_to_plot=[]
+    retrieval_names_to_plot = []
     retrieval_legend_names = []
-    dplot=0
+    dplot = 0
     
     if not isinstance(species, builtins.list):
         species = [species]
@@ -51,17 +52,20 @@ def occultation(iuvs,
                         if not np.isnan(orbit[obs]['retrieval'][var]).all():
                             xmin.append(np.min(x))
                             xmax.append(np.max(x))
-                            retrieval_names_to_plot.append(obs+'_retrieval_'+var+'_'+str(orbit[obs]['orbit_number']))
-                            retrieval_legend_names.append('Orbit '+ str(orbit[obs]['orbit_number']) + ' ' + var+' retrieval')
+                            retrieval_names_to_plot.append(obs + '_retrieval_' + var + '_' +
+                                                           str(orbit[obs]['orbit_number']))
+                            retrieval_legend_names.append('Orbit ' + str(orbit[obs]['orbit_number']) + ' ' + var +
+                                                          ' retrieval')
                             data = np.array(orbit[obs]['retrieval'][var])
                             alts = x[~np.isnan(data)]
                             data = data[~np.isnan(data)]
                             fake_times = np.arange(len(alts))
-                            pytplot.store_data(retrieval_names_to_plot[dplot], data={'x':fake_times, 'y':data})
-                            pytplot.store_data(retrieval_names_to_plot[dplot]+"_alt", data={'x':fake_times, 'y':alts})
-                            pytplot.options(retrieval_names_to_plot[dplot], 'link', ['alt',retrieval_names_to_plot[dplot]+'_alt'])
+                            pytplot.store_data(retrieval_names_to_plot[dplot], data={'x': fake_times, 'y': data})
+                            pytplot.store_data(retrieval_names_to_plot[dplot] + "_alt", data={'x': fake_times, 'y': alts})
+                            pytplot.options(retrieval_names_to_plot[dplot], 'link',
+                                            ['alt', retrieval_names_to_plot[dplot] + '_alt'])
                             pytplot.options(retrieval_names_to_plot[dplot], 'alt', 1)
-                            dplot+=1
+                            dplot += 1
                                     
     if dplot == 0:
         print("There is no occultation retrieval data in the given IUVS variable")
@@ -76,17 +80,17 @@ def occultation(iuvs,
             pytplot.options('occultation_retrieval', 'ylog', 1)
         pytplot.options('occultation_retrieval', 'legend_names', retrieval_legend_names)
     else:
-        i=0
+        i = 0
         for d in retrieval_names_to_plot:
             list_of_plots.append(d)
             pytplot.options(d, 'ytitle', retrieval_legend_names[i])
             if log:
                 pytplot.options(d, 'ylog', 1)
-            i+=1
-        i=0
+            i += 1
+        i = 0
     pytplot.tplot_options('alt_range', [np.min(xmin), np.max(xmax)])
     pytplot.tplot_options('title', title)
-    pytplot.tplot_options('wsize', [1000,400*len(list_of_plots)])
+    pytplot.tplot_options('wsize', [1000, 400 * len(list_of_plots)])
     pytplot.tplot(list_of_plots, bokeh=not qt)
     pytplot.del_data(list_of_plots)
     

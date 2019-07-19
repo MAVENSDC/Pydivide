@@ -6,31 +6,28 @@
 import math 
 import numpy as np
 
-#Takes in a .nc file from the MAVEN website and reads it into python dictionary
-#results
-#    \_ meta ()
-#        \_ longsubsol
-#        \_ ls
-#        \_ etc
-#    \_ dim
-#        \_ lat/x
-#        \_ lon/y
-#        \_ alt/z
-#    \_ variable1
-#        \_ dim_order (x,y,z or z,y,x for example)
-#        \_ data
-#    \_ variable2
-#        \_ dim_order
-#        \_ data
-#    ...
-#    \_ variableN
-
-def mvn_kp_read_model_results(file):
-    print("This procedure was renamed, just use read_model_results()")
-    read_model_results(file=file)
-    return
 
 def read_model_results(file):
+    """
+    Takes in a .nc file from the MAVEN website and reads it into python dictionary
+    results
+    \_ meta ()
+        \_ longsubsol
+        \_ ls
+        \_ etc
+    \_ dim
+        \_ lat/x
+        \_ lon/y
+        \_ alt/z
+    \_ variable1
+        \_ dim_order (x,y,z or z,y,x for example)
+        \_ data
+    \_ variable2
+        \_ dim_order
+        \_ data
+    ...
+    \_ variableN
+    """
     try:
         import netCDF4
     except:
@@ -39,11 +36,11 @@ def read_model_results(file):
         return
     import collections
 
-    #Create dictionaries for the metadata and dimensions
+    # Create dictionaries for the metadata and dimensions
     meta = collections.OrderedDict()
     dim = collections.OrderedDict()
     
-    #Create a dictionary for the above dictionaries
+    # Create a dictionary for the above dictionaries
     results = collections.OrderedDict()
 
     model = netCDF4.Dataset(file, "r+", format="NETCDF4")
@@ -68,12 +65,12 @@ def read_model_results(file):
         if unit.lower() == 'size_z' or unit.lower() == 'z':
             z_size = model.dimensions[unit].size    
             
-    if lat_size != None:
-        if (lon_size == None) or (alt_size == None):
+    if lat_size is not None:
+        if lon_size is None or alt_size is None:
             print("Couldn't find all dimensions: LATITUDE,LONGITUDE,ALTITUDE")
         dimension_type = "latlonalt"
-    elif x_size != None:
-        if (y_size == None) or (z_size == None):
+    elif x_size is not None:
+        if y_size is None or z_size is None:
             print("Couldn't find all dimensions: X,Y,Z")
         dimension_type = "xyz"
     else:
@@ -86,7 +83,7 @@ def read_model_results(file):
         elif var.lower() == 'longitude':
             lon_temp = model.variables[var][0:lon_size] 
             if np.max(lon_temp) > 180 and np.min(lon_temp) > 0:
-                lon_temp = np.array([(a - 360) if a>180 else a for a in lon_temp])
+                lon_temp = np.array([(a - 360) if a > 180 else a for a in lon_temp])
             dim['lon'] = lon_temp  
         elif var.lower() == 'altitude':
             dim['alt'] = model.variables[var][0:alt_size]
@@ -102,7 +99,7 @@ def read_model_results(file):
             else:
                 meta['coord_sys'] = model.variables[var][0].strip()
         elif var.lower() == 'ls':
-            if abs(model.variables[var][0]) >= 2*math.pi:
+            if abs(model.variables[var][0]) >= 2 * math.pi:
                 meta['ls'] = model.variables[var][0]
             else:
                 if 'units' in model.variables[var].__dict__:
@@ -116,7 +113,7 @@ def read_model_results(file):
             import re
             string = str(model.variables[var][0])
             num = float((re.findall("[-+]?\d+[\.]?\d*[eE]?[-+]?\d*", string))[0])
-            if abs(num) >= 2*math.pi:
+            if abs(num) >= 2 * math.pi:
                 meta['longsubsol'] = num
             else:
                 if 'units' in model.variables[var].__dict__:
@@ -127,7 +124,7 @@ def read_model_results(file):
                 else:
                     meta['longsubsol'] = num
         elif var.lower() == 'dec':
-            if abs(model.variables[var][0]) >= 2*math.pi:
+            if abs(model.variables[var][0]) >= 2 * math.pi:
                 meta['dec'] = model.variables[var][0]
             else:
                 if 'units' in model.variables[var].__dict__:
@@ -145,7 +142,7 @@ def read_model_results(file):
             if (len(model.variables[var].shape) == 3) or (len(model.variables[var].shape) == 4):
                 data = {}
                 if model.variables[var].units == 'm-3':
-                    value = model.variables[var][:]/1000000.0
+                    value = model.variables[var][:] / 1000000.0
                 else:
                     value = model.variables[var][:]
                 dim_order = model.variables[var].dimensions
@@ -156,7 +153,7 @@ def read_model_results(file):
                 data['dim_order'] = dim_order
                 results[var] = data
     
-    #Create a dictionary of dictionaries for the model results
+    # Create a dictionary of dictionaries for the model results
     results['meta'] = meta
     results['dim'] = dim
     
