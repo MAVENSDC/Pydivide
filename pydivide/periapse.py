@@ -7,6 +7,7 @@ import pytplot
 import numpy as np
 import builtins
 
+
 def periapse(iuvs,
              sameplot=True,
              density=True,
@@ -18,13 +19,13 @@ def periapse(iuvs,
              title='IUVS Periapse Observations',
              qt=True):
     
-    density_names_to_plot=[]
+    density_names_to_plot = []
     density_legend_names = []
-    dplot=0
+    dplot = 0
     
-    radiance_names_to_plot=[]
+    radiance_names_to_plot = []
     radiance_legend_names = []
-    rplot=0
+    rplot = 0
     
     if not isinstance(species, builtins.list):
         species = [species]
@@ -69,17 +70,21 @@ def periapse(iuvs,
                             if not np.isnan(orbit[obs]['density'][var]).all():
                                 xmin.append(np.min(x))
                                 xmax.append(np.max(x))
-                                density_names_to_plot.append(obs+'_density_'+var+'_'+str(orbit[obs]['orbit_number']))
-                                density_legend_names.append('Orbit '+ str(orbit[obs]['orbit_number']) + ' observation ' + str(obs[-1]) + ' ' + var +' density')
+                                density_names_to_plot.append(obs + '_density_' + var + '_' +
+                                                             str(orbit[obs]['orbit_number']))
+                                density_legend_names.append('Orbit ' + str(orbit[obs]['orbit_number']) +
+                                                            ' observation ' + str(obs[-1]) + ' ' + var + ' density')
                                 data = np.array(orbit[obs]['density'][var])
                                 alts = x[~np.isnan(data)]
                                 data = data[~np.isnan(data)]
                                 fake_times = np.arange(len(alts))
-                                pytplot.store_data(density_names_to_plot[dplot], data={'x':fake_times, 'y':data})
-                                pytplot.store_data(density_names_to_plot[dplot]+'_alt', data={'x':fake_times, 'y':alts})
-                                pytplot.options(density_names_to_plot[dplot], 'link', ['alt',density_names_to_plot[dplot]+'_alt'])
+                                pytplot.store_data(density_names_to_plot[dplot], data={'x': fake_times, 'y': data})
+                                pytplot.store_data(density_names_to_plot[dplot] + '_alt',
+                                                   data={'x': fake_times, 'y': alts})
+                                pytplot.options(density_names_to_plot[dplot], 'link',
+                                                ['alt', density_names_to_plot[dplot] + '_alt'])
                                 pytplot.options(density_names_to_plot[dplot], 'alt', 1)
-                                dplot+=1
+                                dplot += 1
                 if radiance:
                     x = np.array(orbit[obs]['radiance']['ALTITUDE'])
                     
@@ -90,17 +95,21 @@ def periapse(iuvs,
                             if not np.isnan(orbit[obs]['radiance'][var]).all():
                                 xmin.append(np.min(x))
                                 xmax.append(np.max(x))
-                                radiance_names_to_plot.append(obs+'_radiance_'+var+'_'+str(orbit[obs]['orbit_number']))
-                                radiance_legend_names.append('Orbit '+ str(orbit[obs]['orbit_number']) + ' observation ' + str(obs[-1]) + ' ' + var+' radiance')
+                                radiance_names_to_plot.append(obs + '_radiance_' + var + '_' +
+                                                              str(orbit[obs]['orbit_number']))
+                                radiance_legend_names.append('Orbit ' + str(orbit[obs]['orbit_number']) +
+                                                             ' observation ' + str(obs[-1]) + ' ' + var + ' radiance')
                                 data = np.array(orbit[obs]['radiance'][var])
                                 alts = x[~np.isnan(data)]
                                 data = data[~np.isnan(data)]
                                 fake_times = np.arange(len(alts))
-                                pytplot.store_data(radiance_names_to_plot[rplot], data={'x':fake_times, 'y':data})
-                                pytplot.store_data(radiance_names_to_plot[rplot]+'_alt', data={'x':fake_times, 'y':alts})
-                                pytplot.options(radiance_names_to_plot[rplot], 'link', ['alt', radiance_names_to_plot[rplot]+"_alt"])
+                                pytplot.store_data(radiance_names_to_plot[rplot], data={'x': fake_times, 'y': data})
+                                pytplot.store_data(radiance_names_to_plot[rplot] + '_alt',
+                                                   data={'x': fake_times, 'y': alts})
+                                pytplot.options(radiance_names_to_plot[rplot], 'link',
+                                                ['alt', radiance_names_to_plot[rplot] + "_alt"])
                                 pytplot.options(radiance_names_to_plot[rplot], 'alt', 1)
-                                rplot+=1
+                                rplot += 1
                                     
     if radiance and rplot == 0:
         print("There is no periapse radiance data in the given IUVS variable")
@@ -127,23 +136,23 @@ def periapse(iuvs,
                 pytplot.options('periapse_radiance', 'ylog', 1)
             pytplot.options('periapse_radiance', 'legend_names', radiance_legend_names)
     else:
-        i=0
+        i = 0
         for d in density_names_to_plot:
             list_of_plots.append(d)
             pytplot.options(d, 'ytitle', density_legend_names[i])
             if log:
                 pytplot.options(d, 'ylog', 1)
-            i+=1
-        i=0
+            i += 1
+        i = 0
         for r in radiance_names_to_plot:
             list_of_plots.append(r)
             pytplot.options(r, 'ytitle', radiance_legend_names[i])
             if log:
                 pytplot.options(r, 'ylog', 1)
-            i+=1
+            i += 1
     pytplot.tplot_options('alt_range', [np.min(xmin), np.max(xmax)])
     pytplot.tplot_options('title', title)
-    pytplot.tplot_options('wsize', [1000,400*len(list_of_plots)])
+    pytplot.tplot_options('wsize', [1000, 400 * len(list_of_plots)])
     pytplot.tplot(list_of_plots, bokeh=not qt)
     pytplot.del_data(list_of_plots)
     

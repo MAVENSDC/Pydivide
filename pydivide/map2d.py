@@ -6,89 +6,57 @@
 from .utilities import get_inst_obs_labels, param_list, range_select, orbit_time
 import pytplot
 import numpy as np
-from datetime import datetime
 import builtins
 import math
 import os
 
 
-def mvn_kp_map2d(kp, 
-                 parameter=None, 
-                 time=None, 
-                 list=False, 
-                 color_table=None,
-                 subsolar=False,
-                 mso=False,
-                 map_limit=None,
-                 basemap=None,
-                 alpha=None,
-                 title='MAVEN Mars',
-                 qt=True):
-    print("This procedure was renamed, just use map2d")
-    map2d(kp=kp, 
-          parameter=parameter, 
-          time=time, 
-          list=list, 
-          color_table=color_table, 
-          subsolar=subsolar, 
-          mso=mso, 
-          map_limit=map_limit, 
-          basemap=basemap, 
-          alpha=alpha, 
-          title=title,
-          qt=qt)
-    return
-
-def map2d( kp, 
-           parameter=None, 
-           time=None, 
-           list=False, 
-           color_table=None,
-           subsolar=False,
-           mso=False,
-           map_limit=None,
-           basemap=None,
-           alpha=None,
-           title='MAVEN Mars',
-           qt=True):
+def map2d(kp,
+          parameter=None,
+          time=None,
+          list=False,
+          subsolar=False,
+          mso=False,
+          basemap=None,
+          alpha=None,
+          title='MAVEN Mars',
+          qt=True):
     if list:
         x = param_list(kp)
         for param in x:
             print(param)
         return
     
-    #Check for orbit num rather than time string
+    # Check for orbit num rather than time string
     if isinstance(time, builtins.list):
         if isinstance(time[0], int):
             time = orbit_time(time[0], time[1])
     elif isinstance(time, int):
         time = orbit_time(time)
-        
-        
+
     # Check existence of parameter
-    if parameter == None: 
+    if parameter is None:
         print("Must provide an index (or name) for param to be plotted.")
         return
     # Store instrument and observation of parameter(s) in lists
     inst = []
     obs = []
     if type(parameter) is int or type(parameter) is str:
-        a,b = get_inst_obs_labels( kp, parameter )
+        a, b = get_inst_obs_labels(kp, parameter)
         inst.append(a)
         obs.append(b)
         nparam = 1
     else:
         nparam = len(parameter)
         for param in parameter:
-            a,b = get_inst_obs_labels(kp,param)
+            a, b = get_inst_obs_labels(kp, param)
             inst.append(a)
             obs.append(b)
-    inst_obs = builtins.list(zip( inst, obs ))
-
+    inst_obs = builtins.list(zip(inst, obs))
 
     # Check the time variable
-    if time != None:
-        kp = range_select(kp,time)
+    if time is not None:
+        kp = range_select(kp, time)
 
     # Generate the altitude array
     if mso:
@@ -96,84 +64,73 @@ def map2d( kp,
         y = kp['SPACECRAFT']['MSO_Y'].as_matrix()
         z = kp['SPACECRAFT']['MSO_Z'].as_matrix()
         r = np.sqrt((x**2) + (y**2) + (z**2))
-        lat = (90 - np.arccos(z/r)*(180/math.pi))
-        lon = (np.arctan2(y,x)*(180/math.pi)) + 180
+        lat = (90 - np.arccos(z/r) * (180/math.pi))
+        lon = (np.arctan2(y, x) * (180/math.pi)) + 180
     else:
         lon = kp['SPACECRAFT']['SUB_SC_LONGITUDE']
         lat = kp['SPACECRAFT']['SUB_SC_LATITUDE']
     
     alt = kp['SPACECRAFT']['ALTITUDE']
+
     # Cycle through the parameters, plotting each according to
     #  the given keywords
-    #
-    names_to_plot=[]
-    iplot = 0 # subplot indexes on 1
-    for inst,obs in inst_obs:
+    names_to_plot = []
+    iplot = 0  # subplot indexes on 1
+    for inst, obs in inst_obs:
         #
         # First, generate the dependent array from data
         y = kp[inst][obs]
         
-        if subsolar and mso==False:
-            pytplot.store_data('sc_lon', data={'x':kp['Time'], 'y':lon})
-            pytplot.store_data('sc_lat', data={'x':kp['Time'], 'y':lat})
-            pytplot.store_data('%s.%s'%(inst,obs), data={'x':kp['Time'],'y':y})
-            pytplot.options('%s.%s'%(inst,obs), 'link', ['lon', 'sc_lon'])
-            pytplot.options('%s.%s'%(inst,obs), 'link', ['lat', 'sc_lat'])
-            pytplot.options('%s.%s'%(inst,obs), 'map', 1)
+        if subsolar and not mso:
+            pytplot.store_data('sc_lon', data={'x': kp['Time'], 'y': lon})
+            pytplot.store_data('sc_lat', data={'x': kp['Time'], 'y': lat})
+            pytplot.store_data('%s.%s' % (inst, obs), data={'x': kp['Time'], 'y': y})
+            pytplot.options('%s.%s' % (inst, obs), 'link', ['lon', 'sc_lon'])
+            pytplot.options('%s.%s' % (inst, obs), 'link', ['lat', 'sc_lat'])
+            pytplot.options('%s.%s' % (inst, obs), 'map', 1)
             
-            pytplot.store_data('ss_lon', data={'x':kp['Time'], 'y':kp['SPACECRAFT']['SUBSOLAR_POINT_GEO_LONGITUDE']})
-            pytplot.store_data('ss_lat', data={'x':kp['Time'], 'y':kp['SPACECRAFT']['SUBSOLAR_POINT_GEO_LATITUDE']})
-            pytplot.store_data('subsolar', data={'x':kp['Time'],'y':alt})
+            pytplot.store_data('ss_lon', data={'x': kp['Time'], 'y': kp['SPACECRAFT']['SUBSOLAR_POINT_GEO_LONGITUDE']})
+            pytplot.store_data('ss_lat', data={'x': kp['Time'], 'y': kp['SPACECRAFT']['SUBSOLAR_POINT_GEO_LATITUDE']})
+            pytplot.store_data('subsolar', data={'x': kp['Time'], 'y': alt})
             pytplot.options('subsolar', 'link', ['lon', 'ss_lon'])
             pytplot.options('subsolar', 'link', ['lat', 'ss_lat'])
             pytplot.options('subsolar', 'map', 1)
-            names_to_plot.append('%s.%s.%s'%(inst,obs,'subsolar'))
-            pytplot.store_data(names_to_plot[iplot], data=['%s.%s'%(inst,obs),'subsolar'])
+            names_to_plot.append('%s.%s.%s' % (inst, obs, 'subsolar'))
+            pytplot.store_data(names_to_plot[iplot], data=['%s.%s' % (inst, obs), 'subsolar'])
             pytplot.options(names_to_plot[iplot], 'map', 1)
             pytplot.options(names_to_plot[iplot], 'colormap', ['magma', 'yellow'])
         else:
-            names_to_plot.append('%s.%s'%(inst,obs))
-            pytplot.store_data('sc_lon', data={'x':kp['Time'], 'y':lon})
-            pytplot.store_data('sc_lat', data={'x':kp['Time'], 'y':lat})
-            pytplot.store_data(names_to_plot[iplot], data={'x':kp['Time'],'y':y})
+            names_to_plot.append('%s.%s' % (inst, obs))
+            pytplot.store_data('sc_lon', data={'x': kp['Time'], 'y': lon})
+            pytplot.store_data('sc_lat', data={'x': kp['Time'], 'y': lat})
+            pytplot.store_data(names_to_plot[iplot], data={'x': kp['Time'], 'y': y})
             pytplot.options(names_to_plot[iplot], 'link', ['lon', 'sc_lon'])
             pytplot.options(names_to_plot[iplot], 'link', ['lat', 'sc_lat'])
             pytplot.options(names_to_plot[iplot], 'map', 1)
         
         if basemap:
-            if basemap=='mola':
-                map_file=os.path.join(os.path.dirname(__file__), 
-                                         'basemaps', 
-                                         'MOLA_color_2500x1250.jpg')
-            elif basemap=='mola_bw':
-                map_file=os.path.join(os.path.dirname(__file__), 
-                                         'basemaps', 
-                                         'MOLA_BW_2500x1250.jpg')
-            elif basemap=='mdim':
-                map_file=os.path.join(os.path.dirname(__file__), 
-                                         'basemaps', 
-                                         'MDIM_2500x1250.jpg')
-            elif basemap=='elevation':
-                map_file=os.path.join(os.path.dirname(__file__), 
-                                         'basemaps', 
-                                         'MarsElevation_2500x1250.jpg')
-            elif basemap=='mag':
-                map_file=os.path.join(os.path.dirname(__file__), 
-                                         'basemaps', 
-                                         'MAG_Connerny_2005.jpg')
+            if basemap == 'mola':
+                map_file = os.path.join(os.path.dirname(__file__), 'basemaps', 'MOLA_color_2500x1250.jpg')
+            elif basemap == 'mola_bw':
+                map_file = os.path.join(os.path.dirname(__file__), 'basemaps', 'MOLA_BW_2500x1250.jpg')
+            elif basemap == 'mdim':
+                map_file = os.path.join(os.path.dirname(__file__), 'basemaps', 'MDIM_2500x1250.jpg')
+            elif basemap == 'elevation':
+                map_file = os.path.join(os.path.dirname(__file__), 'basemaps', 'MarsElevation_2500x1250.jpg')
+            elif basemap == 'mag':
+                map_file = os.path.join(os.path.dirname(__file__), 'basemaps', 'MAG_Connerny_2005.jpg')
             else:
-                map_file=basemap    
+                map_file = basemap
             pytplot.options(names_to_plot[iplot], 
                             'basemap', 
                             map_file)
             if alpha:
                 pytplot.options(names_to_plot[iplot], 'alpha', alpha)
             
-        iplot = iplot + 1
-    
-    
+        iplot += 1
+
     pytplot.tplot_options('title', title)
-    pytplot.tplot_options('wsize', [1000,500*(iplot)])
+    pytplot.tplot_options('wsize', [1000, 500 * iplot])
     pytplot.tplot(names_to_plot, bokeh=not qt)
     pytplot.del_data('ss_lon')
     pytplot.del_data('ss_lat')
