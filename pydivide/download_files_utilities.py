@@ -11,8 +11,8 @@ pword = ''
 
 def get_filenames(query, public):
     import urllib
-    public_url = 'https://lasp.colorado.edu/maven/sdc/public/files/api/v1/search/science/fn_metadata/file_names' + \
-                 '?' + query
+    public_url = 'https://lasp.colorado.edu/maven/sdc/public/files/api/v1/search/science/fn_metadata/file_names' + '?' \
+                 + query
     private_url = 'https://lasp.colorado.edu/maven/sdc/service/files/api/v1/search/science/fn_metadata/file_names' + \
                   '?' + query
     if not public:
@@ -94,7 +94,7 @@ def merge_orbit_files():
     for f in os.listdir(orbit_files_path):
         x = re.match(pattern, f)
         if x is not None:
-            orb_files.append(os.path.join(orbit_files_path,f))
+            orb_files.append(os.path.join(orbit_files_path, f))
             if x.group(2) != '':
                 orb_dates.append(x.group(2))
             else:
@@ -144,28 +144,21 @@ def get_root_data_dir():
 
         
 def set_root_data_dir():
-    import tkinter
-    from tkinter import filedialog
-    import os 
-    
-    root = tkinter.Tk()
-    try:  # bring up file window for directory choice
-        download_path = filedialog.askdirectory()
-        print("root_data_dir set to " + download_path)
-    except:  # if graphic for file choosing doesn't work, enter manually
-        valid_path = input("Enter directory preference: ")
-        while not os.path.exists(valid_path):
-            valid_path = input("Specified path does not exist. Enter new path: ")
-        download_path = valid_path
-        print("root_data_dir set to " + download_path)
-    
+    import os
+
+    valid_path = input("Enter directory preference: ")
+    while not os.path.exists(valid_path):
+        valid_path = input("Specified path does not exist. Enter new path: ")
+    download_path = valid_path
+    print("root_data_dir set to " + download_path)
+
     # Put path into preferences file
     full_path = os.path.realpath(__file__)
     toolkit_path = os.path.dirname(full_path)
     with open(os.path.join(toolkit_path, 'mvn_toolkit_prefs.txt'), 'w') as f:
         f.write("'; IDL Toolkit Data Preferences File'\n")
         f.write('mvn_root_data_dir: ' + download_path)
-    root.destroy()
+
     return
 
 
