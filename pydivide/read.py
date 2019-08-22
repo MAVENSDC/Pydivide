@@ -77,17 +77,15 @@ def read(input_time, instruments=None, insitu_only=False):
         return
     
     kp_insitu = []
-    if not filenames:
+    if filenames:
         # Get column names from first file
         names, inst = get_header_info(filenames[0])
         # Strip off the first name for now (Time), and use that as the dataframe index.
         # Seems to make sense for now, but will it always?
         names = names[1:len(names)]
         inst = inst[1:len(inst)]
-        
-        #
+
         # Break up dictionary into instrument groups
-        #
         lpw_group, euv_group, swe_group, swi_group, sta_group, sep_group, mag_group, ngi_group, app_group, sc_group = \
             [], [], [], [], [], [], [], [], [], []
     
@@ -184,9 +182,8 @@ def read(input_time, instruments=None, insitu_only=False):
             end_index += 1
 
         # Assign the first-level only tags
-        #
         time_unix = time_unix[start_index:end_index]
-        temp = temp[start_index:end_index]       
+        temp = temp[start_index:end_index]
         time = temp.index
         time_unix = pd.Series(time_unix)  # convert into Series for consistency
         time_unix.index = temp.index

@@ -72,7 +72,7 @@ def download_files(filenames=None,
     """
     
     import os
-    
+
     # Check for orbit num rather than time string
     if isinstance(start_date, int) and isinstance(end_date, int):
         start_date, end_date = orbit_time(start_date, end_date)
@@ -96,7 +96,7 @@ def download_files(filenames=None,
         if insitu and iuvs:
             print("Can't request both INSITU and IUVS in one query.")
             return
-        if not insitu or not iuvs:
+        if not insitu and not iuvs:
             print("If not specifying filename(s) to download, Must specify either insitu=True or iuvs=True.")
             return
         
