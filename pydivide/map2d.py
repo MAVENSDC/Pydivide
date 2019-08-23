@@ -60,9 +60,9 @@ def map2d(kp,
 
     # Generate the altitude array
     if mso:
-        x = kp['SPACECRAFT']['MSO_X'].as_matrix()
-        y = kp['SPACECRAFT']['MSO_Y'].as_matrix()
-        z = kp['SPACECRAFT']['MSO_Z'].as_matrix()
+        x = kp['SPACECRAFT']['MSO_X'].values
+        y = kp['SPACECRAFT']['MSO_Y'].values
+        z = kp['SPACECRAFT']['MSO_Z'].values
         r = np.sqrt((x**2) + (y**2) + (z**2))
         lat = (90 - np.arccos(z/r) * (180/math.pi))
         lon = (np.arctan2(y, x) * (180/math.pi)) + 180

@@ -8,6 +8,8 @@ from scipy import interpolate
 import numpy as np
 import pandas as pd
 
+import pytplot as tplot
+
 
 def resample(kp, time, sc_only=False):
     
@@ -76,18 +78,34 @@ def resample(kp, time, sc_only=False):
     # Find the closest values for all nearest neighbor interpolations
     closest_values = []
     for k in range(len(time)):
-        closest_value_index = np.absolute(old_time.values - time[k]).argmin()
-        closest_values.append((old_time.values - time[k])[closest_value_index] + time[k])
+        if isinstance(time[k], str):
+            time_ = tplot.tplot_utilities.str_to_int(time[k])
+        else:
+            time_ = time[k]
+        closest_value_index = np.absolute(old_time.values - time_).argmin()
+        closest_values.append((old_time.values - time_)[closest_value_index] + time_)
 
     # Get the new indexes of the dataframes based on the time
     new_time_strings = []
     for i in range(len(time)):
-        new_time_strings.append(datetime.datetime.utcfromtimestamp(time[i], ).strftime('%Y-%m-%dT%H:%M:%S'))
+        if isinstance(time[i], str):
+            new_time_strings.append(time[i])
+        else:
+            new_time_strings.append(datetime.datetime.utcfromtimestamp(time[i], ).strftime('%Y-%m-%dT%H:%M:%S'))
     new_time_series = pd.Series(new_time_strings)
     
     # Orbit Series
     spline_function = interpolate.interp1d(old_time.values, orbit.values)
-    temp_series = pd.Series(spline_function(time))
+    # In order for the spline_function to work, need to make sure that we're working with the integer form of time,
+    # in seconds since the epoch, not datetime times
+    if not isinstance(time.values[0], int):
+        time_int = [tplot.tplot_utilities.str_to_int(t) for t in time.values]
+        temp_series = pd.Series(spline_function(time_int))
+    elif isinstance(time.values[0], int):
+        if not isinstance(time.values, list):
+            time.values = list(time.values)
+        temp_series = pd.Series(spline_function(time.values))
+
     temp_df = temp_series.to_frame('Orbit')
     temp_df['Time Index'] = new_time_series
     temp_df.set_index('Time Index', drop=True, inplace=True)
@@ -146,7 +164,16 @@ def resample(kp, time, sc_only=False):
                     temp_series = pd.Series(temp_series)
                 else:
                     spline_function = interpolate.interp1d(old_time.values, kp[inst_names[i]][obs].values)
-                    temp_series = pd.Series(spline_function(time))
+
+                    # In order for the spline_function to work, need to make sure that we're working with the integer
+                    # form of time, in seconds since the epoch, not datetime times
+                    if not isinstance(time.values[0], int):
+                        time_int = [tplot.tplot_utilities.str_to_int(t) for t in time.values]
+                        temp_series = pd.Series(spline_function(time_int))
+                    elif isinstance(time.values[0], int):
+                        if not isinstance(time.values, list):
+                            time.values = list(time.values)
+                        temp_series = pd.Series(spline_function(time.values))
                 # Turn the series into a dataframe if it hasn't been done yet.
                 # Else, add it to the dataframe
                 if not dataframe_initalized:

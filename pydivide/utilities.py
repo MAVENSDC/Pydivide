@@ -101,7 +101,7 @@ def param_list(kp):
             print('Base tag neither DataFrame nor Series')
             print('Plese check read_insitu_file definition')
 
-    return param_list
+    return param_list_
 
 # ---------------------------------------------------------------------
 
