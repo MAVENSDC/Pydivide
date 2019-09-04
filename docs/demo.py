@@ -30,32 +30,18 @@ pydivide.download_files(start_date='2015-12-25', end_date='2015-12-31', instrume
 # MVN_KP_READ
 insitu, iuvs = pydivide.read('2015-12-25')
 insitu2, iuvs2 = pydivide.read([2404, 2406])
-# No new_files keyword implemented yet for mvn_kp_read
-# insitu2, iuvs2 = pydivide.read([2404, 2406], new_files=True)
-
-# MVN_KP_3D
-# Not a command yet
 
 # MVN_KP_PLOT
-pydivide.plot(insitu, parameter='swia.hplus_density')
+pydivide.plot(insitu, parameter='SWIA.HPLUS_DENSITY')
 pydivide.plot(insitu, list=True)
 pydivide.plot(insitu, parameter=[192, 193, 194])
 
-# MVN_KP_TPLOT
-# Not a command yet
-
 # MVN_KP_STANDARDS
-pydivide.standards(insitu, all_plots=True)  # Using all_plots seems to do bad things on some machines
+# pydivide.standards(insitu, all_plots=True)  # Using all_plots seems to do bad things on some machines
 pydivide.standards(insitu, mag_mso=True, ngims_ions=True, wave=True)
 
 # MVN_KP_ALTPLOT
 pydivide.altplot(insitu, parameter='MAG.MSO_X')
-
-# MVN_KP_IUVS_LIMB
-# Not a command yet
-
-# MVN_KP_IUVS_CORONA
-# Not a command yet
 
 # MVN_KP_MAP2D
 pydivide.map2d(insitu, parameter=100)
@@ -63,10 +49,7 @@ pydivide.map2d(insitu, parameter=100, basemap='mdim', subsolar=True)
 
 # MVN_KP_INSITU_SEARCH
 insitu_out = pydivide.insitu_search(insitu, parameter='SPACECRAFT.ALTITUDE', min=1000, max=2000)
-pydivide.plot(insitu_out, parameter='spacecraft.altitude')
-
-# MVN_KP_IUVS_SEARCH
-# IUVS search is done in a similar way, no need for another example
+pydivide.plot(insitu_out, parameter='SPACECRAFT.ALTITUDE')
 
 # MVN_KP_BIN
 insitu_out = pydivide.bin(insitu, 'SWIA.HPLUS_DENSITY', 'SPACECRAFT.ALTITUDE', binsize=10, avg=True, std=True)
@@ -77,14 +60,17 @@ pytplot.tplot('testing123')
 mag_total = np.sqrt(insitu['MAG']['MSO_X'].apply(lambda x: x ** 2) + insitu['MAG']['MSO_Y'].apply(lambda x: x ** 2) +
                     insitu['MAG']['MSO_Z'].apply(lambda x: x ** 2))
 insitu['MAG']['MAG_TOTAL'] = mag_total
-pydivide.plot(insitu, parameter='mag.mag_total')
+pydivide.plot(insitu, parameter='MAG.MAG_TOTAL')
 
 # MVN_KP_RESAMPLE
 insitu_resampled = pydivide.resample(insitu, insitu['Time'])
 
 # MVN_KP_INTERPOL_MODEL
-dataout = pydivide.interpol_model(insitu, file='C:/Mars Models/MGITM.nc')
+# To download and use MAVEN models, see https://lasp.colorado.edu/maven/sdc/team/pages/models.html
+dataout = pydivide.interpol_model(insitu, file='/Users/juba8233/Desktop/MGITM_LS270_F200_150615.nc')
 
 # MVN_KP_CREATE_MODEL_MAP
-pydivide.create_model_maps(200, file='C:/Mars Models/MGITM.nc', fill=True)
-pydivide.map2d(insitu, basemap='C:/Mars Models/Model.png', mso=True)
+pydivide.create_model_maps(200, file='/Users/juba8233/Desktop/MGITM_LS270_F200_150615.nc', fill=True)
+# For the 'basemap' keyword arg below, you can choose between mola, mola_bw, mdim, elevation, mag,
+# or you can put the full pathname to a basemap created by pydivide.create_model_maps (e.g., like in the above example)
+pydivide.map2d(insitu, parameter='SWIA.HPLUS_TEMPERATURE', basemap='mola_bw', mso=True)

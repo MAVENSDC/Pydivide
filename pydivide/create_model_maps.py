@@ -42,9 +42,17 @@ def create_model_maps(altitude,
             print(index, ": ", name)
             name_index_dict[index] = name
             index += 1
-        i_choice = int(input("Enter Selection: "))
-        dataname = name_index_dict[i_choice].lower()
-        print(dataname)
+        chosen_var = False
+        while not chosen_var:
+            i_choice = input("Enter Selection (integer): ")
+            try:
+                i_choice = int(i_choice)
+                dataname = name_index_dict[i_choice].lower()
+                print('You chose the variable {}'.format(dataname))
+                chosen_var = True
+            except ValueError:
+                print('You must print the integer associated with your selection, try again.')
+                continue
     else:
         dataname = variable.lower()
     
