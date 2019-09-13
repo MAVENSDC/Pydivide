@@ -27,7 +27,8 @@ def download_files(filenames=None,
                    only_update_prefs=False, 
                    exclude_orbit_file=False,
                    local_dir=None,
-                   unittest=False):
+                   unittest=False,
+                   crustal_download=True):
     """
     Parameters:
     filenames: str/list of str ['yyyy-mm-dd']
@@ -56,19 +57,12 @@ def download_files(filenames=None,
         If true, won't download the latest orbit tables.
     local_dir: str
         If indicated, specifies where to download files for a specific implementation of this function.
-    downloadonly: bool (True/False)
-        If True then files are downloaded only,
-        if False then CDF files are also loaded into pytplot using cdf_to_tplot.
-    prefix: str
-        The tplot variable names will be given this prefix.
-        By default, no prefix is added.
-    suffix: str
-        The tplot variable names will be given this suffix.
-        By default, no suffix is added.
-    get_support_data: bool
-    Data with an attribute "VAR_TYPE" with a value of "support_data"
-        will be loaded into tplot.  By default, only loads in data with a
-        "VAR_TYPE" attribute of "data".
+    unittest: bool
+        If True, will not actually download files.
+        If False (default) files will be downloaded.
+    crustal_download: bool
+        If True (default), when insitu files are downloaded, any crustal files will also be downloaded.
+        If False, crustal files will not be downloaded when insitu files are downloaded.
     """
     
     import os
@@ -135,6 +129,9 @@ def download_files(filenames=None,
         if s:
             s = str(s)
             s = s.split(',')
+
+            if not crustal_download:
+                s = [f for f in s if 'crustal' not in f]
         
             if list_files:
                 for f in s:

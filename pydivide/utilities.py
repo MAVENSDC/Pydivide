@@ -617,21 +617,28 @@ def get_header_info(filename):
 
         # Parse the header (still needs special case work)
         read_param_list = False
+        start_temp = False
         index_list = []
         with open(filename) as fin:
             icol = -2  # Counting header lines detailing column names
             iname = 1  # for counting seven lines with name info
             ncol = -1  # Dummy value to allow reading of early headerlines?
             col_regex = '#\s(.{16}){%3d}' % ncol  # needed for column names
+            crustal = False
+            if 'crustal' in filename:
+                crustal = True
             for iline in range(nheader):
                 line = fin.readline()
+                # Define the proper indices change depending on the file type and row
+                i = [2, 2, 1] if crustal else [1, 1, 1]
                 if re.search('Number of parameter columns', line):
-                    ncol = int(re.split("\s{3}", line)[1])
-                    col_regex = '#\s(.{16}){%3d}' % ncol  # needed for column names
+                    ncol = int(re.split("\s{3}", line)[i[0]])
+                    # needed for column names
+                    col_regex = '#\s(.{16}){%2d}' % ncol if crustal else '#\s(.{16}){%3d}' % ncol
                 elif re.search('Line on which data begins', line):
-                    nhead_test = int(re.split("\s{3}", line)[1]) - 1
+                    nhead_test = int(re.split("\s{3}", line)[i[1]]) - 1
                 elif re.search('Number of lines', line):
-                    ndata = int(re.split("\s{3}", line)[1])
+                    ndata = int(re.split("\s{3}", line)[i[2]])
                 elif re.search('PARAMETER', line):
                     read_param_list = True
                     param_head = iline
@@ -642,24 +649,45 @@ def get_header_info(filename):
                 elif re.match(col_regex, line):
                     # OK, verified match now get the values
                     temp = re.findall('(.{16})', line[3:])
-                    if iname == 1:
-                        index = temp
-                    elif iname == 2:
-                        obs1 = temp
-                    elif iname == 3:
-                        obs2 = temp
-                    elif iname == 4:
-                        obs3 = temp
-                    elif iname == 5:
-                        inst = temp
-                    elif iname == 6:
-                        unit = temp
-                    elif iname == 7:
-                        format_code = temp
-                    else: 
-                        print('More lines in data descriptor than expected.')
-                        print('Line %d' % iline)
-                    iname += 1
+                    if temp[0] == '               1':
+                        start_temp = True
+                    if start_temp:
+                        # Crustal files do not have as much variable info as other insitu files, need
+                        # to modify the lines below
+                        if crustal:
+                            if iname == 1:
+                                index = temp
+                            elif iname == 2:
+                                obs1 = temp
+                            elif iname == 3:
+                                obs2 = temp
+                            elif iname == 4:
+                                unit = temp
+                                # crustal files don't come with this field
+                                # throwing it in here for consistency with other insitu files
+                                inst = ['     MODELED_MAG']*13
+                            else:
+                                print('More lines in data descriptor than expected.')
+                                print('Line %d' % iline)
+                        else:
+                            if iname == 1:
+                                index = temp
+                            elif iname == 2:
+                                obs1 = temp
+                            elif iname == 3:
+                                obs2 = temp
+                            elif iname == 4:
+                                obs3 = temp
+                            elif iname == 5:
+                                inst = temp
+                            elif iname == 6:
+                                unit = temp
+                            elif iname == 7:
+                                format_code = temp
+                            else:
+                                print('More lines in data descriptor than expected.')
+                                print('Line %d' % iline)
+                        iname += 1
                 else:
                     pass
 
@@ -670,45 +698,53 @@ def get_header_info(filename):
             first = True
             parallel = None
             names = []
-            for h, i, j, k in zip(inst,obs1,obs2,obs3):
-                combo_name = (' '.join([i.strip(), j.strip(), k.strip()])).strip()
-                if re.match('^LPW$', h.strip()):
-                    # Max and min error bars use same name in column
-                    # SIS says first entry is min and second is max
-                    if re.match('(Electron|Spacecraft)(.+)Quality', combo_name):
-                        if first:
-                            combo_name = combo_name + ' Min'
-                            first = False
+            if crustal:
+                for h, i, j in zip(inst, obs1, obs2):
+                    combo_name = (' '.join([i.strip(), j.strip()])).strip()
+                    # Add inst to names to avoid ambiguity
+                    # Will need to remove these after splitting
+                    names.append('.'.join([h.strip(), combo_name]))
+                    names[0] = 'Time'
+            else:
+                for h, i, j, k in zip(inst, obs1, obs2, obs3):
+                    combo_name = (' '.join([i.strip(), j.strip(), k.strip()])).strip()
+                    if re.match('^LPW$', h.strip()):
+                        # Max and min error bars use same name in column
+                        # SIS says first entry is min and second is max
+                        if re.match('(Electron|Spacecraft)(.+)Quality', combo_name):
+                            if first:
+                                combo_name = combo_name + ' Min'
+                                first = False
+                            else:
+                                combo_name = combo_name + ' Max'
+                                first = True
+                    elif re.match('^SWEA$', h.strip()):
+                        # electron flux qual flags do not indicate whether parallel or anti
+                        # From context it is clear; but we need to specify in name
+                        if re.match('.+Parallel.+', combo_name):
+                            parallel = True
+                        elif re.match('.+Anti-par', combo_name):
+                            parallel = False
                         else:
-                            combo_name = combo_name + ' Max'
-                            first = True
-                elif re.match('^SWEA$', h.strip()):
-                    # electron flux qual flags do not indicate whether parallel or anti
-                    # From context it is clear; but we need to specify in name
-                    if re.match('.+Parallel.+', combo_name):
-                        parallel = True
-                    elif re.match('.+Anti-par', combo_name):
-                        parallel = False
-                    else:
-                        pass
-                    if re.match('Flux, e-(.+)Quality', combo_name):
-                        if parallel:
-                            p = re.compile('Flux, e- ')
-                            combo_name = p.sub('Flux, e- Parallel ', combo_name)
-                        else:
-                            p = re.compile('Flux, e- ')
-                            combo_name = p.sub('Flux, e- Anti-par ', combo_name)
-                    if re.match('Electron eflux (.+)Quality', combo_name):
-                        if parallel:
-                            p = re.compile('Electron eflux ')
-                            combo_name = p.sub('Electron eflux  Parallel ', combo_name)
-                        else:
-                            p = re.compile('Electron eflux ')
-                            combo_name = p.sub('Electron eflux  Anti-par ', combo_name)
-                # Add inst to names to avoid ambiguity
-                # Will need to remove these after splitting
-                names.append('.'.join([h.strip(), combo_name]))
-                names[0] = 'Time'
+                            pass
+                        if re.match('Flux, e-(.+)Quality', combo_name):
+                            if parallel:
+                                p = re.compile('Flux, e- ')
+                                combo_name = p.sub('Flux, e- Parallel ', combo_name)
+                            else:
+                                p = re.compile('Flux, e- ')
+                                combo_name = p.sub('Flux, e- Anti-par ', combo_name)
+                        if re.match('Electron eflux (.+)Quality', combo_name):
+                            if parallel:
+                                p = re.compile('Electron eflux ')
+                                combo_name = p.sub('Electron eflux  Parallel ', combo_name)
+                            else:
+                                p = re.compile('Electron eflux ')
+                                combo_name = p.sub('Electron eflux  Anti-par ', combo_name)
+                    # Add inst to names to avoid ambiguity
+                    # Will need to remove these after splitting
+                    names.append('.'.join([h.strip(), combo_name]))
+                    names[0] = 'Time'
         
         return names, inst
 

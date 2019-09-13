@@ -12,39 +12,73 @@ from .utilities import get_header_info
 from .utilities import orbit_time
 from _collections import OrderedDict
 import builtins
+import re
 
 
-def read(input_time, instruments=None, insitu_only=False):
+def read(filename=None, input_time=None, instruments=None, insitu_only=False):
     '''
     Read in a given filename in situ file into a dictionary object
     Optional keywords maybe used to downselect instruments returned
      and the time windows.
 
     Input:
-        filename: Name of the in situ KP file to read in.
-        time (Not Yet Implemeted): 
+        filename:
+            Name of the in situ KP file(s) to read in.
+        input_time:
             Set a time bounds/filter on the data
             (this will be necessary when this is called by a wrapper that
              seeks to ingest all data within a range of dates that may
              be allowed to span multiple days (files) ).
-        Instruments: (Not Yet Implemented)
+        instruments:
             Optional keyword listing the instruments to include 
             in the returned dictionary/structure.
+        insitu_only:
+            Optional keyword that allows you to specify that you only want 
+            to download insitu files.
     Output:
         A dictionary (data structure) containing up to all of the columns
             included in a MAVEN in-situ Key parameter data file.
-
-    ToDo: Implement Instrument selection ability
-          Some repetition of effort here; maybe modularize parts of this?
     '''
     import pandas as pd
     import re
     from datetime import datetime, timedelta
     from dateutil.parser import parse
-    
+
+    filenames = []
+    iuvs_filenames = []
+
     if instruments is not None:
         if not isinstance(instruments, builtins.list):
             instruments = [instruments]
+
+    if filename is None and input_time is None:
+        print('You must specify either a set of filenames to read in, or a time frame in which '
+              'you want to search for downloaded files.')
+
+    if filename is not None:
+        if not isinstance(filename, builtins.list):
+            filename = [filename]
+
+        dates = []
+        for file in filename:
+            date = re.findall(r'_(\d{8})', file)[0]
+            dates.append(date)
+            if 'iuvs' in file:
+                iuvs_filenames.append(file)
+            else:
+                filenames.append(file)
+
+        # To keep the rest of the code consistent, if someone gave a files, or files, to load, but no input_time,
+        # go ahead and create an 'input_time'
+        if input_time is None:
+            if len(dates) == 1:
+                input_time = str(dates[0][:4]) + '-' + str(dates[0][4:6]) + '-' + str(dates[0][6:])
+
+            else:
+                beg_date = min(dates)
+                end_date = max(dates)
+                input_time = [str(dates[0][:4]) + '-' + str(dates[0][4:6]) + '-' + str(dates[0][6:]),
+                              str(dates[1][:4]) + '-' + str(dates[1][4:6]) + '-' + str(dates[1][6:])]
     
     # Check for orbit num rather than time string
     if isinstance(input_time, builtins.list):
@@ -52,7 +86,7 @@ def read(input_time, instruments=None, insitu_only=False):
             input_time = orbit_time(input_time[0], input_time[1])
     elif isinstance(input_time, int):
         input_time = orbit_time(input_time)
-    
+
     # Turn string input into datetime objects
     if type(input_time) is list:
         if len(input_time[0]) <= 10:
@@ -66,15 +100,30 @@ def read(input_time, instruments=None, insitu_only=False):
             input_time = input_time + ' 00:00:00'
         date1 = parse(input_time)
         date2 = date1 + timedelta(days=1)
-        
+
     date1_unix = calendar.timegm(date1.timetuple())
     date2_unix = calendar.timegm(date2.timetuple())
-    
-    filenames = get_latest_files_from_date_range(date1, date2)
-    iuvs_filenames = get_latest_iuvs_files_from_date_range(date1, date2)
-    if not filenames and not iuvs_filenames:
-        print("No file found for this date range.")
-        return
+
+    # Grab insitu and iuvs files for the specified/created date ranges
+    date_range_filenames = get_latest_files_from_date_range(date1, date2)
+    date_range_iuvs_filenames = get_latest_iuvs_files_from_date_range(date1, date2)
+
+    if not date_range_filenames and not date_range_iuvs_filenames:
+        if not filenames and not iuvs_filenames:
+            print("No files found for the input date range, and no specific filenames were given. Exiting.")
+            return
+
+    # Going to look for files between time frames, but as we might have already specified
+    # certain files to load in, we don't want to load them in 2x... so doing a check for that here
+    if date_range_filenames:
+        for file in date_range_filenames:
+            if file in filenames:
+                continue
+
+    if date_range_iuvs_filenames:
+        for file in date_range_iuvs_filenames:
+            if file in iuvs_filenames:
+                continue
     
     kp_insitu = []
     if filenames:
@@ -86,9 +135,9 @@ def read(input_time, instruments=None, insitu_only=False):
         inst = inst[1:len(inst)]
 
         # Break up dictionary into instrument groups
-        lpw_group, euv_group, swe_group, swi_group, sta_group, sep_group, mag_group, ngi_group, app_group, sc_group = \
-            [], [], [], [], [], [], [], [], [], []
-    
+        lpw_group, euv_group, swe_group, swi_group, sta_group, sep_group, mag_group, ngi_group, app_group, sc_group, \
+            crus_group = [], [], [], [], [], [], [], [], [], [], []
+
         for i, j in zip(inst, names):
             if re.match('^LPW$', i.strip()):
                 lpw_group.append(j)
@@ -106,6 +155,8 @@ def read(input_time, instruments=None, insitu_only=False):
                 mag_group.append(j)
             elif re.match('^NGIMS$', i.strip()):
                 ngi_group.append(j)
+            elif re.match('^MODELED_MAG$', i.strip()):
+                crus_group.append(j)
             elif re.match('^SPICE$', i.strip()):
                 # NB Need to split into APP and SPACECRAFT
                 if re.match('(.+)APP(.+)', j):
@@ -117,7 +168,7 @@ def read(input_time, instruments=None, insitu_only=False):
                         sc_group.append(j)
             else:
                 pass
-        
+
         delete_groups = []
         if instruments is not None:
             if 'LPW' not in instruments and 'lpw' not in instruments:
@@ -136,27 +187,29 @@ def read(input_time, instruments=None, insitu_only=False):
                 delete_groups += sep_group
             if 'STA' not in instruments and 'sta' not in instruments:
                 delete_groups += sta_group
-    
+            if 'MODELED_MAG' not in instruments and 'modeled_mag' not in instruments:
+                delete_groups += crus_group
+
         # Read in all relavent data into a pandas dataframe called "temp"
         temp_data = []
         for filename in filenames:
-            # Determine number of header lines    
+            # Determine number of header lines
             nheader = 0
             with open(filename) as f:
                 for line in f:
                     if line.startswith('#'):
                         nheader += 1
-        
+
                 temp_data.append(pd.read_fwf(filename, skiprows=nheader, index_col=0,
                                              widths=[19] + len(names) * [16], names=names))
                 for i in delete_groups:
-                    del temp_data[-1][i] 
-                
+                    del temp_data[-1][i]
+
         temp_unconverted = pd.concat(temp_data)
 
         # Need to convert columns
         # This is kind of a hack, but I can't figure out a better way for now
-        
+
         if 'SWEA.Electron Spectrum Shape' in temp_unconverted and 'NGIMS.Density NO' in temp_unconverted:
             temp = temp_unconverted.astype(dtype={'SWEA.Electron Spectrum Shape': np.float64,
                                                   'NGIMS.Density NO': np.float64})
@@ -166,9 +219,8 @@ def read(input_time, instruments=None, insitu_only=False):
             temp = temp_unconverted.astype(dtype={'NGIMS.Density NO': np.float64})
         else:
             temp = temp_unconverted
-        #
+
         # Cut out the times not included in the date range
-        #
         time_unix = [calendar.timegm(datetime.strptime(i, '%Y-%m-%dT%H:%M:%S').timetuple()) for i in temp.index]
         start_index = 0
         for t in time_unix:
@@ -187,12 +239,16 @@ def read(input_time, instruments=None, insitu_only=False):
         time = temp.index
         time_unix = pd.Series(time_unix)  # convert into Series for consistency
         time_unix.index = temp.index
-        orbit = temp['SPICE.Orbit Number']
-        io_flag = temp['SPICE.Inbound Outbound Flag']
-    
-        #
+        if 'SPICE.Orbit Number' in list(temp):
+            orbit = temp['SPICE.Orbit Number']
+        else:
+            orbit = ''
+        if 'SPICE.Inbound Outbound Flag' in list(temp):
+            io_flag = temp['SPICE.Inbound Outbound Flag']
+        else:
+            io_flag = ''
+
         # Build the sub-level DataFrames for the larger dictionary/structure
-        #
         app = temp[app_group]
         spacecraft = temp[sc_group]
         if instruments is not None:
@@ -228,6 +284,10 @@ def read(input_time, instruments=None, insitu_only=False):
                 static = temp[sta_group]
             else:
                 static = None
+            if 'MODELED_MAG' in instruments or 'modeled_mag' in instruments:
+                crus = temp[crus_group]
+            else:
+                crus = None
         else:
             lpw = temp[lpw_group]
             euv = temp[euv_group]
@@ -237,15 +297,14 @@ def read(input_time, instruments=None, insitu_only=False):
             sep = temp[sep_group]
             mag = temp[mag_group]
             ngims = temp[ngi_group]
-        
-        #
+            crus = temp[crus_group]
+
         # Strip out the duplicated instrument part of the column names
         # (this is a bit hardwired and can be improved)
-        #
-        for i in [lpw, euv, swea, swia, sep, static, ngims, mag, app, spacecraft]:
+        for i in [lpw, euv, swea, swia, sep, static, ngims, mag, crus, app, spacecraft]:
             if i is not None:
                 i.columns = remove_inst_tag(i)
-        
+
         if lpw is not None:
             lpw = lpw.rename(index=str, columns=param_dict)
         if euv is not None:
@@ -262,24 +321,42 @@ def read(input_time, instruments=None, insitu_only=False):
             ngims = ngims.rename(index=str, columns=param_dict)
         if mag is not None:
             mag = mag.rename(index=str, columns=param_dict)
+        if crus is not None:
+            crus = crus.rename(index=str, columns=param_dict)
         if app is not None:
             app = app.rename(index=str, columns=param_dict)
         if spacecraft is not None:
             spacecraft = spacecraft.rename(index=str, columns=param_dict)
 
-        # Do not forget to save units
-        # Define the list of first level tag names
-        tag_names = ['TimeString', 'Time', 'Orbit', 'IOflag',
-                     'LPW', 'EUV', 'SWEA', 'SWIA', 'STATIC',
-                     'SEP', 'MAG', 'NGIMS', 'APP', 'SPACECRAFT']
-        # Define list of first level data structures
-        data_tags = [time, time_unix, orbit, io_flag,
-                     lpw, euv, swea, swia, static,
-                     sep, mag, ngims, app, spacecraft]
+        if orbit and io_flag:
+            # Do not forget to save units
+            # Define the list of first level tag names
+            tag_names = ['TimeString', 'Time', 'Orbit', 'IOflag',
+                         'LPW', 'EUV', 'SWEA', 'SWIA', 'STATIC',
+                         'SEP', 'MAG', 'NGIMS', 'MODELED_MAG',
+                         'APP', 'SPACECRAFT']
+
+            # Define list of first level data structures
+            data_tags = [time, time_unix, orbit, io_flag,
+                         lpw, euv, swea, swia, static,
+                         sep, mag, ngims, crus, app, spacecraft]
+        else:
+            # Do not forget to save units
+            # Define the list of first level tag names
+            tag_names = ['TimeString', 'Time', 'LPW', 'EUV',
+                         'SWEA', 'SWIA', 'STATIC', 'SEP',
+                         'MAG', 'NGIMS', 'MODELED_MAG',
+                         'APP', 'SPACECRAFT']
+
+            # Define list of first level data structures
+            data_tags = [time, time_unix, lpw, euv,
+                         swea, swia, static, sep, 
+                         mag, ngims, crus, app,
+                         spacecraft]
         kp_insitu = (OrderedDict(zip(tag_names, data_tags)))
-    
+
     # Now for IUVS
-    kp_iuvs = [] 
+    kp_iuvs = []
     if not insitu_only and iuvs_filenames:
         for file in iuvs_filenames:
             kp_iuvs.append(read_iuvs_file(file))
