@@ -15,7 +15,7 @@ import builtins
 import re
 
 
-def read(filename=None, input_time=None, instruments=None, insitu_only=False):
+def read(filename=None, input_time=None, instruments=None, insitu_only=False, specified_files_only=False):
     '''
     Read in a given filename in situ file into a dictionary object
     Optional keywords maybe used to downselect instruments returned
@@ -35,6 +35,10 @@ def read(filename=None, input_time=None, instruments=None, insitu_only=False):
         insitu_only:
             Optional keyword that allows you to specify that you only want 
             to download insitu files.
+        specified_files_only:
+            Optional keyword that allows you to specify you only want filenames
+            given in 'filename' to be read in, not other files close in date/time
+            as well.
     Output:
         A dictionary (data structure) containing up to all of the columns
             included in a MAVEN in-situ Key parameter data file.
@@ -88,7 +92,7 @@ def read(filename=None, input_time=None, instruments=None, insitu_only=False):
         input_time = orbit_time(input_time)
 
     # Turn string input into datetime objects
-    if type(input_time) is list:
+    if isinstance(input_time, list):
         if len(input_time[0]) <= 10:
             input_time[0] = input_time[0] + ' 00:00:00'
         if len(input_time[1]) <= 10:
@@ -108,6 +112,11 @@ def read(filename=None, input_time=None, instruments=None, insitu_only=False):
     date_range_filenames = get_latest_files_from_date_range(date1, date2)
     date_range_iuvs_filenames = get_latest_iuvs_files_from_date_range(date1, date2)
 
+    # Add date range files to respective file lists if desired
+    if not specified_files_only:
+        filenames.extend(date_range_filenames)
+        iuvs_filenames.extend(date_range_iuvs_filenames)
+
     if not date_range_filenames and not date_range_iuvs_filenames:
         if not filenames and not iuvs_filenames:
             print("No files found for the input date range, and no specific filenames were given. Exiting.")
@@ -115,15 +124,8 @@ def read(filename=None, input_time=None, instruments=None, insitu_only=False):
 
     # Going to look for files between time frames, but as we might have already specified
     # certain files to load in, we don't want to load them in 2x... so doing a check for that here
-    if date_range_filenames:
-        for file in date_range_filenames:
-            if file in filenames:
-                continue
-
-    if date_range_iuvs_filenames:
-        for file in date_range_iuvs_filenames:
-            if file in iuvs_filenames:
-                continue
+    filenames = list(set(filenames))
+    iuvs_filenames = list(set(iuvs_filenames))
     
     kp_insitu = []
     if filenames:
