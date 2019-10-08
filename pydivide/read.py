@@ -83,7 +83,7 @@ def read(filename=None, input_time=None, instruments=None, insitu_only=False, sp
                 end_date = max(dates)
                 input_time = [str(dates[0][:4]) + '-' + str(dates[0][4:6]) + '-' + str(dates[0][6:]),
                               str(dates[1][:4]) + '-' + str(dates[1][4:6]) + '-' + str(dates[1][6:])]
-    
+
     # Check for orbit num rather than time string
     if isinstance(input_time, builtins.list):
         if isinstance(input_time[0], int):
@@ -101,7 +101,7 @@ def read(filename=None, input_time=None, instruments=None, insitu_only=False, sp
         date2 = parse(input_time[1])
     else:
         if len(input_time) <= 10:
-            input_time = input_time + ' 00:00:00'
+            input_time += ' 00:00:00'
         date1 = parse(input_time)
         date2 = date1 + timedelta(days=1)
 
@@ -241,14 +241,15 @@ def read(filename=None, input_time=None, instruments=None, insitu_only=False, sp
         time = temp.index
         time_unix = pd.Series(time_unix)  # convert into Series for consistency
         time_unix.index = temp.index
+
         if 'SPICE.Orbit Number' in list(temp):
             orbit = temp['SPICE.Orbit Number']
         else:
-            orbit = ''
+            orbit = None
         if 'SPICE.Inbound Outbound Flag' in list(temp):
             io_flag = temp['SPICE.Inbound Outbound Flag']
         else:
-            io_flag = ''
+            io_flag = None
 
         # Build the sub-level DataFrames for the larger dictionary/structure
         app = temp[app_group]
@@ -330,7 +331,7 @@ def read(filename=None, input_time=None, instruments=None, insitu_only=False, sp
         if spacecraft is not None:
             spacecraft = spacecraft.rename(index=str, columns=param_dict)
 
-        if orbit and io_flag:
+        if orbit is not None and io_flag is not None:
             # Do not forget to save units
             # Define the list of first level tag names
             tag_names = ['TimeString', 'Time', 'Orbit', 'IOflag',

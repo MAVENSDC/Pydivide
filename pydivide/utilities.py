@@ -493,23 +493,37 @@ def get_latest_files_from_date_range(date1, date2):
         month = str('%02d' % current_date.month)
         day = str('%02d' % current_date.day)
         full_path = os.path.join(maven_data_dir, year, month)
-        if os.path.exists(full_path): 
-            version = 0
-            revision = 0
+        if os.path.exists(full_path):
+            versions = []
+            revisions = []
+            crustal = []
+            i = 0
             for f in os.listdir(full_path):
                 if kp_regex.match(f).group('day') == day:
                     v = kp_regex.match(f).group('version')
-                    if int(v) > int(version):
+                    if int(v) > 0:
                         version = v
-            for f in os.listdir(full_path):
-                if kp_regex.match(f).group('day') == day and kp_regex.match(f).group('version') == version:
+                        versions.append(version)
                     r = kp_regex.match(f).group('revision')
-                    if int(r) > int(revision):
+                    if int(r) > 0:
                         revision = r
-            if int(version) > 0:
-                seq = ('mvn', 'kp', 'insitu', year + month + day, 'v' + str(version), 'r' + str(revision) + '.tab')
-                filenames.append(os.path.join(full_path, '_'.join(seq)))
-                
+                        revisions.append(revision)
+                if kp_regex.match(f).group('day') == day and kp_regex.match(f).group('description') == '_crustal':
+                    crustal.append(True)
+                if kp_regex.match(f).group('day') == day and not kp_regex.match(f).group('description'):
+                    crustal.append(False)
+                i += 1
+            for v, ver in enumerate(versions):
+                if int(ver) > 0:
+                    if not crustal[v]:
+                        seq = ('mvn', 'kp', 'insitu', year + month + day, 'v' + str(ver), 'r' + str(revisions[v]) +
+                               '.tab')
+                    else:
+                        seq = ('mvn', 'kp', 'insitu', 'crustal', year + month + day, 'v' + str(ver), 'r' +
+                               str(revisions[v])
+                               + '.tab')
+                    filenames.append(os.path.join(full_path, '_'.join(seq)))
+
     filenames = sorted(filenames)
     return filenames
 
@@ -831,7 +845,7 @@ def get_values_from_list(the_list, location):
 
 
 def orbit_time(begin_orbit, end_orbit=None):
-    orb_file = os.path.join(os.path.dirname(__file__), 
+    orb_file = os.path.join(os.path.dirname(__file__),
                             'maven_orb_rec.orb')
     
     with open(orb_file, "r") as f:
@@ -848,7 +862,6 @@ def orbit_time(begin_orbit, end_orbit=None):
             orbit_num.append(int(line[0]))
             time.append(line[1] + "-" + month_to_num(line[2]) + "-" + line[3] + "T" + line[4])
         try:
-            
             if orbit_num.index(begin_orbit) > len(time) or orbit_num.index(end_orbit) + 1 > len(time):
                 print("Orbit numbers not found.  Please choose a number between 1 and %s.", orbit_num[-1])
                 return [None, None]
