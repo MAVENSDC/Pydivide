@@ -5,6 +5,7 @@
 
 import calendar
 import numpy as np
+from .utilities import kp_regex
 from .utilities import param_dict
 from .utilities import remove_inst_tag
 from .utilities import get_latest_files_from_date_range, read_iuvs_file, get_latest_iuvs_files_from_date_range
@@ -12,7 +13,7 @@ from .utilities import get_header_info
 from .utilities import orbit_time
 from _collections import OrderedDict
 import builtins
-import re
+import os
 
 
 def read(filename=None, input_time=None, instruments=None, insitu_only=False, specified_files_only=False):
@@ -129,18 +130,34 @@ def read(filename=None, input_time=None, instruments=None, insitu_only=False, sp
     
     kp_insitu = []
     if filenames:
-        # Get column names from first file
-        names, inst = get_header_info(filenames[0])
-        # Strip off the first name for now (Time), and use that as the dataframe index.
-        # Seems to make sense for now, but will it always?
-        names = names[1:len(names)]
-        inst = inst[1:len(inst)]
+        # Get column names
+        names, inst = [], []
+        crus_name, crus_inst = [], []
+        c_found = False
+        r_found = False
+        for f in filenames:
+            if kp_regex.match(os.path.basename(f)).group('description') == '_crustal' and not c_found:
+                name, inss = get_header_info(f)
+                # Strip off the first name for now (Time), and use that as the dataframe index.
+                # Seems to make sense for now, but will it always?
+                crus_name.extend(name[1:])
+                crus_inst.extend(inss[1:])
+                c_found = True
+            elif kp_regex.match(os.path.basename(f)).group('description') == '' and not r_found:
+                name, ins = get_header_info(f)
+                # Strip off the first name for now (Time), and use that as the dataframe index.
+                # Seems to make sense for now, but will it always?
+                names.extend(name[1:])
+                inst.extend(ins[1:])
+                r_found = True
+        all_names = names + crus_name
+        all_inst = inst + crus_inst
 
         # Break up dictionary into instrument groups
         lpw_group, euv_group, swe_group, swi_group, sta_group, sep_group, mag_group, ngi_group, app_group, sc_group, \
             crus_group = [], [], [], [], [], [], [], [], [], [], []
 
-        for i, j in zip(inst, names):
+        for i, j in zip(all_inst, all_names):
             if re.match('^LPW$', i.strip()):
                 lpw_group.append(j)
             elif re.match('^LPW-EUV$', i.strip()):
@@ -202,12 +219,15 @@ def read(filename=None, input_time=None, instruments=None, insitu_only=False, sp
                     if line.startswith('#'):
                         nheader += 1
 
-                temp_data.append(pd.read_fwf(filename, skiprows=nheader, index_col=0,
-                                             widths=[19] + len(names) * [16], names=names))
+                if kp_regex.match(os.path.basename(filename)).group('description') == '_crustal':
+                    temp_data.append(pd.read_fwf(filename, skiprows=nheader, index_col=0,
+                                                 widths=[19] + len(crus_name) * [16], names=crus_name))
+                else:
+                    temp_data.append(pd.read_fwf(filename, skiprows=nheader, index_col=0,
+                                                 widths=[19] + len(names) * [16], names=names))
                 for i in delete_groups:
                     del temp_data[-1][i]
-
-        temp_unconverted = pd.concat(temp_data)
+        temp_unconverted = pd.concat(temp_data, sort=True)
 
         # Need to convert columns
         # This is kind of a hack, but I can't figure out a better way for now
@@ -356,7 +376,8 @@ def read(filename=None, input_time=None, instruments=None, insitu_only=False, sp
                          swea, swia, static, sep, 
                          mag, ngims, crus, app,
                          spacecraft]
-        kp_insitu = (OrderedDict(zip(tag_names, data_tags)))
+
+        kp_insitu = OrderedDict(zip(tag_names, data_tags))
 
     # Now for IUVS
     kp_iuvs = []
