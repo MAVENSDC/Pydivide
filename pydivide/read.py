@@ -218,7 +218,6 @@ def read(filename=None, input_time=None, instruments=None, insitu_only=False, sp
                 for line in f:
                     if line.startswith('#'):
                         nheader += 1
-
                 if kp_regex.match(os.path.basename(filename)).group('description') == '_crustal':
                     temp_data.append(pd.read_fwf(filename, skiprows=nheader, index_col=0,
                                                  widths=[19] + len(crus_name) * [16], names=crus_name))
@@ -227,7 +226,8 @@ def read(filename=None, input_time=None, instruments=None, insitu_only=False, sp
                                                  widths=[19] + len(names) * [16], names=names))
                 for i in delete_groups:
                     del temp_data[-1][i]
-        temp_unconverted = pd.concat(temp_data, sort=True)
+
+        temp_unconverted = pd.concat(temp_data, axis=1)
 
         # Need to convert columns
         # This is kind of a hack, but I can't figure out a better way for now
