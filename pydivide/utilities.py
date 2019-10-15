@@ -494,35 +494,38 @@ def get_latest_files_from_date_range(date1, date2):
         day = str('%02d' % current_date.day)
         full_path = os.path.join(maven_data_dir, year, month)
         if os.path.exists(full_path):
-            versions = []
-            revisions = []
-            crustal = []
+            version = 0
+            revision = 0
+            c_version = 0
+            c_revision = 0
+
+            # Grab only the latest versions/revisions of regular and crustal insitu files
             i = 0
             for f in os.listdir(full_path):
-                if kp_regex.match(f).group('day') == day:
-                    v = kp_regex.match(f).group('version')
-                    if int(v) > 0:
-                        version = v
-                        versions.append(version)
-                    r = kp_regex.match(f).group('revision')
-                    if int(r) > 0:
-                        revision = r
-                        revisions.append(revision)
-                if kp_regex.match(f).group('day') == day and kp_regex.match(f).group('description') == '_crustal':
-                    crustal.append(True)
                 if kp_regex.match(f).group('day') == day and not kp_regex.match(f).group('description'):
-                    crustal.append(False)
+                    v = kp_regex.match(f).group('version')
+                    if int(v) > int(version):
+                        version = v
+                    r = kp_regex.match(f).group('revision')
+                    if int(r) > int(revision):
+                        revision = r
+                elif kp_regex.match(f).group('day') == day and kp_regex.match(f).group('description') == '_crustal':
+                    v = kp_regex.match(f).group('version')
+                    if int(v) > int(c_version):
+                        c_version = v
+                    r = kp_regex.match(f).group('revision')
+                    if int(r) > int(c_revision):
+                        c_revision = r
                 i += 1
-            for v, ver in enumerate(versions):
-                if int(ver) > 0:
-                    if not crustal[v]:
-                        seq = ('mvn', 'kp', 'insitu', year + month + day, 'v' + str(ver), 'r' + str(revisions[v]) +
-                               '.tab')
-                    else:
-                        seq = ('mvn', 'kp', 'insitu', 'crustal', year + month + day, 'v' + str(ver), 'r' +
-                               str(revisions[v])
-                               + '.tab')
-                    filenames.append(os.path.join(full_path, '_'.join(seq)))
+
+            # If we found a regular and/or crustal file for the day, grab the filename and add it to the list of files
+            if int(version) > 0:
+                seq = ('mvn', 'kp', 'insitu', year + month + day, 'v' + str(version), 'r' + str(revision) + '.tab')
+                filenames.append(os.path.join(full_path, '_'.join(seq)))
+            if int(c_version) > 0:
+                seq = ('mvn', 'kp', 'insitu', 'crustal', year + month + day, 'v' + str(c_version), 'r' +
+                       str(c_revision) + '.tab')
+                filenames.append(os.path.join(full_path, '_'.join(seq)))
 
     filenames = sorted(filenames)
     return filenames
