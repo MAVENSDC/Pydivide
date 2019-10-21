@@ -494,38 +494,28 @@ def get_latest_files_from_date_range(date1, date2):
         day = str('%02d' % current_date.day)
         full_path = os.path.join(maven_data_dir, year, month)
         if os.path.exists(full_path):
-            version = 0
-            revision = 0
-            c_version = 0
-            c_revision = 0
-
-            # Grab only the latest versions/revisions of regular and crustal insitu files
-            i = 0
+            # Grab only the most recent version/revision of regular and crustal insitu files for each
+            # day
+            insitu = {}
+            c_insitu = {}
             for f in os.listdir(full_path):
+                # print(f)
                 if kp_regex.match(f).group('day') == day and not kp_regex.match(f).group('description'):
                     v = kp_regex.match(f).group('version')
-                    if int(v) > int(version):
-                        version = v
                     r = kp_regex.match(f).group('revision')
-                    if int(r) > int(revision):
-                        revision = r
+                    insitu[f] = [v, r]
                 elif kp_regex.match(f).group('day') == day and kp_regex.match(f).group('description') == '_crustal':
                     v = kp_regex.match(f).group('version')
-                    if int(v) > int(c_version):
-                        c_version = v
                     r = kp_regex.match(f).group('revision')
-                    if int(r) > int(c_revision):
-                        c_revision = r
-                i += 1
+                    c_insitu[f] = [v, r]
 
-            # If we found a regular and/or crustal file for the day, grab the filename and add it to the list of files
-            if int(version) > 0:
-                seq = ('mvn', 'kp', 'insitu', year + month + day, 'v' + str(version), 'r' + str(revision) + '.tab')
-                filenames.append(os.path.join(full_path, '_'.join(seq)))
-            if int(c_version) > 0:
-                seq = ('mvn', 'kp', 'insitu', 'crustal', year + month + day, 'v' + str(c_version), 'r' +
-                       str(c_revision) + '.tab')
-                filenames.append(os.path.join(full_path, '_'.join(seq)))
+            if insitu:
+                insitu_file = max(insitu.keys(), key=(lambda k: insitu[k][0]))
+                filenames.append(os.path.join(full_path, insitu_file))
+
+            if c_insitu:
+                c_insitu_file = max(c_insitu.keys(), key=(lambda k: c_insitu[k][0]))
+                filenames.append(os.path.join(full_path, c_insitu_file))
 
     filenames = sorted(filenames)
     return filenames
