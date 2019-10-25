@@ -510,12 +510,24 @@ def get_latest_files_from_date_range(date1, date2):
                     c_insitu[f] = [v, r]
 
             if insitu:
+                # Get max version
                 insitu_file = max(insitu.keys(), key=(lambda k: insitu[k][0]))
-                filenames.append(os.path.join(full_path, insitu_file))
+                max_v = re.search('v\d{2}', insitu_file).group(0)
+                # Get max revision
+                max_r = max([re.search('r\d{2}', k).group(0) for k in insitu if max_v in k])
+                # Get most recent insitu file (based on max version, and then max revision values)
+                most_recent_insitu = [f for f in insitu.keys() if max_r in f and max_v in f]
+                filenames.append(os.path.join(full_path, most_recent_insitu[0]))
 
             if c_insitu:
+                # Get max version
                 c_insitu_file = max(c_insitu.keys(), key=(lambda k: c_insitu[k][0]))
-                filenames.append(os.path.join(full_path, c_insitu_file))
+                c_max_v = re.search('v\d{2}', c_insitu_file).group(0)
+                # Get max revision
+                c_max_r = max([re.search('r\d{2}', k).group(0) for k in c_insitu if c_max_v in k])
+                # Get most recent insitu file (based on max version, and then max revision values)
+                most_recent_c_insitu = [f for f in c_insitu.keys() if c_max_r in f and c_max_v in f]
+                filenames.append(os.path.join(full_path, most_recent_c_insitu[0]))
 
     filenames = sorted(filenames)
     return filenames
