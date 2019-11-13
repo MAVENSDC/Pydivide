@@ -16,4 +16,5 @@ from .periapse import periapse
 from .occultation import occultation
 from .utilities import compare_versions
 from .cleanup_files import cleanup_files
+from .tplot_varcreate import tplot_varcreate
 compare_versions()

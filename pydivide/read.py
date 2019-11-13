@@ -211,6 +211,7 @@ def read(filename=None, input_time=None, instruments=None, insitu_only=False, sp
 
         # Read in all relavent data into a pandas dataframe called "temp"
         temp_data = []
+        filenames.sort()
         for filename in filenames:
             # Determine number of header lines
             nheader = 0
@@ -227,7 +228,7 @@ def read(filename=None, input_time=None, instruments=None, insitu_only=False, sp
                 for i in delete_groups:
                     del temp_data[-1][i]
 
-        temp_unconverted = pd.concat(temp_data, axis=1)
+        temp_unconverted = pd.concat(temp_data, axis=0)
 
         # Need to convert columns
         # This is kind of a hack, but I can't figure out a better way for now
