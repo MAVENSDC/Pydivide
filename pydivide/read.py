@@ -127,6 +127,7 @@ def read(filename=None, input_time=None, instruments=None, insitu_only=False, sp
     # certain files to load in, we don't want to load them in 2x... so doing a check for that here
     filenames = list(set(filenames))
     iuvs_filenames = list(set(iuvs_filenames))
+    iuvs_filenames.sort()
     
     kp_insitu = []
     if filenames:

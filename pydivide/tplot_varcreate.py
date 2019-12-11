@@ -6,7 +6,7 @@
 import pytplot
 
 
-def tplot_varcreate(insitu):
+def tplot_varcreate(insitu, instruments=None, observations=None):
     """Creates tplot variables from the insitu variable
     """
     # initialize each instrument
@@ -18,15 +18,24 @@ def tplot_varcreate(insitu):
         except:
             pass
 
+    created_vars = []
     inst_list = ["EUV", "LPW", "STATIC", "SWEA", "SWIA", "MAG", "SEP", "NGIMS"]
     for instrument in inst_list:
+        if instruments is not None:
+            if instrument not in instruments:
+                continue
         # for each observation for each instrument
         for obs in insitu[instrument]:
+            if observations is not None:
+                if obs not in observations:
+                    continue
             # create variable name
             obs_specific = "mvn_kp::" + instrument.lower() + "::" + obs.lower()
             try:
                 # store data in tplot variable
                 pytplot.store_data(obs_specific, data={'x': insitu['Time'], 'y': insitu[instrument][obs]})
+                pytplot.options(obs_specific, 'ytitle', '%s.%s' % (instrument, obs))
+                created_vars.append(obs_specific)
                 pytplot.link(obs_specific, "mvn_kp::spacecraft::altitude", link_type='alt')
                 pytplot.link(obs_specific, "mvn_kp::spacecraft::mso_x", link_type='x')
                 pytplot.link(obs_specific, "mvn_kp::spacecraft::mso_y", link_type='y')
@@ -38,3 +47,16 @@ def tplot_varcreate(insitu):
                 pytplot.link(obs_specific, "mvn_kp::spacecraft::sub_sc_latitude", link_type='lat')
             except:
                 pass
+
+    # Finally, link items to altitude
+    obs_specific = "mvn_kp::spacecraft::altitude"
+    pytplot.link(obs_specific, "mvn_kp::spacecraft::mso_x", link_type='x')
+    pytplot.link(obs_specific, "mvn_kp::spacecraft::mso_y", link_type='y')
+    pytplot.link(obs_specific, "mvn_kp::spacecraft::mso_z", link_type='z')
+    pytplot.link(obs_specific, "mvn_kp::spacecraft::geo_x", link_type='geo_x')
+    pytplot.link(obs_specific, "mvn_kp::spacecraft::geo_y", link_type='geo_y')
+    pytplot.link(obs_specific, "mvn_kp::spacecraft::geo_z", link_type='geo_z')
+    pytplot.link(obs_specific, "mvn_kp::spacecraft::sub_sc_longitude", link_type='lon')
+    pytplot.link(obs_specific, "mvn_kp::spacecraft::sub_sc_latitude", link_type='lat')
+
+    return created_vars
