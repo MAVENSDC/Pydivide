@@ -14,7 +14,7 @@ def occultation(iuvs,
                 species=None,
                 log=False,
                 title='IUVS Occultation Observations',
-                qt=True):
+                qt=True, exec_qt=True):
     
     retrieval_names_to_plot = []
     retrieval_legend_names = []
@@ -91,7 +91,7 @@ def occultation(iuvs,
     pytplot.tplot_options('alt_range', [np.min(xmin), np.max(xmax)])
     pytplot.tplot_options('title', title)
     pytplot.tplot_options('wsize', [1000, 400 * len(list_of_plots)])
-    pytplot.tplot(list_of_plots, bokeh=not qt)
+    pytplot.tplot(list_of_plots, bokeh=not qt, exec_qt=exec_qt, window_name='PYIDIVDE_Occultation_Plot')
     pytplot.del_data(list_of_plots)
     
     return

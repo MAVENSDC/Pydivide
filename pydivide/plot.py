@@ -7,9 +7,9 @@ from .utilities import get_inst_obs_labels, param_list, orbit_time
 import pytplot
 import pandas as pd
 import builtins
+import pydivide
 
-
-def plot(kp, parameter=None, time=None, errors=None, sameplot=True, list=False, title='', qt=True):
+def plot(kp, parameter=None, time=None, errors=None, sameplot=True, list=False, title='', qt=True, exec_qt=True):
     '''
     Plot the provided data as a time series.
     For now, do not accept any error bar information.
@@ -78,36 +78,34 @@ def plot(kp, parameter=None, time=None, errors=None, sameplot=True, list=False, 
     #  the given keywords
     #
     iplot = 1  # subplot indexes on 1
-    y_list = []
     legend_names = []
+
+    y_list = pydivide.tplot_varcreate(kp, instruments=inst, observations=obs)
     for inst_temp, obs_temp in inst_obs:
-        # First, generate the dependent array from data
-        y = kp[inst_temp][obs_temp]
-        if sameplot:
-            y_list.append(y)
-            legend_names.append(obs_temp)
-        else:
-            pytplot.store_data(obs_temp, data={'x': kp['Time'], 'y': y})
-            # Add descriptive plot title
-            pytplot.options(obs_temp, 'ytitle', '%s.%s' % (inst, obs))
-        # Increment plot number 
+        legend_names.append(obs_temp)
         iplot += 1
     if time is not None:
         pytplot.xlim(time[0], time[1])
-    
+
     if sameplot:
         pytplot_name = ''.join(legend_names)
-        result = pd.concat(y_list, axis=1, join_axes=[y_list[0].index])
-        pytplot.store_data(pytplot_name, data={'x': kp['Time'], 'y': result})
+        pytplot.store_data(pytplot_name, data=y_list)
         pytplot.options(pytplot_name, 'legend_names', legend_names)
+        pytplot.link(pytplot_name, "mvn_kp::spacecraft::altitude", link_type='alt')
+        pytplot.link(pytplot_name, "mvn_kp::spacecraft::mso_x", link_type='x')
+        pytplot.link(pytplot_name, "mvn_kp::spacecraft::mso_y", link_type='y')
+        pytplot.link(pytplot_name, "mvn_kp::spacecraft::mso_z", link_type='z')
+        pytplot.link(pytplot_name, "mvn_kp::spacecraft::geo_x", link_type='geo_x')
+        pytplot.link(pytplot_name, "mvn_kp::spacecraft::geo_y", link_type='geo_y')
+        pytplot.link(pytplot_name, "mvn_kp::spacecraft::geo_z", link_type='geo_z')
+        pytplot.link(pytplot_name, "mvn_kp::spacecraft::sub_sc_longitude", link_type='lon')
+        pytplot.link(pytplot_name, "mvn_kp::spacecraft::sub_sc_latitude", link_type='lat')
         pytplot.tplot_options('title', title)
         pytplot.tplot_options('wsize', [1000, 300])
-        pytplot.tplot(pytplot_name, bokeh=not qt)
-        pytplot.del_data(pytplot_name)
+        pytplot.tplot(pytplot_name, bokeh=not qt, exec_qt=exec_qt, window_name='PYDIVIDE_PLOT')
     else:
         pytplot.tplot_options('title', title)
         pytplot.tplot_options('wsize', [1000, 300 * (iplot - 1)])
-        pytplot.tplot(obs, bokeh=not qt)
-        pytplot.del_data(obs)
+        pytplot.tplot(y_list, bokeh=not qt, exec_qt=exec_qt, window_name='PYDIVIDE_PLOT')
 
     return
