@@ -25,12 +25,13 @@ def tplot_varcreate(insitu, instruments=None, observations=None):
             if instrument not in instruments:
                 continue
         # for each observation for each instrument
-        for obs in insitu[instrument]:
+        if instrument in insitu:
+            for obs in insitu[instrument]:
             if observations is not None:
                 if obs not in observations:
                     continue
-            # create variable name
-            obs_specific = "mvn_kp::" + instrument.lower() + "::" + obs.lower()
+                # create variable name
+                obs_specific = "mvn_kp::" + instrument.lower() + "::" + obs.lower()
             try:
                 # store data in tplot variable
                 pytplot.store_data(obs_specific, data={'x': insitu['Time'], 'y': insitu[instrument][obs]})
