@@ -1,6 +1,8 @@
 Getting Started
 =================
 
+
+
 System Requirements
 -------------------
 
@@ -32,7 +34,7 @@ Updating the Toolkit
 ---------------------
 
 The latest version of PyDIVIDE can be installed by typing the following command
-into the terminal:
+into the terminal ::
 
 	pip install pydivide --upgrade
 	
@@ -42,13 +44,13 @@ Running PyDIVIDE
 
 An IDE is the recommended way to run PyDIVIDE procedures; however, they
 can also be run from the terminal. To start an interactive session of Python,
-enter the following commands into the terminal:
+enter the following commands into the terminal ::
 
 	ipython
 	import pydivide
 
 Data Storage
-------------
+-------------
 
 PyDIVIDE requires all data files to be stored in an automatically-created directory
 structure.  This has a similar format to the
@@ -62,18 +64,18 @@ files into the chosen directory structure, and read will pull data files from th
 directory structure.  
 
 While you do not necessarily need to know this to use the toolkit, the data directories are 
-structured as such:
+structured as such
 
 	<root_data_dir>/maven/data/sci
-		/kp/insitu/YYYY/MM/
-		/kp/iuvs/YYYY/MM/
-		/sta/l2/YYYY/MM/
-		/sep/l2/YYYY/MM/
-		/swi/l2/YYYY/MM/
-		/swe/l2/YYYY/MM/
-		/lpw/l2/YYYY/MM/
-		/mag/l2/YYYY/MM/
-		/iuv/l2/YYYY/MM/
-		/ngi/l2/YYYY/MM/
-		/euv/l2/YYYY/MM/
-		/acc/l2/YYYY/MM/
+								/kp/insitu/YYYY/MM/
+								/kp/iuvs/YYYY/MM/
+								/sta/l2/YYYY/MM/
+								/sep/l2/YYYY/MM/
+								/swi/l2/YYYY/MM/
+								/swe/l2/YYYY/MM/
+								/lpw/l2/YYYY/MM/
+								/mag/l2/YYYY/MM/
+								/iuv/l2/YYYY/MM/
+								/ngi/l2/YYYY/MM/
+								/euv/l2/YYYY/MM/
+								/acc/l2/YYYY/MM/
