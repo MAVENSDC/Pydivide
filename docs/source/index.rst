@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-PyTplot's Documentation
+PyDIVIDE's Documentation
 =======================
 
 
@@ -11,6 +11,7 @@ PyTplot's Documentation
     :maxdepth: 2
 
     introduction
+	getting_started
     tplot_variables
     reading_in_data
     options
