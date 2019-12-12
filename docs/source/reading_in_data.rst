@@ -1,18 +1,18 @@
 Reading in Data
 =============================
 
-Manual Input
-------------
-.. autofunction:: pytplot.store_data
+This page will describe how to obtain and read in the data.  For reading/loading Level 2 files, PySPEDAS is currently required.  
 
-CDF Reader
+Download Data
+---------------
+.. autofunction:: pydivide.download_files
+
+Read KP Data
 ----------
-.. autofunction:: pytplot.cdf_to_tplot
+.. autofunction:: pytplot.read
 
-NetCDF Reader
+Read Model Results
 -------------
-.. autofunction:: pytplot.netcdf_to_tplot
+.. autofunction:: pytplot.read_model_results
 
-IDL Restore
------------
-.. autofunction:: pytplot.tplot_restore
+

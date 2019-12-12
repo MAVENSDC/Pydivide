@@ -11,8 +11,7 @@ PyDIVIDE's Documentation
     :maxdepth: 2
 
     introduction
-	getting_started
-    tplot_variables
+    getting_started
     reading_in_data
     options
     tplot_options
