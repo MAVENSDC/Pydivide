@@ -34,38 +34,41 @@ def download_files(filenames=None,
     downloads. insitu, iuvs, or at least one instrument must be specified.
 
     Parameters:
-        filenames: str/list of str
+        filenames : str/list of str
             Specific filename strings to search/download.
-        instruments: str/list of str - swe, swi, ngi, euv, lpw, iuv, rse, sta, sep, acc
+        instruments : str/list of str - swe, swi, ngi, euv, lpw, iuv, rse, sta, sep, acc
             Instruments from which you want to download data.
-        list_files: bool (True/False)
+        list_files : bool (True/False)
             If true, lists the files instead of downloading them.
-        level: str
-            Data level to download.  
-        insitu: bool (True/False)
+        level : str
+            Data level to download.
+        insitu : bool (True/False)
             If true, specifies only insitu files.
-        iuvs: bool (True/False)
+        iuvs : bool (True/False)
             If true,
-        new_files: bool (True/False)
+        new_files : bool (True/False)
             Checks downloaded files and only downloads those that haven't already been downloaded.
-        start_date: str
+        start_date : str
             String that is the start date for downloading data (YYYY-MM-DD)
-        end_date: str
+        end_date : str
             String that is the end date for downloading data (YYYY-MM-DD)
-        update_prefs: bool (True/False)
+        update_prefs : bool (True/False)
             If true, updates where you want to store data locally
-        only_update_prefs: bool (True/False)
+        only_update_prefs : bool (True/False)
             If true, *only* updates where to store dat alocally, doesn't download files.
-        exclude_orbit_file: bool (True/False)
+        exclude_orbit_file : bool (True/False)
             If true, won't download the latest orbit tables.
-        local_dir: str
+        local_dir : str
             If indicated, specifies where to download files for a specific implementation of this function.
-        unittest: bool
+        unittest : bool
             If True, will not actually download files.
             If False (default) files will be downloaded.
-        crustal_download: bool
+        crustal_download : bool
             If True (default), when insitu files are downloaded, any crustal files will also be downloaded.
             If False, crustal files will not be downloaded when insitu files are downloaded.
+
+    Returns:
+        None
 
     Examples:
         >>> # Download all available insitu data between 2015-01-01 and 2015-01-31, inclusive:
@@ -85,6 +88,7 @@ def download_files(filenames=None,
 
         >>> # Download all new Level 2 data files for NGIMS, STATIC, and EUV.
         >>> pydivide.download_files(instruments=['ngi','sta','euv'], new_files=True)
+
     """
     
     import os

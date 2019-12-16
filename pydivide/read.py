@@ -20,16 +20,14 @@ def read(filename=None, input_time=None, instruments=None, insitu_only=False, sp
     '''
     Read in a given filename in situ file into a dictionary object
     Optional keywords maybe used to downselect instruments returned
-     and the time windows.
+    and the time windows.
 
-    Input:
-        filename:
+    Parameters:
+        filename: str/list of str
             Name of the in situ KP file(s) to read in.
-        input_time:
-            Set a time bounds/filter on the data
-            (this will be necessary when this is called by a wrapper that
-             seeks to ingest all data within a range of dates that may
-             be allowed to span multiple days (files) ).
+        input_time: list of str/int
+            Set a time bounds/filter on the data, must be length 2 with the first
+            value being the start time, and the second value being the end time.
         instruments:
             Optional keyword listing the instruments to include 
             in the returned dictionary/structure.
@@ -40,9 +38,19 @@ def read(filename=None, input_time=None, instruments=None, insitu_only=False, sp
             Optional keyword that allows you to specify you only want filenames
             given in 'filename' to be read in, not other files close in date/time
             as well.
-    Output:
+
+    Returns:
         A dictionary (data structure) containing up to all of the columns
-            included in a MAVEN in-situ Key parameter data file.
+        included in a MAVEN in-situ Key parameter data file.
+
+    Examples:
+        >>> # Retrieve insitu and IUVS data for LPW and MAG on 2015-12-26.
+        >>> insitu,iuvs = pydivide.read('2015-12-26', instruments=['lpw','mag'])
+
+        >>> # Retrieve only insitu data for all instruments on 2017-06-19.
+        >>> insitu = pydivide.read('2017-06-19', insitu_only=True)
+
+
     '''
     import pandas as pd
     import re

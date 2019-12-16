@@ -9,24 +9,40 @@ import numpy as np
 
 def read_model_results(file):
     """
-    Takes in a .nc file from the MAVEN website and reads it into python dictionary
-    results
-    \_ meta ()
-        \_ longsubsol
-        \_ ls
-        \_ etc
-    \_ dim
-        \_ lat/x
-        \_ lon/y
-        \_ alt/z
-    \_ variable1
-        \_ dim_order (x,y,z or z,y,x for example)
-        \_ data
-    \_ variable2
-        \_ dim_order
-        \_ data
-    ...
-    \_ variableN
+    Reads results of specified simulation into a dictionary object containing
+    sub-directories for metadata, dimension information, and model tracers.
+    This function can read any of the models currently on the MAVEN SDC
+    website with the .nc extension, which can be found here:
+    https://lasp.colorado.edu/maven/sdc/public/pages/models.html
+    The desired model must be downloaded prior to running this procedure
+
+    Parameters:
+        file: str
+            Simulation result file name to be read
+
+    Returns:
+        Dictionary roughly structured as follows
+            \_ meta ()
+                \_ longsubsol
+                \_ ls
+                \_ etc
+            \_ dim
+                \_ lat/x
+                \_ lon/y
+                \_ alt/z
+            \_ variable1
+                \_ dim_order (x,y,z or z,y,x for example)
+                \_ data
+            \_ variable2
+                \_ dim_order
+                \_ data
+            ...
+            \_ variableN
+
+    Examples:
+        >>> # Read the University of Michigan group’s ionospheric model for mean solar activity (F10.7 = 130).
+        >>> model = pydivide.read_model_results('<dir_path>/MGITM_LS270_F130_150519.nc')
+
     """
     try:
         import netCDF4
