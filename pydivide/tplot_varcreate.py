@@ -27,9 +27,9 @@ def tplot_varcreate(insitu, instruments=None, observations=None):
         # for each observation for each instrument
         if instrument in insitu:
             for obs in insitu[instrument]:
-            if observations is not None:
-                if obs not in observations:
-                    continue
+                if observations is not None:
+                    if obs not in observations:
+                        continue
                 # create variable name
                 obs_specific = "mvn_kp::" + instrument.lower() + "::" + obs.lower()
             try:
