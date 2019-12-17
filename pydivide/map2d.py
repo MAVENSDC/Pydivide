@@ -67,7 +67,9 @@ def map2d(kp,
             If true, plots with qt.  Else creates an HTML page with bokeh.
         exec_qt : bool
             If False, does not run the event loop for pyqtgraph.
-    Returns : None
+
+    Returns :
+        None
 
     Examples:
         >>> # Plot spacecraft altitude along MAVEN surface orbital track.
@@ -75,7 +77,6 @@ def map2d(kp,
 
         >>> # Plot spacecraft altitude along MAVEN surface orbital track using MOLA altimetry basemap; plot subsolar point path.
         >>> pydivide.map2d(insitu, 'spacecraft.altitude', basemap='mola', subsolar=True)
-
     '''
 
 

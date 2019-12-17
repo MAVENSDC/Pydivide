@@ -46,14 +46,14 @@ def plot(kp,
         exec_qt : bool
             If False, does not run the event loop for pyqtgraph.
 
-    Returns : None
+    Returns :
+        None
 
-    Examples :
-    >>> # Plot SWIA H+ density.
-    >>> pydivide.plot(insitu,parameter='swia.hplus_density')
-    >>> # Plot SWIA H+ density and altitude in the same window.
-    >>> pydivide.plot(insitu,parameter=['swia.hplus_density', 'spacecraft.altitude'],sameplot=True)
-
+    Examples:
+        >>> # Plot SWIA H+ density.
+        >>> pydivide.plot(insitu,parameter='swia.hplus_density')
+        >>> # Plot SWIA H+ density and altitude in the same window.
+        >>> pydivide.plot(insitu,parameter=['swia.hplus_density', 'spacecraft.altitude'],sameplot=True)
     '''
 
     if list:

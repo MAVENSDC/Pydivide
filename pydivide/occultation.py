@@ -39,7 +39,8 @@ def occultation(iuvs,
         exec_qt : bool
             If False, does not run the event loop for pyqtgraph.
 
-    Returns : None
+    Returns :
+        None
 
     Examples:
         >>> # Plot CO2 density vs spacecraft altitude.

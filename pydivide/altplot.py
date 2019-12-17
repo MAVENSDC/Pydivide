@@ -46,8 +46,6 @@ def altplot(kp, parameter=None, time=None, errors=None,
     Examples:
         >>> # Plot LPW.ELECTRON_DENSITY against spacecraft altitude.
         >>> pydivide.altplot(insitu, parameter=['LPW.ELECTRON_DENSITY','MAG.MSO_Y'], qt=False, ylog=True)
-
-
     '''
     
     if list:

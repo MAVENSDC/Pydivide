@@ -46,13 +46,14 @@ def periapse(iuvs,
         exec_qt : bool
             If False, does not run the event loop for pyqtgraph.
 
-    Returns : None
+    Returns :
+        None
 
     Examples:
         >>> # Plot CO2 density vs spacecraft altitude.
         >>> insitu, iuvs = pydivide.read(input_time=['2016-02-01', '2016-02-28'])
         >>> pydivide.periapse(iuvs, species='CO', orbit_num=2726, log=True, density=False, radiance=True, qt=False)
-        '''
+    '''
     
     density_names_to_plot = []
     density_legend_names = []
