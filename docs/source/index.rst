@@ -18,5 +18,5 @@ PyDIVIDE's Documentation
     manipulate_kp
     manipulate_model
     miscellaneous
-	insitu_kp
-	iuvs_kp
+    insitu_kp
+    iuvs_kp
