@@ -13,8 +13,8 @@ PyDIVIDE's Documentation
     introduction
     getting_started
     reading_in_data
-	plotting_kp
-	plotting_l2
-	manipulate_kp
-	manipulate_model
-	miscellaneous
+    plotting_kp
+    plotting_l2
+    manipulate_kp
+    manipulate_model
+    miscellaneous
