@@ -40,6 +40,68 @@ def standards(kp,
               title='Standard Plots',
               qt=True):
 
+    '''
+
+    Generate all or a subset of 25 standardized plots, created from insitu KP
+    data on the MAVEN SDC website
+
+    Parameters:
+        kp : dict
+            insitu kp data structure/dictionary read from file(s)
+        keyword: bool
+            At least one or more of the following arguments are required; they may
+            be used in conjunction with one another.
+            all_plots: generate all 25 plots
+            euv: EUV irradiance in each of 3 bands
+            mag_mso: magnetic field, MSO coordinates
+            mag_geo: magnetic field, geographic coordinates
+            mag_cone: magnetic clock and cone angles, MSO coordinates
+            mag_dir: magnetic field, radial/horizontal/northward/eastward components
+            ngims_neutral: neutral atmospheric component densities
+            ngims_ions: ionized atmospheric component densities
+            eph_angle: spacecraft ephemeris information
+            eph_geo: spacecraft position, geographic coordinates
+            eph_mso: spacecraft position, MSO coordinates
+            swea: electron parallel/anti-parallel fluxes
+            sep_ion: ion energy flux
+            sep_electron: electron energy flux
+            wave: electric field wave power
+            plasma_den: plasma density
+            plasma_temp: plasma temperature
+            swia_h_vel: H+ flow velocity, SWIA MSO coordinates
+            static_h_vel: H+ flow velocity, STATIC MSO coordinates
+            static_o2_vel: O2
+            + flow velocity, STATIC MSO coordinates
+            static_flux: H+/H++ and pick-up ion omni-directional flux
+            static_energy: H+/H++ and pick-up ion characteristic energy
+            sun_bar: MAVEN sunlight indicator
+            solar_wind: solar wind dynamic pressure
+            ionosphere: electron spectrum shape parameter
+            altitude: spacecraft altitude
+            sc_pot: spacecraft potential
+        list : bool
+            Lists all Key Parameters instead of plotting
+        title : str
+            The Title to give the plot
+        qt : bool
+            If true, plots with qt.  Else creates an HTML page with bokeh.
+        exec_qt : bool
+            If False, does not run the event loop for pyqtgraph.
+
+    Returns :
+        None
+
+    Examples :
+        >>> # Solar Orbital coordinates (x, y, z, magnitude), standard spacecraft ephemeris
+        >>> # information (sub-spacecraft lat/lon, subsolar lat/lon, local solar time, solar
+        >>> # zenith angle, Mars season)
+        >>> # omni-directional flux.
+        >>> insitu,iuvs = pydivide.read(input_time=['2017-06-19','2017-06-20'])
+        >>> pydivide.standards(insitu, mag_mso=True, eph_angle=True, title='Example Title')
+
+    '''
+
+
     main_title = title
 
     if all_plots:
