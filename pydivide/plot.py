@@ -9,37 +9,52 @@ import pandas as pd
 import builtins
 import pydivide
 
-def plot(kp, parameter=None, time=None, errors=None, sameplot=True, list=False, title='', qt=True, exec_qt=True):
+def plot(kp,
+         parameter=None,
+         time=None,
+         errors=None,
+         sameplot=True,
+         list=False, title='',
+         qt=True, exec_qt=True,
+         log=False):
     '''
-    Plot the provided data as a time series.
-    For now, do not accept any error bar information.
-    If time is not provided plot entire data set.
 
-    Input:
-        kp: insitu kp data structure/dictionary read from file(s)
-        time: Two-element list of strings or integers indicating the
-            range of Time to be plotted.  At present, there are no
-            checks on whether provided Times are within provided data
-        parameter: The parameter(s) to be plotted.  Can be provided as
-            integers (by index) or strings (by name: inst.obs).  If a 
+    Plot time-series data from insitu data structure.
+
+    Required Parameters:
+        kp : dict
+            insitu kp data structure/dictionary read from file(s)
+        parameter : list of str/int
+            The parameter(s) to be plotted.  Can be provided as
+            integers (by index) or strings (by name: inst.obs).  If a
             single parameter is provided, it must be an int or str.  If
             several are provided it must be a list.  A list may contain
             a mixture of data types.
-        errors: **Not Yet Implemented**
-            Will be the Parameter(s) to use for the generation of error
-            bars in the created plots.  Since each inst.obs *may* define
-            its own unique useage of the 'quality flag', this will be a
-            parameter-dependent determination, requiring an add'l routine.
-        sameplot: if True, put all curves on same axes
-                  if False, generate new axes for each plot
-        SubPlot: if True, stack plots with common x axis
-                 if False and nplots > 1, make several distinct plots
-    Output: None
-        -> Generates plot(s) as requested.  But since there is no plot
-           object returned, can not alter any plot subsequently (yet)
+    Optional Parameters:
+        time : list of str
+            Two-element list of strings or integers indicating the
+            range of Time to be plotted.  At present, there are no
+            checks on whether provided Times are within provided data
+        sameplot : bool
+            if True, put all curves on same axes
+            if False, generate new axes for each plot
+        list : bool
+            Lists all Key Parameters instead of plotting
+        title : str
+            The Title to give the plot
+        qt : bool
+            If true, plots with qt.  Else creates an HTML page with bokeh.
+        exec_qt : bool
+            If False, does not run the event loop for pyqtgraph.
 
-    ToDo: Provide mechanism for calculating and plotting error bars
-          
+    Returns : None
+
+    Examples :
+    >>> # Plot SWIA H+ density.
+    >>> pydivide.plot(insitu,parameter='swia.hplus_density')
+    >>> # Plot SWIA H+ density and altitude in the same window.
+    >>> pydivide.plot(insitu,parameter=['swia.hplus_density', 'spacecraft.altitude'],sameplot=True)
+
     '''
 
     if list:
@@ -63,15 +78,15 @@ def plot(kp, parameter=None, time=None, errors=None, sameplot=True, list=False, 
     obs = []
     if type(parameter) is int or type(parameter) is str:
         a, b = get_inst_obs_labels(kp, parameter)
-        inst.append(a)
-        obs.append(b)
+        inst.append(a.upper())
+        obs.append(b.upper())
         nparam = 1
     else:
         nparam = len(parameter)
         for param in parameter:
             a, b = get_inst_obs_labels(kp, param)
-            inst.append(a)
-            obs.append(b)
+            inst.append(a.upper())
+            obs.append(b.upper())
     inst_obs = builtins.list(zip(inst, obs))
 
     # Cycle through the parameters, plotting each according to
@@ -91,6 +106,7 @@ def plot(kp, parameter=None, time=None, errors=None, sameplot=True, list=False, 
         pytplot_name = ''.join(legend_names)
         pytplot.store_data(pytplot_name, data=y_list)
         pytplot.options(pytplot_name, 'legend_names', legend_names)
+        pytplot.options(pytplot_name, 'ylog', log)
         pytplot.link(pytplot_name, "mvn_kp::spacecraft::altitude", link_type='alt')
         pytplot.link(pytplot_name, "mvn_kp::spacecraft::mso_x", link_type='x')
         pytplot.link(pytplot_name, "mvn_kp::spacecraft::mso_y", link_type='y')

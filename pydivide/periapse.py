@@ -18,6 +18,41 @@ def periapse(iuvs,
              log=False,
              title='IUVS Periapse Observations',
              qt=True, exec_qt=True):
+    '''
+    Plot IUVS Limb Scan data against spacecraft altitude.
+
+    Parameters:
+        iuvs : dict
+            iuvs kp data structure/dictionary read from file(s)
+        orbit_num : list of int
+            The orbit numbers to plot from the IUVS data structure
+        species : list of str
+            The species to plot.  Values can be
+             Density - CO2, CO2+, O, N2, C, N, H
+             Radiance - CO2pUVD, CO, H, O_1304, O_1356, O_2972, C_1561, C_1657, N_1493, N2, NO
+        radiance : bool
+            If true, plots the radiance
+        density : bool
+            If true, plots the density
+        sameplot : bool
+            if True, put all curves on same axes
+            if False, generate new axes for each plot
+        title : str
+            The Title to give the plot
+        ylog : bool
+            Displays the log of the y axis
+        qt : bool
+            If true, plots with qt.  Else creates an HTML page with bokeh.
+        exec_qt : bool
+            If False, does not run the event loop for pyqtgraph.
+
+    Returns : None
+
+    Examples:
+        >>> # Plot CO2 density vs spacecraft altitude.
+        >>> insitu, iuvs = pydivide.read(input_time=['2016-02-01', '2016-02-28'])
+        >>> pydivide.periapse(iuvs, species='CO', orbit_num=2726, log=True, density=False, radiance=True, qt=False)
+        '''
     
     density_names_to_plot = []
     density_legend_names = []

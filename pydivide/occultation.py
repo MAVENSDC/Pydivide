@@ -15,6 +15,37 @@ def occultation(iuvs,
                 log=False,
                 title='IUVS Occultation Observations',
                 qt=True, exec_qt=True):
+    '''
+    Plot IUVS Stellar Occultation data against spacecraft altitude.
+
+    Parameters:
+        iuvs : dict
+            iuvs kp data structure/dictionary read from file(s)
+        orbit_num : list of int
+            The orbit numbers to plot from the IUVS data structure
+        species: list of str
+            The species to plot.  Values can be "CO2", "O2", "O3", and "Temp."
+        sameplot : bool
+            if True, put all curves on same axes
+            if False, generate new axes for each plot
+        list : bool
+            Lists all Key Parameters instead of plotting
+        title : str
+            The Title to give the plot
+        ylog : bool
+            Displays the log of the y axis
+        qt : bool
+            If true, plots with qt.  Else creates an HTML page with bokeh.
+        exec_qt : bool
+            If False, does not run the event loop for pyqtgraph.
+
+    Returns : None
+
+    Examples:
+        >>> # Plot CO2 density vs spacecraft altitude.
+        >>> insitu, iuvs = pydivide.read(input_time=['2016-01-01', '2016-01-31'])
+        >>> pydivide.occultation(iuvs, log=True, species=['CO2'], qt=False)
+    '''
     
     retrieval_names_to_plot = []
     retrieval_legend_names = []

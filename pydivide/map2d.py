@@ -20,7 +20,66 @@ def map2d(kp,
           basemap=None,
           alpha=None,
           title='MAVEN Mars',
-          qt=True):
+          qt=True, exec_qt=True):
+    '''
+    Produces a 2D map of Mars, either in the planetocentric or MSO coordinate
+    system, with the MAVEN orbital projection and a variety of basemaps.
+    Spacecraft orbital path may be colored by a given insitu KP data value
+
+    Required Parameters:
+        kp : dict
+            insitu kp data structure/dictionary read from file(s)
+        parameter : list of str/int
+            The parameter(s) to be plotted.  Can be provided as
+            integers (by index) or strings (by name: inst.obs).  If a
+            single parameter is provided, it must be an int or str.  If
+            several are provided it must be a list.  A list may contain
+            a mixture of data types.
+    Optional Parameters:
+        time : list of str
+            Two-element list of strings or integers indicating the
+            range of Time to be plotted.  At present, there are no
+            checks on whether provided Times are within provided data
+        color_table : str
+            Specifies color table to use for plotting
+        subsolar : bool
+            Plot path of subsolar point
+        mso : bool
+            Plot using MSO map projection
+        map_limit : list
+            Set the bounding box on the map in lat/lon coordinates [x0,y0,x1,y1]
+        basemap : str
+            Name of the basemap on which the spacecraft data with be overlaid.  Choices are
+            • ‘mdim’: Mars Digital Image Model
+            • ‘mola’: Mars Topography (color)
+            • ‘mola_bw’: Mars Topography (black and white)
+            • ‘mag’: Mars Crustal Magnetism
+            • ‘<dir_path>/file.png’: User-defined basemap
+        sameplot : bool
+            if True, put all curves on same axes
+            if False, generate new axes for each plot
+        list : bool
+            Lists all Key Parameters instead of plotting
+        title : str
+            The Title to give the plot
+        ylog : bool
+            Displays the log of the y axis
+        qt : bool
+            If true, plots with qt.  Else creates an HTML page with bokeh.
+        exec_qt : bool
+            If False, does not run the event loop for pyqtgraph.
+    Returns : None
+
+    Examples:
+        >>> # Plot spacecraft altitude along MAVEN surface orbital track.
+        >>> pydivide.map2d(insitu, 'spacecraft.altitude')
+
+        >>> # Plot spacecraft altitude along MAVEN surface orbital track using MOLA altimetry basemap; plot subsolar point path.
+        >>> pydivide.map2d(insitu, 'spacecraft.altitude', basemap='mola', subsolar=True)
+
+    '''
+
+
     if list:
         x = param_list(kp)
         for param in x:
@@ -131,7 +190,7 @@ def map2d(kp,
 
     pytplot.tplot_options('title', title)
     pytplot.tplot_options('wsize', [1000, 500 * iplot])
-    pytplot.tplot(names_to_plot, bokeh=not qt)
+    pytplot.tplot(names_to_plot, bokeh=not qt, exec_qt=exec_qt)
     pytplot.del_data('ss_lon')
     pytplot.del_data('ss_lat')
     pytplot.del_data('sc_lon')

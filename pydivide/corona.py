@@ -16,7 +16,43 @@ def corona(iuvs,
            species=None,
            log=False,
            title='IUVS Corona Observations',
-           qt=True):
+           qt=True,
+           exec_qt=True):
+    '''
+    Plot IUVS Corona Scan data against spacecraft altitude.
+
+    Parameters:
+        iuvs : dict
+            iuvs kp data structure/dictionary read from file(s)
+        orbit_num : list of int
+            The orbit numbers to plot from the IUVS data structure
+        species : list of str
+            The species to plot.  Values can be
+             Density - CO2, CO2+, O, N2, C, N, H
+             Radiance - CO2pUVD, CO, H, O_1304, O_1356, O_2972, C_1561, C_1657, N_1493, N2, NO
+        radiance : bool
+            If true, plots the radiance
+        density : bool
+            If true, plots the density
+        sameplot : bool
+            if True, put all curves on same axes
+            if False, generate new axes for each plot
+        title : str
+            The Title to give the plot
+        ylog : bool
+            Displays the log of the y axis
+        qt : bool
+            If true, plots with qt.  Else creates an HTML page with bokeh.
+        exec_qt : bool
+            If False, does not run the event loop for pyqtgraph.
+
+    Returns : None
+
+    Examples:
+        >>> # Plot CO2 density vs spacecraft altitude.
+        >>> insitu, iuvs = pydivide.read(input_time=['2016-02-01', '2016-02-28'])
+        >>> pydivide.periapse(iuvs, species='N2', orbit=2726, log=True, density=True, radiance=False, qt=False)
+        '''
     
     density_names_to_plot = []
     density_legend_names = []
@@ -143,7 +179,7 @@ def corona(iuvs,
     pytplot.tplot_options('alt_range', [np.min(xmin), np.max(xmax)])
     pytplot.tplot_options('title', title)
     pytplot.tplot_options('wsize', [1000, 400 * len(list_of_plots)])
-    pytplot.tplot(list_of_plots, bokeh=not qt)
+    pytplot.tplot(list_of_plots, bokeh=not qt, exec_qt=exec_qt)
     pytplot.del_data(list_of_plots)
     
     return

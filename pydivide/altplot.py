@@ -9,37 +9,46 @@ import builtins
 
 
 def altplot(kp, parameter=None, time=None, errors=None,
-            sameplot=True, list=False, title='Altitude Plot', qt=True):
+            sameplot=True, list=False, title='Altitude Plot',
+            ylog=False, qt=True):
     '''
     Plot the provided data plotted against spacecraft altitude.
-    For now, do not accept any error bar information.
     If time is not provided plot entire data set.
 
-    Input:
-        kp: insitu kp data structure/dictionary read from file(s)
-        time: Two-element list of strings or integers indicating the
-            range of Time to be plotted.  At present, there are no
-            checks on whether provided Times are within provided data
-        parameter: The parameter(s) to be plotted.  Can be provided as
+    Required Parameters:
+        kp : dict
+            insitu kp data structure/dictionary read from file(s)
+        parameter : list of str/int
+            The parameter(s) to be plotted.  Can be provided as
             integers (by index) or strings (by name: inst.obs).  If a 
             single parameter is provided, it must be an int or str.  If
             several are provided it must be a list.  A list may contain
             a mixture of data types.
-        errors: **Not Yet Implemented**
-            Will be the Parameter(s) to use for the generation of error
-            bars in the created plots.  Since each inst.obs *may* define
-            its own unique useage of the 'quality flag', this will be a
-            parameter-dependent determination, requiring an add'l routine.
-        sameplot: if True, put all curves on same axes
-                  if False, generate new axes for each plot
-        subplot: if True, stack plots with common x axis
-                 if False and nplots > 1, make several distinct plots
-    Output: None
-        -> Generates plot(s) as requested.  But since there is no plot
-           object returned, can not alter any plot subsequently (yet)
 
-    ToDo: Provide mechanism for calculating and plotting error bars
-          Return plot object(s) for subsequent editing?
+    Optional Parameters:
+        time : list of str
+            Two-element list of strings or integers indicating the
+            range of Time to be plotted.  At present, there are no
+            checks on whether provided Times are within provided data
+        sameplot : bool
+            if True, put all curves on same axes
+            if False, generate new axes for each plot
+        list : bool
+            Lists all Key Parameters instead of plotting
+        title : str
+            The Title to give the plot
+        ylog : bool
+            Displays the log of the y axis
+        qt : bool
+            If true, plots with qt.  Else creates an HTML page with bokeh.
+
+    Returns : None
+
+    Examples:
+        >>> # Plot LPW.ELECTRON_DENSITY against spacecraft altitude.
+        >>> pydivide.altplot(insitu, parameter=['LPW.ELECTRON_DENSITY','MAG.MSO_Y'], qt=False, ylog=True)
+
+
     '''
     
     if list:
@@ -105,6 +114,7 @@ def altplot(kp, parameter=None, time=None, errors=None,
         pytplot.store_data(names_to_plot[iplot], data={'x': kp['Time'], 'y': y})
         pytplot.options(names_to_plot[iplot], 'link', ['alt', 'sc_alt'])
         pytplot.options(names_to_plot[iplot], 'alt', 1)
+        pytplot.options(names_to_plot[iplot], 'ylog', ylog)
 
         iplot += 1
 
@@ -112,6 +122,7 @@ def altplot(kp, parameter=None, time=None, errors=None,
         pytplot_name = ','.join(legend_names)
         pytplot.store_data(pytplot_name, data=names_to_plot)
         pytplot.options(pytplot_name, 'alt', 1)
+        pytplot.options(pytplot_name, 'ylog', ylog)
         pytplot.options(pytplot_name, 'legend_names', legend_names)
         pytplot.tplot_options('title', title)
         pytplot.tplot_options('wsize', [1000, 300])
