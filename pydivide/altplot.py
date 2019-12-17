@@ -15,7 +15,7 @@ def altplot(kp, parameter=None, time=None, errors=None,
     Plot the provided data plotted against spacecraft altitude.
     If time is not provided plot entire data set.
 
-    Required Parameters:
+    Parameters:
         kp : dict
             insitu kp data structure/dictionary read from file(s)
         parameter : list of str/int
@@ -24,8 +24,6 @@ def altplot(kp, parameter=None, time=None, errors=None,
             single parameter is provided, it must be an int or str.  If
             several are provided it must be a list.  A list may contain
             a mixture of data types.
-
-    Optional Parameters:
         time : list of str
             Two-element list of strings or integers indicating the
             range of Time to be plotted.  At present, there are no
@@ -42,7 +40,8 @@ def altplot(kp, parameter=None, time=None, errors=None,
         qt : bool
             If true, plots with qt.  Else creates an HTML page with bokeh.
 
-    Returns : None
+    Returns:
+        None
 
     Examples:
         >>> # Plot LPW.ELECTRON_DENSITY against spacecraft altitude.

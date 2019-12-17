@@ -26,7 +26,7 @@ def map2d(kp,
     system, with the MAVEN orbital projection and a variety of basemaps.
     Spacecraft orbital path may be colored by a given insitu KP data value
 
-    Required Parameters:
+    Parameters:
         kp : dict
             insitu kp data structure/dictionary read from file(s)
         parameter : list of str/int
@@ -35,7 +35,6 @@ def map2d(kp,
             single parameter is provided, it must be an int or str.  If
             several are provided it must be a list.  A list may contain
             a mixture of data types.
-    Optional Parameters:
         time : list of str
             Two-element list of strings or integers indicating the
             range of Time to be plotted.  At present, there are no

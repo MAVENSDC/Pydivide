@@ -1,4 +1,4 @@
-Reading in Data
+Plotting KP Data
 =============================
 
 This page will describe how to plot the KP data
