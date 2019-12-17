@@ -9,8 +9,6 @@ Altitiude Plots
 
 .. autofunction:: pydivide.altplot
 
-.. raw:: html
-   :file: _images/altitude.html
 
 IUVS Corona Plots
 ------------------
@@ -24,36 +22,27 @@ IUVS Occultation Plots
 .. autofunction:: pydivide.occultation
 
 .. raw:: html
-   :file: _images/occultation.html
+   :file: _images/periapse.html
 
 IUVS Limb Plots
 ---------------
 
 .. autofunction:: pydivide.periapse
 
-.. raw:: html
-   :file: _images/periapse.html
 
 Map Plots
 ----------
 
 .. autofunction:: pydivide.map2d
 
-.. raw:: html
-   :file: _images/map.html
 
 Time Series Plots
 -----------------
 
 .. autofunction:: pydivide.plot
 
-.. raw:: html
-   :file: _images/plot.html
 
 Standard Plots
 ---------------
 
 .. autofunction:: pydivide.standards
-
-.. raw:: html
-   :file: _images/standard.html
