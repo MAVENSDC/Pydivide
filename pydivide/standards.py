@@ -85,9 +85,9 @@ def standards(kp,
         static_o2_vel: bool
             O2+ flow velocity, STATIC MSO coordinates
         static_flux: bool
-            H+/H++ and pick-up ion omni-directional flux
+            H+/He++ and pick-up ion omni-directional flux
         static_energy: bool
-            H+/H++ and pick-up ion characteristic energy
+            H+/He++ and pick-up ion characteristic energy
         sun_bar: bool
             MAVEN sunlight indicator
         solar_wind: bool
