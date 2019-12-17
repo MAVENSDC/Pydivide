@@ -12,12 +12,12 @@ Download Data
 Read KP Data
 --------------
 
-.. autofunction:: pydivide.read
+.. autofunction:: pytplot.read
 
 
 Read Model Results
 --------------------
 
-.. autofunction:: pydivide.read_model_results
+.. autofunction:: pytplot.read_model_results
 
 

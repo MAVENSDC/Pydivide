@@ -13,10 +13,8 @@ PyDIVIDE's Documentation
     introduction
     getting_started
     reading_in_data
-    options
-    tplot_options
-    helper_functions
-    plotting
-    linking
-    interactivity 
-    math_routines
+	plotting_kp
+	plotting_l2
+	manipulate_kp
+	manipulate_model
+	miscellaneous

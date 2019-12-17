@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.abspath('../..'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'pytplot'
+project = 'pydivide'
 copyright = '2019, Bryan Harter'
 author = 'Bryan Harter'
 
