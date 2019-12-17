@@ -48,37 +48,56 @@ def standards(kp,
     Parameters:
         kp : dict
             insitu kp data structure/dictionary read from file(s)
-        keyword: bool
-            At least one or more of the following arguments are required; they may
-            be used in conjunction with one another.
-            all_plots: generate all 25 plots
-            euv: EUV irradiance in each of 3 bands
-            mag_mso: magnetic field, MSO coordinates
-            mag_geo: magnetic field, geographic coordinates
-            mag_cone: magnetic clock and cone angles, MSO coordinates
-            mag_dir: magnetic field, radial/horizontal/northward/eastward components
-            ngims_neutral: neutral atmospheric component densities
-            ngims_ions: ionized atmospheric component densities
-            eph_angle: spacecraft ephemeris information
-            eph_geo: spacecraft position, geographic coordinates
-            eph_mso: spacecraft position, MSO coordinates
-            swea: electron parallel/anti-parallel fluxes
-            sep_ion: ion energy flux
-            sep_electron: electron energy flux
-            wave: electric field wave power
-            plasma_den: plasma density
-            plasma_temp: plasma temperature
-            swia_h_vel: H+ flow velocity, SWIA MSO coordinates
-            static_h_vel: H+ flow velocity, STATIC MSO coordinates
-            static_o2_vel: O2
-            + flow velocity, STATIC MSO coordinates
-            static_flux: H+/H++ and pick-up ion omni-directional flux
-            static_energy: H+/H++ and pick-up ion characteristic energy
-            sun_bar: MAVEN sunlight indicator
-            solar_wind: solar wind dynamic pressure
-            ionosphere: electron spectrum shape parameter
-            altitude: spacecraft altitude
-            sc_pot: spacecraft potential
+        mag_mso: bool
+            magnetic field, MSO coordinates
+        mag_geo: bool
+            magnetic field, geographic coordinates
+        mag_cone: bool
+            magnetic clock and cone angles, MSO coordinates
+        mag_dir: bool
+            magnetic field, radial/horizontal/northward/eastward components
+        ngims_neutral: bool
+            neutral atmospheric component densities
+        ngims_ions: bool
+            ionized atmospheric component densities
+        eph_angle: bool
+            spacecraft ephemeris information
+        eph_geo: bool
+            spacecraft position, geographic coordinates
+        eph_mso: bool
+            spacecraft position, MSO coordinates
+        swea: bool
+            electron parallel/anti-parallel fluxes
+        sep_ion: bool
+            ion energy flux
+        sep_electron: bool
+            electron energy flux
+        wave: bool
+            electric field wave power
+        plasma_den: bool
+            plasma density
+        plasma_temp: bool
+            plasma temperature
+        swia_h_vel: bool
+            H+ flow velocity, SWIA MSO coordinates
+        static_h_vel: bool
+            H+ flow velocity, STATIC MSO coordinates
+        static_o2_vel: bool
+            O2+ flow velocity, STATIC MSO coordinates
+        static_flux: bool
+            H+/H++ and pick-up ion omni-directional flux
+        static_energy: bool
+            H+/H++ and pick-up ion characteristic energy
+        sun_bar: bool
+            MAVEN sunlight indicator
+        solar_wind: bool
+            solar wind dynamic pressure
+        ionosphere: bool
+            electron spectrum shape parameter
+        altitude: bool
+            spacecraft altitude
+        sc_pot: bool
+            spacecraft potential
         list : bool
             Lists all Key Parameters instead of plotting
         title : str
