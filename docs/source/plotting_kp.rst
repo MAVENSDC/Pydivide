@@ -57,5 +57,5 @@ Standard Plots
 .. autofunction:: pydivide.standards
 
 .. raw:: html
-   :file: _images/standard.html
+   :file: _images/standards.html
    
