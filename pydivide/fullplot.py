@@ -23,17 +23,17 @@ def fullplot(instruments=None,
             Otherwise, a file will only be loaded into tplot if its descriptor matches one of the strings in this field.
             See the instrument SIS for more detail on types.
             Accepted values are:
-            =================== ====================================
-            Instrument           Level 2 Observation Type/File Type
-            =================== ====================================
-            EUV                 bands
-            LPW                 lpiv, lpnt, mrgscpot, we12, we12burstlf, we12bursthf, we12burstmf, wn, wspecact, wspecpas
-            STATIC              2a, c0, c2, c4, c6, c8, ca, cc, cd, ce, cf, d0, d1, d4, d6, d7, d8, d9, da, db
-            SEP                 s1-raw-svy-full, s1-cal-svy-full, s2-raw-svy-full, s2-cal-svy-full
-            SWEA                coarsearc3d, coarsesvy3d, finearc3d, finesvy3d, onboardsvymom, onboardsvyspec
-            SWIA                arc3d, arcpad, svy3d, svypad, svyspec
-            MAG                 ss, pc, pl, ss1s, pc1s, pl1s
-            =================== =====================================
+                =================== ====================================
+                Instrument           Level 2 Observation Type/File Type
+                =================== ====================================
+                EUV                 bands
+                LPW                 lpiv, lpnt, mrgscpot, we12, we12burstlf, we12bursthf, we12burstmf, wn, wspecact, wspecpas
+                STATIC              2a, c0, c2, c4, c6, c8, ca, cc, cd, ce, cf, d0, d1, d4, d6, d7, d8, d9, da, db
+                SEP                 s1-raw-svy-full, s1-cal-svy-full, s2-raw-svy-full, s2-cal-svy-full
+                SWEA                coarsearc3d, coarsesvy3d, finearc3d, finesvy3d, onboardsvymom, onboardsvyspec
+                SWIA                arc3d, arcpad, svy3d, svypad, svyspec
+                MAG                 ss, pc, pl, ss1s, pc1s, pl1s
+                =================== =====================================
         tplot_names : list of str
             The tplot names to plot.  Also not needed, use only if the variables are already loaded into memory.
         filenames: str/list of str ['yyyy-mm-dd']
@@ -51,10 +51,8 @@ def fullplot(instruments=None,
         None
 
     Examples:
-        >>> # Plot SWIA H+ density.
-        >>> pydivide.plot(insitu,parameter='swia.hplus_density')
-        >>> # Plot SWIA H+ density and altitude in the same window.
-        >>> pydivide.plot(insitu,parameter=['swia.hplus_density', 'spacecraft.altitude'],sameplot=True)
+        >>> # Plots EUV Bands, LPW LP-IV, and MAG SS data on Jan 01 2015
+        >>> pydivide.fullplot(instruments=['euv', 'lpw', 'mag'], type=['bands', 'lpiv', 'ss1s'], start_date='2015-01-01', end_date='2015-01-02')
     '''
     import os
     import pyspedas
