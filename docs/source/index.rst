@@ -14,7 +14,7 @@ PyDIVIDE's Documentation
     getting_started
     reading_in_data
     plotting_kp
-	plotting_iuvs
+    plotting_iuvs
     plotting_l2
     manipulate_kp
     manipulate_model
