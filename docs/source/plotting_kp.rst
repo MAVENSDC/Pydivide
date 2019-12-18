@@ -33,15 +33,6 @@ IUVS Limb Plots
    :file: _images/periapse.html
 
 
-Map Plots
-----------
-
-.. autofunction:: pydivide.map2d
-
-.. raw:: html
-   :file: _images/map.html
-
-
 Time Series Plots
 -----------------
 
@@ -58,4 +49,11 @@ Standard Plots
 
 .. raw:: html
    :file: _images/standards.html
-   
+  
+Map Plots
+----------
+
+.. autofunction:: pydivide.map2d
+
+.. raw:: html
+   :file: _images/map.html
