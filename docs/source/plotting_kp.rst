@@ -1,4 +1,4 @@
-Plotting KP Data
+Plotting Insitu KP Data
 =============================
 
 This page will describe how to plot the KP data
@@ -8,29 +8,6 @@ Altitiude Plots
 ----------------
 
 .. autofunction:: pydivide.altplot
-
-IUVS Corona Plots
-------------------
-
-.. autofunction:: pydivide.corona
-
-
-IUVS Occultation Plots
-----------------------
-
-.. autofunction:: pydivide.occultation
-
-.. raw:: html
-   :file: _images/occultation.html
-
-
-IUVS Limb Plots
----------------
-
-.. autofunction:: pydivide.periapse
-
-.. raw:: html
-   :file: _images/periapse.html
 
 
 Time Series Plots
@@ -49,6 +26,7 @@ Standard Plots
 
 .. raw:: html
    :file: _images/standards.html
+   
   
 Map Plots
 ----------
