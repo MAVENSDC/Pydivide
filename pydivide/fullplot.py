@@ -1,18 +1,61 @@
-from .utilities import get_inst_obs_labels, param_list, orbit_time
-import builtins
 import pydivide
 
-def fullplot(insitu=None,
-             iuvs=None,
-             tplot_names='',
-             filenames=None,
-             instruments=None,
+def fullplot(instruments=None,
              level='l2',
              type=None,
              start_date='2014-01-01',
              end_date='2014-01-02',
+             tplot_names='',
+             filenames=None,
+             insitu=None,
              parameter=''):
+    '''
+    Plot any insitu Level 2 or KP data from MAVEN.  Downloads files found into PySPEDAS and loads them into memory via PyTplot.
+    Then creates an interactive plot window including spectrogram slicer, MAVEN's location and orbit in MSO coordinates, and MAVEN's
+    location in GEO coordinates, especially relative to the crustal magnetic fields.
 
+    Parameters:
+        instruments: str/list of str
+            Instruments from which you want to download data.
+            Accepted values are any combination of: sta, swi, swe, lpw, euv, ngi, iuv, mag, sep, rse
+        type: str/list of str
+            The observation/file type of the instruments to load.  If None, all file types are loaded.
+            Otherwise, a file will only be loaded into tplot if its descriptor matches one of the strings in this field.
+            See the instrument SIS for more detail on types.
+            Accepted values are:
+            =================== ====================================
+            Instrument           Level 2 Observation Type/File Type
+            =================== ====================================
+            EUV                 bands
+            LPW                 lpiv, lpnt, mrgscpot, we12, we12burstlf, we12bursthf, we12burstmf, wn, wspecact, wspecpas
+            STATIC              2a, c0, c2, c4, c6, c8, ca, cc, cd, ce, cf, d0, d1, d4, d6, d7, d8, d9, da, db
+            SEP                 s1-raw-svy-full, s1-cal-svy-full, s2-raw-svy-full, s2-cal-svy-full
+            SWEA                coarsearc3d, coarsesvy3d, finearc3d, finesvy3d, onboardsvymom, onboardsvyspec
+            SWIA                arc3d, arcpad, svy3d, svypad, svyspec
+            MAG                 ss, pc, pl, ss1s, pc1s, pl1s
+            =================== =====================================
+        tplot_names : list of str
+            The tplot names to plot.  Also not needed, use only if the variables are already loaded into memory.
+        filenames: str/list of str ['yyyy-mm-dd']
+            List of files to load
+        start_date: str
+            String that is the start date for downloading data (YYYY-MM-DD), or the orbit number
+        end_date: str
+            String that is the end date for downloading data (YYYY-MM-DD), or the orbit number
+        kp : dict
+            insitu kp data structure/dictionary read from file(s).  This is not required, only needed if you want to plot
+            variables from this data structure.
+        parameter : list of str/int
+            If the above kp data structure is given, this variable will be the parameters to plot (see the pydivide.plot function)
+    Returns :
+        None
+
+    Examples:
+        >>> # Plot SWIA H+ density.
+        >>> pydivide.plot(insitu,parameter='swia.hplus_density')
+        >>> # Plot SWIA H+ density and altitude in the same window.
+        >>> pydivide.plot(insitu,parameter=['swia.hplus_density', 'spacecraft.altitude'],sameplot=True)
+    '''
     import os
     import pyspedas
     import pytplot
