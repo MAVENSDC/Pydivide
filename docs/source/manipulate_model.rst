@@ -1,23 +1,18 @@
 Model Manipulation
 =============================
 
-This page will describe how to obtain and read in the data.  For reading/loading Level 2 files, PySPEDAS is currently required.  
-
-Download Data
----------------
-
-.. autofunction:: pydivide.download_files
-
-
-Read KP Data
---------------
-
-.. autofunction:: pytplot.read
-
+This page will describe some of the routines to view Model results
 
 Read Model Results
 --------------------
 
-.. autofunction:: pytplot.read_model_results
+.. autofunction:: pydivide.create_model_maps
 
+.. image:: _images/sample.png
+
+
+Interpolate Model
+------------------
+
+.. autofunction:: pydivide.interpol_model
 

@@ -22,6 +22,46 @@ def create_model_maps(altitude,
                       nearest=False,
                       linear=True,
                       savefig=True):
+    '''
+    Generates a .png contour map of a model at a specific altitude. These can
+    be used as a background in map2d. The models must be downloaded manually
+    from the SDC website:
+    https://lasp.colorado.edu/maven/sdc/public/pages/models.html.
+
+    Parameters:
+        altitude: int
+            Specified altitude of output map.
+        variable: str
+            Plots specified chemical species (Appendix A).
+        model: dict
+            Model variable produced from prior call to read_model_results.
+        file: str
+            If model not provided (produced from read_model_results), full path to model can be set and read.
+        numContours: int
+            Specifies number of contour lines. Default is 25.
+        fill: bool
+            If True, fills in contour levels instead of generating lines.
+        ct: str
+            Sets color table. Valid color tables can be found here:
+            https://matplotlib.org/examples/color/colormaps_reference.html
+        transparency: int, float
+            Sets transparency between [0,1] inclusive. 0 is completely transparent, and 1 is completely opaque.
+        nearest: bool
+            If True, instead of interpolating nearby values, this returns the value of the nearest neighbor altitude.
+        linear: bool
+            If True, performs linear interpolation between 2 altitude layers.
+        saveFig: bool
+            If True, saves figure as .png file.
+
+    Returns:
+        None
+
+    Examples:
+        >>> # Interpolate all model tracers to spacecraft trajectory using nearest neighbor interpolation.
+        >>> pydivide.create_model_maps(altitude=170, file = '<dir_path>/MAMPS_LS180_F130_081216.nc', variable='geo_x', saveFig=True)
+
+    '''
+
     import matplotlib.pyplot as plt
 
     if model is None and file is None:

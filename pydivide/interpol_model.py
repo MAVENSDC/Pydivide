@@ -15,6 +15,9 @@ def interpol_model(kp,
                    file=None,
                    nearest=False):
     """
+    Reads in MAVEN’s position from insitu, and determines the value of the
+    models at those points.
+
     There are 3 scenarios to interpolate:
     1) MSO coordinate system with latitude/longitude/altitude
     2) GEO coordinate system with latitude/longitude/altitude
@@ -25,6 +28,24 @@ def interpol_model(kp,
     For interpolation purposes, the atmosphere acts like a cube with dimensions lat*lon*alt
     This makes it so the interpolation is weighted more accurately.
     A point that is 1 degree of lat/lon away will have as much influence as a point that is 1 kilometer higher or lower
+
+    Parameters:
+        kp: struct
+            KP insitu data structure read from file(s).
+        model: str
+            Source of simulation data to be interpolated.
+        file: str
+            If model not provided, can specify the full path to the model.
+        nearest: bool
+            If True, instead of interpolating nearby values, this returns the value of the nearest neighbor altitude.
+
+    Returns:
+        Numpy array of data representative of what the spacecraft would have measured if it were travelling through the model
+
+    Examples:
+        >>> # Interpolate all model tracers to the spacecraft trajectory using nearest neighbor interpolation.
+        >>> # results = pydivide.interpol_model(insitu, file='<dir_path>/Elew_18_06_14_t00600.nc', nearest=True)
+
     """
     
     if nearest:
