@@ -9,6 +9,8 @@ Altitiude Plots
 
 .. autofunction:: pydivide.altplot
 
+.. raw:: html
+   :file: _images/altitude.html
 
 Time Series Plots
 -----------------
@@ -32,6 +34,3 @@ Map Plots
 ----------
 
 .. autofunction:: pydivide.map2d
-
-.. raw:: html
-   :file: _images/map.html
