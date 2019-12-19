@@ -18,6 +18,6 @@ PyDIVIDE's Documentation
     plotting_l2
     manipulate_kp
     manipulate_model
-    miscellaneous
+    tplot
     insitu_kp
     iuvs_kp

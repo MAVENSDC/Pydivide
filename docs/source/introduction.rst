@@ -2,7 +2,6 @@ Introduction
 ===================
 
 
-
 What is PyDIVIDE?
 ------------------
 

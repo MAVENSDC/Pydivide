@@ -14,13 +14,7 @@ def cleanup_files():
     """
     CLEANUP_FILES
     Searches code directory for .tab files, keeps latest versions/revisions, asks to delete old versions
-
     x = cleanup_files()
-
-    REQUIREMENTS
-    ***************
-    All .tab files must be named with the format "mvn_kp_insitu_YYYYMMDD_vXX_rXX.tab"
-    Any extraneous characters or formatting changes will break the regexing for this function.
     """
     # Pull directory path preferences from mvn_toolkit_prefs.txt
     dir_path = get_root_data_dir()

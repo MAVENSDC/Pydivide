@@ -12,7 +12,28 @@ import pytplot as tplot
 
 
 def resample(kp, time, sc_only=False):
-    
+    '''
+    Modifies KP structure index to user specified time via interpolation.
+
+    Parameters:
+        kp: struct
+            KP insitu data structure read from file(s).
+        time: list
+            Specifies subset of insitu KP data for resampling. time must be expressed in the format ‘YYYY-MM-DD HH:MM:SS’.
+
+    Examples:
+        >>> # Resample insitu time to 2016-06-20 coarse survey 3D file time.
+        >>> swi_cdf = cdflib.CDF('<dir_path>/mvn_swi_l2_coarsesvy3d_20160620_v01_r00.cdf')
+        >>> newtime = swi_cdf.varget('time_unix')
+        >>> insitu_resampled = pydivide.resample(insitu, newtime)
+
+        >>> # Resamples an entire day of data to just 3 points
+        >>> import pytplot
+        >>>insitu, iuvs = pydivide.read(input_time=['2016-02-18', '2016-02-19'])
+        >>> x = pydivide.resample(insitu, [pytplot.tplot_utilities.str_to_int('2016-02-18T05:00:00'),
+        >>>                      pytplot.tplot_utilities.str_to_int('2016-02-18T10:00:00'),
+        >>>                      pytplot.tplot_utilities.str_to_int('2016-02-18T15:00:00')])
+    '''
     new_total = len(time)
     start_time = time[0]
     end_time = time[new_total - 1]
@@ -65,7 +86,7 @@ def resample(kp, time, sc_only=False):
     spacecraft = kp['SPACECRAFT']
     io_flag = kp['IOflag']
     orbit = kp['Orbit']
-    time = kp['TimeString']
+    time_orig = kp['TimeString']
     timeunix = kp['Time']
 
     # Set up instrument list to make it easy to loop through the next parts
@@ -98,13 +119,13 @@ def resample(kp, time, sc_only=False):
     spline_function = interpolate.interp1d(old_time.values, orbit.values)
     # In order for the spline_function to work, need to make sure that we're working with the integer form of time,
     # in seconds since the epoch, not datetime times
-    if not isinstance(time.values[0], int):
-        time_int = [tplot.tplot_utilities.str_to_int(t) for t in time.values]
+    if not isinstance(time[0], int):
+        time_int = [tplot.tplot_utilities.str_to_int(t) for t in time]
         temp_series = pd.Series(spline_function(time_int))
-    elif isinstance(time.values[0], int):
-        if not isinstance(time.values, list):
-            time.values = list(time.values)
-        temp_series = pd.Series(spline_function(time.values))
+    elif isinstance(time[0], int):
+        if not isinstance(time, list):
+            time.values = list(time)
+        temp_series = pd.Series(spline_function(time))
 
     temp_df = temp_series.to_frame('Orbit')
     temp_df['Time Index'] = new_time_series

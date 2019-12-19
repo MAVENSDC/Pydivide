@@ -22,7 +22,43 @@ def bin(kp,
         density=False,
         median=False,
         unittest=False):
+    '''
+    Bins insitu Key Parameters by up to 8 different parameters, specified within
+    the data structure. Necessary that at least one of avg, std, median, or
+    density be specified.
 
+    Parameters:
+        kp: struct
+            KP insitu data structure read from file(s).
+        parameter: str
+            Key Parameter to be binned. Only one may be binned at a time.
+        bin_by: int, str
+            Parameters (index or name) by which to bin the specified Key Parameter.
+        binsize: int, list
+        Bin size for each binning dimension. Number of elements must be equal to those in bin_by.
+        mins: int, list
+            Minimum value(s) for each binning scheme. Number of elements must be equal to those in bin_by.
+        maxs: int, list 7
+            Maximum value(s) for each binning scheme. Number of elements must be equal to those in bin_by.
+        avg: bool
+            Calculate average per bin.
+        std: bool
+            Calculate standard deviation per bin.
+        density: bool
+            Returns number of items in each bin.
+        median: bool
+            Calculate median per bin.
+
+    Returns:
+        This procedures outputs up to 4 arrays to user-defined variables, corresponding to avg, std, median, and density.
+
+    Examples:
+    >>> # Bin STATIC O+ characteristic energy by spacecraft latitude (1° resolution) and longitude (2° resolution).
+    >>> output_avg = pydivide.bin(insitu, parameter='static.oplus_char_energy', bin_by=['spacecraft.geo_latitude', 'spacecraft.geo_longitude'], avg=True,binsize=[2,1])
+
+    >>> # Bin SWIA H+ density by spacecraft altitude (10km resolution), return average value and standard deviation for each bin.
+    >>> output_avg,output_std = pydivide.bin(insitu, parameter='swia.hplus_density', bin_by='spacecraft.altitude', binsize=10,avg=True,std=True)
+    '''
     # ERROR CHECKING
     if not isinstance(bin_by, list):
         bin_by = [bin_by]

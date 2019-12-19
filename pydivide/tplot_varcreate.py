@@ -7,8 +7,26 @@ import pytplot
 
 
 def tplot_varcreate(insitu, instruments=None, observations=None):
-    """Creates tplot variables from the insitu variable
     """
+    Can turn an insitu object from the pydivide.read procedure into pytplot variables.
+
+    Parameters:
+        insitu: dict
+            The dictionary object that gets created from an insitu read procedure
+        instruments: str
+            Specific instruments to be loaded into pytplot
+        observations: str
+            Specific observations to be loaded into pytplot
+
+    Returns:
+        A string list of the created tplot variables
+
+    Examples:
+        >>> # Load MAG and NGIMS data into PyTplot
+        >>> tvars = pydivide.tplot_varcreate(insitu, instruments=['MAG', 'NGIMS'])
+
+    """
+
     # initialize each instrument
 
     for obs in insitu["SPACECRAFT"]:
