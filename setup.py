@@ -11,7 +11,7 @@ def readme():
 
 
 setup(name='pydivide',
-      version='0.2.11',
+      version='0.2.12',
       description='A tool to plot MAVEN Key Parameter data',
       url='http://github.com/MAVENSDC/pydivide',
       author='MAVEN SDC',

@@ -1,4 +1,4 @@
-# Copyright 2017 Regents of the University of Colorado. All Rights Reserved.
+# Copyright 2019 Regents of the University of Colorado. All Rights Reserved.
 # Released under the MIT license.
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
 # Verify current version before use at: https://github.com/MAVENSDC/Pydivide
@@ -9,10 +9,10 @@ pydivide
 
 Pydivide is a python package which allows the user to quickly plot MAVEN key parameter data.  This toolkit uses the "pytplot" library.     
 
-Pydivide can be used in python scripts, or interactively through IPython and the Jupyter notebook.  
+Pydivide can be used in python scripts, or interactively through IPython and the Jupyter notebook.
 
 Install Python
-=============
+===============
 
 You will need the Anaconda distribution of Python 3 in order to run pytplot.  
 
@@ -20,7 +20,7 @@ You will need the Anaconda distribution of Python 3 in order to run pytplot.
 
 
 Install pydivide
-=============
+=================
 
 Open up a terminal, and type::
 
@@ -28,12 +28,12 @@ Open up a terminal, and type::
 	
 This will install pydivide and all of its dependencies.  
 
-You will also need to install nodejs.  This can be done through Anaconda with the following command::
+For HTML plots, you will need to install nodejs.  This can be done through Anaconda with the following command::
 
 	conda install -c bokeh nodejs
 
 Running Pydivide
-=============
+================
 
 To start using pytplot in a similar manner to IDL tplot, start up an interactive environment through the terminal command::
 
@@ -49,7 +49,16 @@ then, just import the package by typing the command::
 
 A demo/tutorial can be found here: `docs/pytplot_tutorial.html <https://htmlpreview.github.io/?https://github.com/MAVENSDC/Pydivide/blob/master/docs/pydivide_tutorial.html>`_.
 	
-	
+
+Documentation
+=============
+
+Full documentation can be found here :
+
+https://pydivide.readthedocs.io/en/latest/
+
+
+
 Contact
 =============
 

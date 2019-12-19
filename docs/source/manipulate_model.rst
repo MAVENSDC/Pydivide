@@ -3,7 +3,7 @@ Model Manipulation
 
 This page will describe some of the routines to view Model results
 
-Read Model Results
+Create Model Maps
 --------------------
 
 .. autofunction:: pydivide.create_model_maps
