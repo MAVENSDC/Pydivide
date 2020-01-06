@@ -129,18 +129,37 @@ def get_access():
 
 
 def get_root_data_dir():
+    import pyspedas
+    # Get preferred data download location for pyspedas project
+    prefs = pyspedas.get_spedas_prefs()
+    if 'data_dir' in prefs:
+        return prefs['data_dir']
+    else:
+        import os
+        # Get the "toolkit path" (where MAVEN download code is)
+        full_path = os.path.realpath(__file__)
+        toolkit_path = os.path.dirname(full_path)
+        if not os.path.exists(os.path.join(toolkit_path, 'mvn_toolkit_prefs.txt')):
+            set_root_data_dir()
+
+        with open(os.path.join(toolkit_path, 'mvn_toolkit_prefs.txt'), 'r') as f:
+            f.readline()
+            s = f.readline().rstrip()
+            # Get rid of first space
+            s = s.split(' ')
+            nothing = ' '
+        return nothing.join(s[1:])
+
+
+def create_pref_file(toolkit_path, download_path):
     import os
-    full_path = os.path.realpath(__file__)
-    toolkit_path = os.path.dirname(full_path)
-    if not os.path.exists(os.path.join(toolkit_path, 'mvn_toolkit_prefs.txt')):
-        set_root_data_dir()
-    with open(os.path.join(toolkit_path, 'mvn_toolkit_prefs.txt'), 'r') as f:
-        f.readline()
-        s = f.readline().rstrip()
-        # Get rid of first space
-        s = s.split(' ')
-        nothing = ' '
-    return nothing.join(s[1:])
+
+    # Put data download path into preferences file
+    with open(os.path.join(toolkit_path, 'mvn_toolkit_prefs.txt'), 'w') as f:
+        f.write("'; IDL Toolkit Data Preferences File'\n")
+        f.write('mvn_root_data_dir: ' + download_path)
+
+    return
 
         
 def set_root_data_dir():

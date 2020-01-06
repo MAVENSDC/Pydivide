@@ -8,7 +8,8 @@ def fullplot(instruments=None,
              tplot_names='',
              filenames=None,
              insitu=None,
-             parameter=''):
+             parameter='',
+             auto_yes=True):
     '''
     Plot any insitu Level 2 or KP data from MAVEN.  Downloads files found into PySPEDAS and loads them into memory via PyTplot.
     Then creates an interactive plot window including spectrogram slicer, MAVEN's location and orbit in MSO coordinates, and MAVEN's
@@ -66,7 +67,7 @@ def fullplot(instruments=None,
         pytplot.options('mvn_kp::spacecraft::altitude', 'basemap', map_file)
         pytplot.tplot('mvn_kp::spacecraft::altitude', exec_qt=False, window_name='PYDIVIDE_MAP2D', pos_2d=True, pos_3d=True)
     elif tplot_names == '':
-        tplot_names = pyspedas.maven_load(filenames=filenames, instruments=instruments, level=level, type=type, start_date=start_date, end_date=end_date)
+        tplot_names = pyspedas.maven_load(filenames=filenames, instruments=instruments, level=level, type=type, start_date=start_date, end_date=end_date, auto_yes=auto_yes)
         pytplot.options('mvn_kp::spacecraft::altitude', 'map', 1)
         map_file = os.path.join(os.path.dirname(__file__), 'basemaps', 'MAG_Connerny_2005.jpg')
         pytplot.options('mvn_kp::spacecraft::altitude', 'basemap', map_file)
