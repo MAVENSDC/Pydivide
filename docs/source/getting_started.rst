@@ -61,7 +61,12 @@ is selected, it is saved in mvn_toolkit_prefs.txt, and can later be changed
 manually as desired. After the first selection of the directory, the user will not
 be prompted by download_files or read again. download_files will place
 files into the chosen directory structure, and read will pull data files from that 
-directory structure.  
+directory structure.
+
+.. note::
+	If you have pyspedas installed (installed by default when installed via pip), then pydivide
+	will use the pyspedas data directory.  The default is C://Datapy, but can be changed with 
+	pyspedas.set_prefs('data_dir', '/insert/path/for/your/data')
 
 While you do not necessarily need to know this to use the toolkit, the data directories are 
 structured as such

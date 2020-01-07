@@ -11,14 +11,14 @@ def readme():
 
 
 setup(name='pydivide',
-      version='0.2.12',
-      description='A tool to plot MAVEN Key Parameter data',
+      version='0.2.13',
+      description='A tool to plot MAVEN data',
       url='http://github.com/MAVENSDC/pydivide',
       author='MAVEN SDC',
       author_email='mavensdc@lasp.colorado.edu',
       license='MIT',
-      keywords='tplot maven lasp idl divide',
+      keywords='tplot maven mars lasp idl divide spedas',
       packages=['pydivide'],
-      install_requires=['pytplot'],  # 1.2.8 will break the toolkit, check future versions
+      install_requires=['pytplot', 'pyspedas'],
       include_package_data=True,
       zip_safe=False)

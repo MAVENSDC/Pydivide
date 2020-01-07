@@ -25,6 +25,9 @@ def fullplot(instruments=None,
             See the instrument SIS for more detail on types.
         tplot_names : list of str
             The tplot names to plot.  Also not needed, use only if the variables are already loaded into memory.
+            For example, if you want to load in data with this fullplot procedure but modify the variables with
+            pytplot.options or the pytplot.tplot_math routines, you can re-plot the data by specifying the specific pytplot
+            variables.
         filenames: str/list of str ['yyyy-mm-dd']
             List of files to load
         start_date: str
@@ -53,7 +56,7 @@ def fullplot(instruments=None,
 
     Examples:
         >>> # Plots EUV Bands, LPW LP-IV, and MAG SS data on Jan 01 2015
-        >>> pydivide.fullplot(instruments=['euv', 'lpw', 'mag'], type=['bands', 'lpiv', 'ss1s'], start_date='2015-01-01', end_date='2015-01-02')
+        >>> pydivide.fullplot(instruments=['euv', 'lpw', 'mag'], type=['bands', 'lpnt', 'ss1s'], start_date='2015-01-01', end_date='2015-01-02')
     '''
     import os
     import pyspedas
