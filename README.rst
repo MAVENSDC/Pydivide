@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/75328996.svg)](https://zenodo.org/badge/latestdoi/75328996)
+
 # Copyright 2019 Regents of the University of Colorado. All Rights Reserved.
 # Released under the MIT license.
 # This software was developed at the University of Colorado's Laboratory for Atmospheric and Space Physics.
