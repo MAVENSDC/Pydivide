@@ -162,7 +162,7 @@ def download_files(filenames=None,
             if list_files:
                 for f in s:
                     print(f)
-                return
+                continue
         
             if new_files:
                 s = utils.get_new_files(s, data_dir, instrument, level)
