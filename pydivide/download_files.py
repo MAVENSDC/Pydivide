@@ -28,7 +28,8 @@ def download_files(filenames=None,
                    exclude_orbit_file=False,
                    local_dir=None,
                    unittest=False,
-                   crustal_download=True):
+                   crustal_download=True,
+                   auto_yes=False):
     """
     Download  data files from the MAVEN SDC web server. Compatible with KP files or instrument-specific data
     downloads. insitu, iuvs, or at least one instrument must be specified.
@@ -166,26 +167,27 @@ def download_files(filenames=None,
         
             if new_files:
                 s = utils.get_new_files(s, data_dir, instrument, level)
-                
-            if not unittest:
-                print("Your request will download a total of: " + str(len(s)) + " files for instrument " +
-                      str(instrument))
-                print('Would you like to proceed with the download? ')
-                valid_response = False
-                cancel = False
-                while not valid_response:
-                    response = (input('(y/n) >  '))
-                    if response == 'y' or response == 'Y':
-                        valid_response = True
-                    elif response == 'n' or response == 'N':
-                        print('Cancelled download. Returning...')
-                        valid_response = True
-                        cancel = True
-                    else:
-                        print('Invalid input.  Please answer with y or n.')
 
-                if cancel:
-                    continue
+            if not auto_yes:
+                if not unittest:
+                    print("Your request will download a total of: " + str(len(s)) + " files for instrument " +
+                          str(instrument))
+                    print('Would you like to proceed with the download? ')
+                    valid_response = False
+                    cancel = False
+                    while not valid_response:
+                        response = (input('(y/n) >  '))
+                        if response == 'y' or response == 'Y':
+                            valid_response = True
+                        elif response == 'n' or response == 'N':
+                            print('Cancelled download. Returning...')
+                            valid_response = True
+                            cancel = True
+                        else:
+                            print('Invalid input.  Please answer with y or n.')
+
+                    if cancel:
+                        continue
 
             if not exclude_orbit_file:
                 print("Before downloading data files, checking for updated orbit # file from naif.jpl.nasa.gov")
