@@ -129,11 +129,11 @@ def get_access():
 
 
 def get_root_data_dir():
-    import pyspedas
+    import os
     # Get preferred data download location for pyspedas project
-    prefs = pyspedas.get_spedas_prefs()
-    if 'data_dir' in prefs:
-        return prefs['data_dir']
+    spedas_data_dir = os.getenv('SPEDAS_DATA_DIR')
+    if spedas_data_dir:
+        return spedas_data_dir
     else:
         import os
         # Get the "toolkit path" (where MAVEN download code is)
